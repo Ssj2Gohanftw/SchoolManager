@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Data;
 using SchoolManager.Models.Dtos.Student;
-using SchoolManager.Models.Entities;
+using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
 {
@@ -9,25 +8,26 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")]
     public class StudentController:ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IStudentServices _studentServices;
         
-        public StudentController(ApplicationDbContext dbContext)
+        public StudentController(IStudentServices studentServices)
         {
-            this._dbContext = dbContext;
+            _studentServices = studentServices;
         }
 
         [HttpGet]
-        public IActionResult GetAllStudents()
+        public async Task<IActionResult> GetAllStudents(CancellationToken cancellationToken)
         {
-            var allStudents = _dbContext.Students.ToList();
+            var allStudents = await _studentServices.GetAllAsync(cancellationToken);
             return Ok(allStudents);
+            
         }
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetStudentById(Guid id)
+        public async Task <IActionResult>GetStudentById(Guid id ,CancellationToken cancellationToken)
         {
-            var student = _dbContext.Students.Find(id);
+            var student = await _studentServices.GetStudentByIdAsync(id,cancellationToken);
             if(student is null)
             {
                 return NotFound();
@@ -35,50 +35,36 @@ namespace SchoolManager.Controllers
             return Ok(student);
         }
         [HttpPost]
-        public IActionResult AddStudent(AddStudentDto addStudentDto)
+        public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto,CancellationToken cancellationToken)
         {
-            var student = new Student()
-            {
-                FirstName = addStudentDto.FirstName,
-                LastName = addStudentDto.LastName,
-                Email=addStudentDto.Email,
-                DateOfBirth = addStudentDto.DateOfBirth.ToUniversalTime()
-
-            };
-            _dbContext.Students.Add(student);
-            _dbContext.SaveChanges();
+            var student = await _studentServices.AddStudentAsync(addStudentDto,cancellationToken);
             return Ok(student);
+            
         }
         [HttpPut]
         [Route("{id:guid}")]
 
-        public IActionResult UpdateStudent(UpdateStudentDto updateStudentDto,Guid id)
+        public async Task <IActionResult> UpdateStudent(Guid id, UpdateStudentDto updateStudentDto,CancellationToken cancellationToken)
         {
-            var student = _dbContext.Students.Find(id);
-            if (student is null)
+            var success = await _studentServices.UpdateStudentAsync(id,updateStudentDto,cancellationToken);
+            if (!success)
             {
                 return NotFound();
             }
-            student.FirstName = updateStudentDto.FirstName;
-            student.LastName = updateStudentDto.LastName;
-            student.DateOfBirth = updateStudentDto.DateOfBirth;
-            student.Email = updateStudentDto.Email;
-            _dbContext.SaveChanges();
+            
             return Ok();
         }
 
         [HttpDelete]
         [Route("{id:guid}")]
 
-        public IActionResult DeleteStudent(Guid id)
+        public async Task <IActionResult> DeleteStudent(Guid id,CancellationToken cancellationToken)
         {
-            var student = _dbContext.Students.Find(id);
-            if (student is null)
+            var success = await _studentServices.DeleteStudentAsync(id,cancellationToken);
+            if (!success )
             {
                 return NotFound();
             }
-            _dbContext.Students.Remove(student);
-            _dbContext.SaveChanges();
             return Ok();
 
         }

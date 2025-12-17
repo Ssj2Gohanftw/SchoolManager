@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Data;
 using SchoolManager.Models.Dtos.Class;
-using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Controllers

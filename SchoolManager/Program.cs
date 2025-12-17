@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data;
+using SchoolManager.Data.Repositories;
+using SchoolManager.Data.Repositories.Interfaces;
+using SchoolManager.Services;
+using SchoolManager.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentServices, StudentServices>();
+
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<ITeacherService, TeacherServices>();
+
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
