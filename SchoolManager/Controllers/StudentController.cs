@@ -6,64 +6,85 @@ namespace SchoolManager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StudentController:ControllerBase
+    public class StudentController : ControllerBase
     {
         private readonly IStudentServices _studentServices;
-        
+
         public StudentController(IStudentServices studentServices)
         {
             _studentServices = studentServices;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllStudents(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllStudents()
         {
-            var allStudents = await _studentServices.GetAllAsync(cancellationToken);
+            var allStudents = await _studentServices.GetAllAsync();
             return Ok(allStudents);
-            
+        }
+
+        [HttpGet("sorted")]
+        public async Task<IActionResult> GetAllStudentsSorted()
+        {
+            var allStudents = await _studentServices.GetAllSortedAsync();
+            return Ok(allStudents);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
-        public async Task <IActionResult>GetStudentById(Guid id ,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStudentById(Guid id)
         {
-            var student = await _studentServices.GetStudentByIdAsync(id,cancellationToken);
-            if(student is null)
+            var student = await _studentServices.GetStudentByIdAsync(id);
+            if (student is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Student not found" });
             }
-            return Ok(student);
+            var studentDetails = new StudentDto()
+            {
+                StudentId = student.StudentId,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                DateOfBirth = student.DateOfBirth,
+                ClassId = student.ClassId,
+                ClassName = student.Class?.Name
+            };
+
+            return Ok(studentDetails);
         }
         [HttpPost]
-        public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto)
         {
-            var student = await _studentServices.AddStudentAsync(addStudentDto,cancellationToken);
+            var student = await _studentServices.AddStudentAsync(addStudentDto);
+            if (student is null)
+            {
+                return BadRequest(new { message = "A Class with that name doesn't exist so Student can't be assigned to the class" });
+            }
             return Ok(student);
-            
+
         }
         [HttpPut]
         [Route("{id:guid}")]
 
-        public async Task <IActionResult> UpdateStudent(Guid id, UpdateStudentDto updateStudentDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateStudent(Guid id, UpdateStudentDto updateStudentDto)
         {
-            var success = await _studentServices.UpdateStudentAsync(id,updateStudentDto,cancellationToken);
+            var success = await _studentServices.UpdateStudentAsync(id, updateStudentDto);
             if (!success)
             {
-                return NotFound();
+                return BadRequest(new { message = "A Student with that name doesn't exist" });
             }
-            
+
             return Ok();
         }
 
         [HttpDelete]
         [Route("{id:guid}")]
 
-        public async Task <IActionResult> DeleteStudent(Guid id,CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteStudent(Guid id)
         {
-            var success = await _studentServices.DeleteStudentAsync(id,cancellationToken);
-            if (!success )
+            var success = await _studentServices.DeleteStudentAsync(id);
+            if (!success)
             {
-                return NotFound();
+                return BadRequest(new { message = "A Student with that name doesn't exist" });
             }
             return Ok();
 

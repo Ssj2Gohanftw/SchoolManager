@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Data;
-using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Dtos.Subject;
-using SchoolManager.Models.Entities;
+using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
 {
@@ -10,23 +8,23 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")] 
     public class SubjectController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
-        public SubjectController(ApplicationDbContext dbContext)
+        private readonly ISubjectServices _subjectServices;
+        public SubjectController(ISubjectServices subjectServices)
         {
-            this._dbContext = dbContext;
+            _subjectServices = subjectServices;
         }
         [HttpGet]
-        public IActionResult GetAllSubjects()
+        public async Task <IActionResult> GetAllSubjects()
         {
-            var allSubjects = _dbContext.Subjects.ToList();
+            var allSubjects = await _subjectServices.GetAllAsync();
             return Ok(allSubjects);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetSubjectById(Guid id)
+        public async Task<IActionResult> GetSubjectById(Guid id)
         {
-            var subject = _dbContext.Subjects.Find(id);
+            var subject = await _subjectServices.GetSubjectByIdAsync(id);
             if (subject is null)
             {
                 return NotFound();
@@ -34,45 +32,35 @@ namespace SchoolManager.Controllers
             return Ok(subject);
         }
         [HttpPost]
-        public IActionResult AddSubject(AddSubjectDto addSubjectDto)
+        public async Task<IActionResult> AddSubject(AddSubjectDto addSubjectDto)
         {
-            var subject= new Subject()
-            {
-                
-                Name= addSubjectDto.Name,
-
-            };
-            _dbContext.Subjects.Add(subject);
-            _dbContext.SaveChanges();
+            var subject= await _subjectServices.AddSubjectAsync(addSubjectDto);
             return Ok(subject);
         }
         [HttpPut]
         [Route("{id:guid}")]
 
-        public IActionResult UpdateSubject(UpdateSubjectDto updateSubjectDto, Guid id)
+        public async Task<IActionResult> UpdateSubject(Guid id,UpdateSubjectDto updateSubjectDto)
         {
-            var subject= _dbContext.Subjects.Find(id);
-            if (subject is null)
+            var success =await _subjectServices.UpdateSubjectAsync(id,updateSubjectDto);
+            if (!success)
             {
                 return NotFound();
             }
-            subject.Name = updateSubjectDto.Name;
-            _dbContext.SaveChanges();
             return Ok();
         }
 
         [HttpDelete]
         [Route("{id:guid}")]
 
-        public IActionResult DeleteSubject(Guid id)
+        public async Task<IActionResult> DeleteSubject(Guid id)
         {
-            var subject= _dbContext.Subjects.Find(id);
-            if (subject is null)
+            var success = await _subjectServices.DeleteSubjectAsync(id);
+            if (!success)
             {
                 return NotFound();
             }
-            _dbContext.Subjects.Remove(subject);
-            _dbContext.SaveChanges();
+           
             return Ok();
 
         }

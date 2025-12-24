@@ -4,12 +4,11 @@ namespace SchoolManager.Data.Repositories.Interfaces
 {
     public interface IStudentRepository
     {
-        Task AddAsync(Student student, CancellationToken cancellationToken=default);
-        Task<List<Student>> GetAllAsync(CancellationToken cancellationToken=default); 
-        Task<Student?> GetByIdAsync(Guid id,CancellationToken cancellationToken=default);
-        void Remove(Student student);
-        void Update(Student student);
-
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task AddAsync(Student student);
+        Task<List<Student>> GetAllAsync();
+        Task<List<Student>> GetAllSortedAsync();
+        Task<Student?> GetByIdAsync(Guid id);
+        Task<bool> Remove(Student student);
+        Task<bool> Update(Student student);
     }
 }

@@ -15,35 +15,50 @@ namespace SchoolManager.Data.Repositories
             _students = _dbContext.Students;
         }
 
-        public async Task AddAsync(Student student, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Student student)
         {
-            await _students.AddAsync(student, cancellationToken);
+            await _students.AddAsync(student);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Student>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Student>> GetAllAsync()
         {
-            return await _students.ToListAsync(cancellationToken);
+            return await _students
+                .Include(s => s.Class)
+                .Include(s => s.StudentSubjects)
+                    .ThenInclude(ss => ss.Subject)
+                .ToListAsync();
+        }
+        public async Task<List<Student>> GetAllSortedAsync()
+        {
+            return await _students.OrderByDescending(s => s.FirstName)
+                .Include(s => s.Class)
+                .Include(s => s.StudentSubjects)
+                    .ThenInclude(ss => ss.Subject)
+                .ToListAsync();
         }
 
-        public async Task<Student?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Student?> GetByIdAsync(Guid id)
         {
-            return await _students.FindAsync(id, cancellationToken);
+            return await _students
+                .Include(s => s.Class)
+                .Include(s => s.StudentSubjects)
+                    .ThenInclude(ss => ss.Subject)
+                .FirstOrDefaultAsync(s => s.StudentId == id);
         }
 
-        public void Remove(Student student)
+        public async Task<bool> Remove(Student student)
         {
             _students.Remove(student);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
-        public void Update(Student student)
+        public async Task<bool> Update(Student student)
         {
-            _students.Update(student);
+             _students.Update(student);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
-
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-
         
     }
 }

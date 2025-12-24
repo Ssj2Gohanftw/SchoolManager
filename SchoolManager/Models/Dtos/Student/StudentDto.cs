@@ -1,6 +1,7 @@
-﻿namespace SchoolManager.Models.Entities
+﻿using SchoolManager.Models.Entities;
+namespace SchoolManager.Models.Dtos.Student
 {
-    public class Student
+    public class StudentDto
     {
         public Guid StudentId { get; set; }
         public required string FirstName { get; set; }
@@ -10,8 +11,8 @@
         public required string Email { get; set; }
 
         public Guid? ClassId { get; set; }
-        public Class? Class { get; set; }
 
-        public List<StudentSubject> StudentSubjects { get; set; } = new();
+        public string? ClassName { get; set; }
+        public List<Entities.StudentSubject> StudentSubjects { get; set; } = new();
     }
 }

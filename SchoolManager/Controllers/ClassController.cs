@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Data;
 using SchoolManager.Models.Dtos.Class;
-using SchoolManager.Models.Entities;
+using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
 {
@@ -9,68 +8,62 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")]
     public class ClassController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
-        public ClassController(ApplicationDbContext dbContext)
+        private readonly IClassServices _classServices;
+        public ClassController(IClassServices classServices)
         {
-            this._dbContext = dbContext;
-            
+            _classServices = classServices;
+
         }
+
         [HttpGet]
-        public IActionResult GetAllClasses()
+        public async Task<IActionResult> GetAllClasses()
         {
-            var classes = _dbContext.Class.ToList();
+            var classes = await _classServices.GetAllAsync();
             return Ok(classes);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetClassById(Guid id)
+        public async Task<IActionResult> GetClassById(Guid id)
         {
-            var classes= _dbContext.Class.Find(id);
-            if (classes is null)
+            var @class = await _classServices.GetClassByIdAsync(id);
+            if (@class is null)
             {
                 return NotFound();
             }
-            return Ok(classes);
+            return Ok(@class);
         }
+
         [HttpPost]
-        public IActionResult AddClass(AddClassDto addClassDto)
+        public async Task<IActionResult> AddClass(AddClassDto addClassDto)
         {
-            var classes = new Class()
-            {
-                Name = addClassDto.Name                
-            };
-            _dbContext.Class.Add(classes);
-            _dbContext.SaveChanges();
-            return Ok(classes);
+            var @class = await _classServices.AddClassAsync(addClassDto);
+            return Ok(@class);
         }
+
         [HttpPut]
         [Route("{id:guid}")]
 
-        public IActionResult UpdateClass(UpdateClassDto updateClassDto, Guid id)
+        public async Task<IActionResult> UpdateClass(Guid id, UpdateClassDto updateClassDto)
         {
-            var classes= _dbContext.Class.Find(id);
-            if (classes is null)
+            var success = await _classServices.UpdateClassAsync(id, updateClassDto);
+            if (!success)
             {
                 return NotFound();
             }
-            classes.Name = updateClassDto.Name;
-            _dbContext.SaveChanges();
             return Ok();
         }
 
         [HttpDelete]
         [Route("{id:guid}")]
 
-        public IActionResult DeleteClass(Guid id)
+        public async Task<IActionResult> DeleteClass(Guid id)
         {
-            var classes= _dbContext.Class.Find(id);
-            if (classes is null)
+            var success = await _classServices.DeleteClassAsync(id);
+            if (!success)
             {
                 return NotFound();
             }
-            _dbContext.Class.Remove(classes);
-            _dbContext.SaveChanges();
             return Ok();
 
         }

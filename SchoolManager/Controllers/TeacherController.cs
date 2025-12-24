@@ -15,17 +15,17 @@ namespace SchoolManager.Controllers
             _teacherServices = teacherServices;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllTeachers(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllTeachers()
         {
-            var allTeachers = await _teacherServices.GetAllAsync(cancellationToken);
+            var allTeachers = await _teacherServices.GetAllAsync();
             return Ok(allTeachers);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
-        public async Task<IActionResult> GetTeacherById(Guid id,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetTeacherById(Guid id)
         {
-            var teachers = await _teacherServices.GetStudentByIdAsync(id,cancellationToken);
+            var teachers = await _teacherServices.GetStudentByIdAsync(id);
             if (teachers is null)
             {
                 return NotFound();
@@ -33,17 +33,17 @@ namespace SchoolManager.Controllers
             return Ok(teachers);
         }
         [HttpPost]
-        public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto)
         {
-            var teachers= await _teacherServices.AddTeacherAsync(addTeacherDto,cancellationToken);
+            var teachers= await _teacherServices.AddTeacherAsync(addTeacherDto);
             return Ok(teachers);
         }
         [HttpPut]
         [Route("{id:guid}")]
 
-        public async Task<IActionResult> UpdateTeacher(UpdateTeacherDto updateTeacherDto, Guid id,CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateTeacher(UpdateTeacherDto updateTeacherDto, Guid id)
         {
-            var success = await _teacherServices.UpdateTeacherAsync(id,updateTeacherDto,cancellationToken);
+            var success = await _teacherServices.UpdateTeacherAsync(id,updateTeacherDto);
             if (!success)
             {
                 return NotFound();
@@ -54,14 +54,14 @@ namespace SchoolManager.Controllers
         [HttpDelete]
         [Route("{id:guid}")]
 
-        public async Task<IActionResult> DeleteTeacher(Guid id,CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteTeacher(Guid id)
         {
-            var success = await _teacherServices.DeleteTeacherAsync(id, cancellationToken);
+            var success = await _teacherServices.DeleteTeacherAsync(id);
             if (!success)
             {
                 return NotFound();
             }
-            await _teacherServices.DeleteTeacherAsync(id, cancellationToken);
+            await _teacherServices.DeleteTeacherAsync(id);
             return Ok();
 
         }

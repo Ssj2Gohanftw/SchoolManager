@@ -14,34 +14,34 @@ namespace SchoolManager.Data.Repositories
             _dbContext = dbContext;
             _teachers = dbContext.Teachers;
         }
-        public async Task AddAsync(Teacher teacher, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Teacher teacher)
         {
-            await _teachers.AddAsync(teacher, cancellationToken);
+            await _teachers.AddAsync(teacher);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Teacher>> GetAllAsync()
         {
-            return await _teachers.ToListAsync(cancellationToken);
+            return await _teachers.ToListAsync();
         }
 
-        public async Task<Teacher?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Teacher?> GetByIdAsync(Guid id)
         {
-            return await _teachers.FindAsync(id, cancellationToken);
+            return await _teachers.FindAsync(id);
         }
 
-        public void Remove(Teacher teacher)
+        public async Task<bool> Remove(Teacher teacher)
         {
-             _teachers.Remove(teacher);
+            _teachers.Remove(teacher);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public void Update(Teacher teacher)
+        public async Task<bool> Update(Teacher teacher)
         {
             _teachers.Update(teacher);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

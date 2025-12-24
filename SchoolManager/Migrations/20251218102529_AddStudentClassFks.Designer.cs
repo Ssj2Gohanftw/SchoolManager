@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data;
@@ -11,9 +12,11 @@ using SchoolManager.Data;
 namespace SchoolManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218102529_AddStudentClassFks")]
+    partial class AddStudentClassFks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,9 +37,6 @@ namespace SchoolManager.Migrations
 
                     b.HasKey("ClassId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Class");
                 });
 
@@ -46,11 +46,8 @@ namespace SchoolManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ClassId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -66,24 +63,22 @@ namespace SchoolManager.Migrations
 
                     b.HasKey("StudentId");
 
-                    b.HasIndex("ClassId");
-
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("SchoolManager.Models.Entities.StudentSubject", b =>
+            modelBuilder.Entity("SchoolManager.Models.Entities.StudentClass", b =>
                 {
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SubjectId")
+                    b.Property<Guid>("ClassId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("StudentId", "SubjectId");
+                    b.HasKey("StudentId", "ClassId");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("ClassId");
 
-                    b.ToTable("StudentSubjects");
+                    b.ToTable("StudentClass");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.Entities.Subject", b =>
@@ -139,33 +134,23 @@ namespace SchoolManager.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("SchoolManager.Models.Entities.Student", b =>
+            modelBuilder.Entity("SchoolManager.Models.Entities.StudentClass", b =>
                 {
                     b.HasOne("SchoolManager.Models.Entities.Class", "Class")
-                        .WithMany("Students")
+                        .WithMany("StudentClasses")
                         .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Class");
-                });
-
-            modelBuilder.Entity("SchoolManager.Models.Entities.StudentSubject", b =>
-                {
                     b.HasOne("SchoolManager.Models.Entities.Student", "Student")
-                        .WithMany("StudentSubjects")
+                        .WithMany("StudentClasses")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolManager.Models.Entities.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Class");
 
                     b.Navigation("Student");
-
-                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.Entities.SubjectTeacher", b =>
@@ -189,12 +174,12 @@ namespace SchoolManager.Migrations
 
             modelBuilder.Entity("SchoolManager.Models.Entities.Class", b =>
                 {
-                    b.Navigation("Students");
+                    b.Navigation("StudentClasses");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.Entities.Student", b =>
                 {
-                    b.Navigation("StudentSubjects");
+                    b.Navigation("StudentClasses");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.Entities.Teacher", b =>

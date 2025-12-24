@@ -14,13 +14,38 @@ namespace SchoolManager.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Class> Class { get; set; }
         public DbSet<SubjectTeacher> SubjectTeacher { get; set; }
-        public DbSet<StudentClass> StudentClass { get; set; }
+        public DbSet<StudentSubject> StudentSubjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //StudentID and ClassID together form the primary key for StudentClass
-            modelBuilder.Entity<StudentClass>().HasKey(sc => new { sc.StudentId, sc.ClassId });
+
+            modelBuilder.Entity<Class>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.Class)
+                .WithMany(c => c.Students)
+                .HasForeignKey(s => s.ClassId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StudentSubject>()
+                .HasKey(ss => new { ss.StudentId, ss.SubjectId });
+
+            modelBuilder.Entity<StudentSubject>()
+                .HasOne(ss => ss.Student)
+                .WithMany(s => s.StudentSubjects)
+                .HasForeignKey(ss => ss.StudentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            modelBuilder.Entity<StudentSubject>()
+                .HasOne(ss => ss.Subject)
+                .WithMany()
+                .HasForeignKey(ss => ss.SubjectId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
             modelBuilder.Entity<SubjectTeacher>().HasKey(sc => new { sc.TeacherId, sc.SubjectId});
         }

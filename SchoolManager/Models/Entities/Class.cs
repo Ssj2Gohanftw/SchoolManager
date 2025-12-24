@@ -5,7 +5,7 @@
         public Guid ClassId { get; set; }
 
         public string Name { get; set; } = null!;
-        public ICollection<StudentClass> StudentClasses { get; set; }
-            = new List<StudentClass>();
+
+        public List<Student> Students { get; set; } = new();
     }
 }

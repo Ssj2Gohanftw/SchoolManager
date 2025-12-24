@@ -1,4 +1,5 @@
-﻿using SchoolManager.Data.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Models.Dtos.Teacher;
 using SchoolManager.Models.Entities;
 using SchoolManager.Services.Interfaces;
@@ -12,7 +13,7 @@ namespace SchoolManager.Services
         {
             _teacherRepository = teacherRepository;
         }
-        public async Task<Teacher> AddTeacherAsync(AddTeacherDto addTeacherDto, CancellationToken cancellationToken = default)
+        public async Task<Teacher> AddTeacherAsync(AddTeacherDto addTeacherDto)
         {
             var teachers = new Teacher()
             {
@@ -20,38 +21,53 @@ namespace SchoolManager.Services
                 LastName = addTeacherDto.LastName,
                 Email = addTeacherDto.Email
             };
-            await _teacherRepository.AddAsync(teachers, cancellationToken);
-            await _teacherRepository.SaveChangesAsync(cancellationToken);
-            return teachers;
+            try
+            {
+                await _teacherRepository.AddAsync(teachers);
+                return teachers;
+            }
+            catch (DbUpdateException)
+            {
+
+                return null;
+            }
+            
         }
 
-        public async Task<bool> DeleteTeacherAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteTeacherAsync(Guid id)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id, cancellationToken);
+            var teacher = await _teacherRepository.GetByIdAsync(id);
             if (teacher is null)
             {
                 return false;
             }
-            _teacherRepository.Remove(teacher);
-            await _teacherRepository.SaveChangesAsync(cancellationToken);
-            return true;
+            try
+            {
+                await _teacherRepository.Remove(teacher);
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
+            
         }
 
-        public async Task<IEnumerable<Teacher>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<Teacher>> GetAllAsync()
         {
-            var teachers = await _teacherRepository.GetAllAsync(cancellationToken);
+            var teachers = await _teacherRepository.GetAllAsync();
             return teachers;
         }
 
-        public async Task<Teacher?> GetStudentByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Teacher?> GetStudentByIdAsync(Guid id)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id, cancellationToken);
+            var teacher = await _teacherRepository.GetByIdAsync(id);
             return teacher;
         }
 
-        public async Task<bool> UpdateTeacherAsync(Guid id, UpdateTeacherDto updateTeacherDto, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateTeacherAsync(Guid id, UpdateTeacherDto updateTeacherDto)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id, cancellationToken);
+            var teacher = await _teacherRepository.GetByIdAsync(id);
             if (teacher is null)
             {
                 return false;
@@ -59,7 +75,6 @@ namespace SchoolManager.Services
             teacher.FirstName = updateTeacherDto.FirstName;
             teacher.LastName = updateTeacherDto.LastName;
             teacher.Email= updateTeacherDto.Email;
-            await _teacherRepository.SaveChangesAsync(cancellationToken);
             return true;
         }
     }
