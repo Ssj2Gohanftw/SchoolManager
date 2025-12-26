@@ -2,7 +2,7 @@
 using SchoolManager.Models.Entities;
 namespace SchoolManager.Models.Mappings
 {
-    public static class StudentMapper
+    public static class StudentMappings
     {
         public static StudentDto ToStudentDto(this Student student)
         {

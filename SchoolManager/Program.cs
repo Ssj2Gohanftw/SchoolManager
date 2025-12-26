@@ -36,6 +36,10 @@ builder.Services.AddScoped<IClassServices,ClassServices>();
 builder.Services.AddScoped<IStudentSubjectRepository, StudentSubjectRepository>();
 builder.Services.AddScoped<IStudentSubjectServices, StudentSubjectServices>();
 
+builder.Services.AddScoped<ISubjectTeacherRepository, SubjectTeacherRepository>();
+builder.Services.AddScoped<ISubjectTeacherServices, SubjectTeacherServices>();
+
+
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

@@ -9,6 +9,7 @@ namespace SchoolManager.Data.Repositories.Interfaces
         Task<Class?> GetByIdAsync(Guid id);
         Task<Class?> GetByNameAsync(string name);
         Task<bool> Remove(Class @class);
+
         Task<bool> Update(Class @class);
     }
 }

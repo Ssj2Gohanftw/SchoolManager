@@ -2,6 +2,7 @@
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Models.Dtos.Subject;
 using SchoolManager.Models.Entities;
+using SchoolManager.Models.Mappings;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -42,16 +43,16 @@ namespace SchoolManager.Services
             
         }
 
-        public Task<List<Subject>> GetAllAsync()
+        public async Task<List<SubjectSummaryDto>> GetAllAsync()
         {
-            var subjects = _subjectRepository.GetAllAsync();
-            return subjects;
+            var subjects = await _subjectRepository.GetAllAsync();
+            return subjects.Select(s=>s.ToSubjectSummaryDto()).ToList();
         }
 
-        public Task<Subject?> GetSubjectByIdAsync(Guid id)
+        public async Task<SubjectSummaryDto?> GetSubjectByIdAsync(Guid id)
         {
-            var subjects = _subjectRepository.GetByIdAsync(id);
-            return subjects;
+            var subject = await _subjectRepository.GetByIdAsync(id);
+            return subject?.ToSubjectSummaryDto();
         }
 
         public async Task<bool> UpdateSubjectAsync(Guid id, UpdateSubjectDto updateSubjectDto)

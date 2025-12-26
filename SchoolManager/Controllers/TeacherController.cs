@@ -25,7 +25,7 @@ namespace SchoolManager.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> GetTeacherById(Guid id)
         {
-            var teachers = await _teacherServices.GetStudentByIdAsync(id);
+            var teachers = await _teacherServices.GetTeacherByIdAsync(id);
             if (teachers is null)
             {
                 return NotFound();

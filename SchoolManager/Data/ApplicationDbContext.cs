@@ -47,7 +47,26 @@ namespace SchoolManager.Data
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            modelBuilder.Entity<SubjectTeacher>().HasKey(sc => new { sc.TeacherId, sc.SubjectId});
+
+            modelBuilder.Entity<SubjectTeacher>()
+                .HasKey(st => new { st.TeacherId, st.ClassId, st.SubjectId});
+
+
+            modelBuilder.Entity<SubjectTeacher>()
+                .HasOne(st => st.Class)
+                .WithMany(st=>st.SubjectTeachers)
+                .HasForeignKey(st => st.ClassId);
+
+            modelBuilder.Entity<SubjectTeacher>()
+                .HasOne(st => st.Teacher)
+                .WithMany(st => st.SubjectTeachers)
+                .HasForeignKey(st => st.TeacherId);
+
+            modelBuilder.Entity<SubjectTeacher>().
+                HasOne(st => st.Subject)
+                .WithMany(st => st.SubjectTeachers)
+                .HasForeignKey(st => st.SubjectId);
+
         }
     }
 }
