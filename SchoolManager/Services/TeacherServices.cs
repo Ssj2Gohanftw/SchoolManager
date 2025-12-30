@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
+using SchoolManager.Models.Dtos.Common;
 using SchoolManager.Models.Dtos.Teacher;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings;
+using SchoolManager.Models.Mappings.Teacher;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
 {
-    public class TeacherServices : ITeacherService
+    public class TeacherServices : ITeacherServices
     {
         private readonly ITeacherRepository _teacherRepository;
 
@@ -26,6 +27,12 @@ namespace SchoolManager.Services
         {
             var teacher = await _teacherRepository.GetByIdAsync(id);
             return teacher?.ToTeacherSummaryDto();
+        }
+
+        public async Task<TeacherDetailsDto?> GetTeacherDetailsByIdAsync(Guid id)
+        {
+            var teacher = await _teacherRepository.GetByIdWithAssignmentsAsync(id);
+            return teacher?.ToTeacherDetailsDto();
         }
 
         public async Task<Teacher?> AddTeacherAsync(AddTeacherDto addTeacherDto)
@@ -79,6 +86,19 @@ namespace SchoolManager.Services
             teacher.LastName = updateTeacherDto.LastName;
             teacher.Email = updateTeacherDto.Email;
             return true;
+        }
+        public async Task<PagedResults<TeacherSummaryDto>> GetPagedTeachersAsync(TeacherQueryDto teacherQueryDto)
+        {
+            teacherQueryDto = teacherQueryDto.Normalize();
+            var result = await _teacherRepository.GetPagedAsync(teacherQueryDto);
+            return new PagedResults<TeacherSummaryDto>
+            {
+                Items = result.Items.Select(t => t.ToTeacherSummaryDto()).ToList(),
+                PageNumber=result.PageNumber,
+                PageSize=result.PageSize,
+                TotalCount=result.TotalCount
+            };
+            
         }
     }
 }

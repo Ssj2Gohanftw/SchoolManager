@@ -1,11 +1,10 @@
 using SchoolManager.Models.Dtos.Class;
-using SchoolManager.Models.Entities;
 
-namespace SchoolManager.Models.Mappings
+namespace SchoolManager.Models.Mappings.Class
 {
     public static class ClassMappings
     {
-        public static StudentClassDto ToStudentClassDto(this Student student)
+        public static StudentClassDto ToStudentClassDto(this Entities.Student student)
         {
             return new StudentClassDto
             {
@@ -15,7 +14,7 @@ namespace SchoolManager.Models.Mappings
             };
         }
 
-        public static ClassesDto ToClassDto(this Class @class)
+        public static ClassesDto ToClassDto(this Entities.Class @class)
         {
             return new ClassesDto
             {
@@ -24,7 +23,7 @@ namespace SchoolManager.Models.Mappings
                 //Students = @class.Students.Select(s => s.ToStudentClassDto()).ToList()
             };
         }
-        public static ClassDetailsDto ToClassDetailsDto(this Class @class)
+        public static ClassDetailsDto ToClassDetailsDto(this Entities.Class @class)
         {
             return new ClassDetailsDto
             {

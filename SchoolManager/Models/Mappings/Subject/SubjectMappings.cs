@@ -1,11 +1,11 @@
 using SchoolManager.Models.Dtos.Subject;
-using SchoolManager.Models.Entities;
 
-namespace SchoolManager.Models.Mappings
+
+namespace SchoolManager.Models.Mappings.Subject
 {
     public static class SubjectMappings
     {
-        public static SubjectSummaryDto ToSubjectSummaryDto(this Subject subject)
+        public static SubjectSummaryDto ToSubjectSummaryDto(this Entities.Subject subject)
         {
             return new SubjectSummaryDto
             {

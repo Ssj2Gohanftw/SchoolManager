@@ -1,5 +1,4 @@
-﻿using SchoolManager.Models.Entities;
-namespace SchoolManager.Models.Dtos.Student
+﻿namespace SchoolManager.Models.Dtos.Student
 {
     public class StudentDto
     {
@@ -7,12 +6,11 @@ namespace SchoolManager.Models.Dtos.Student
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public DateOnly DateOfBirth { get; set; }
-
         public required string Email { get; set; }
 
         public Guid? ClassId { get; set; }
-
         public string? ClassName { get; set; }
-        public List<Entities.StudentSubject> StudentSubjects { get; set; } = new();
+
+        public List<StudentSubjectDto> Subjects { get; set; } = new();
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
+using SchoolManager.Models.Dtos.Class;
+using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
+using SchoolManager.Models.Mappings.Class;
 
 namespace SchoolManager.Data.Repositories
 {
@@ -39,6 +43,50 @@ namespace SchoolManager.Data.Repositories
         {
             var normalized = name.Trim();
             return await _classes.FirstOrDefaultAsync(c => c.Name == normalized);
+        }
+
+        private static IOrderedQueryable<Class> ApplySorting(
+            IQueryable<Class> query, 
+            ClassSortBy sortBy, 
+            SortDirection sortDirection)
+        {
+            var desc = sortDirection == SortDirection.Desc;
+
+            return (sortBy, desc) switch
+            {
+                (ClassSortBy.ClassId, false) => query.OrderBy(c => c.ClassId),
+                (ClassSortBy.ClassId, true) => query.OrderByDescending(c=> c.ClassId),
+
+                (ClassSortBy.Name, true) => query.OrderByDescending(c=> c.Name),
+                _ => query.OrderBy(c => c.Name),
+            };
+        }
+        public async Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto)
+        {
+            classQueryDto = classQueryDto.Normalize();
+            IQueryable<Class> query = _classes.AsNoTracking();
+            query = classQueryDto.FilterBy switch
+            {
+                ClassFilterBy.Search when !string.IsNullOrWhiteSpace(classQueryDto.Search) =>
+                    query.Where(c => c.Name.Contains(classQueryDto.Search!)),
+                _ => query
+            };
+            var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortDirection)
+                .ThenBy(c=>c.ClassId);
+
+            var totalCount = await ordered.CountAsync();
+            var items = await ordered
+                .Skip((classQueryDto.PageNumber - 1) * classQueryDto.PageSize)
+                .Take(classQueryDto.PageSize)
+                .ToListAsync();
+
+            return new PagedResults<Class>
+            {
+                Items = items,
+                PageNumber = classQueryDto.PageNumber,
+                PageSize = classQueryDto.PageSize,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<bool> Remove(Class @class)

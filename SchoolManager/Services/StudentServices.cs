@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
+using SchoolManager.Models.Dtos.Common;
 using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings;
+using SchoolManager.Models.Mappings.Student;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -67,6 +68,19 @@ namespace SchoolManager.Services
         {
             var students = await _studentRepository.GetAllSortedAsync();
             return students.Select(s=>s.ToStudentDto()).ToList();
+        }
+
+        public async Task<PagedResults<StudentDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
+        {
+            studentQueryDto = studentQueryDto.Normalize();
+            var result = await _studentRepository.GetPagedAsync(studentQueryDto);
+            return new PagedResults<StudentDto>
+            {
+                Items = result.Items.Select(s => s.ToStudentDto()).ToList(),
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
+            };
         }
 
         public Task<Student?> GetStudentByIdAsync(Guid id)

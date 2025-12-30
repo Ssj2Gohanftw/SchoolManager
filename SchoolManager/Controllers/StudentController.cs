@@ -89,5 +89,12 @@ namespace SchoolManager.Controllers
             return Ok();
 
         }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetStudentsPaged([FromQuery] StudentQueryDto studentQueryDto)
+        {
+            var result = await _studentServices.GetPagedStudentsAsync(studentQueryDto);
+            return Ok(result);
+        }
     }
 }

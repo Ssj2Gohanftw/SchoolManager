@@ -1,4 +1,6 @@
-﻿using SchoolManager.Models.Entities;
+﻿using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Models.Dtos.Subject;
+using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces
 {
@@ -9,6 +11,8 @@ namespace SchoolManager.Data.Repositories.Interfaces
         Task<Subject?> GetByIdAsync(Guid id);
         Task<bool> Remove(Subject subject);
         Task<bool> Update(Subject subject);
+        Task<PagedResults<Subject>> GetPagedResults(SubjectQueryDto subjectQueryDto);
+        
 
     }
 }

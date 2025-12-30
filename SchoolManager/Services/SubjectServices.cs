@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
+using SchoolManager.Models.Dtos.Common;
 using SchoolManager.Models.Dtos.Subject;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings;
+using SchoolManager.Models.Mappings.Subject;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -47,6 +48,19 @@ namespace SchoolManager.Services
         {
             var subjects = await _subjectRepository.GetAllAsync();
             return subjects.Select(s=>s.ToSubjectSummaryDto()).ToList();
+        }
+
+        public async Task<PagedResults<SubjectSummaryDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)
+        {
+            subjectQueryDto = subjectQueryDto.Normalize();
+            var results = await _subjectRepository.GetPagedResults(subjectQueryDto);
+            return new PagedResults<SubjectSummaryDto>()
+            {
+                Items = results.Items.Select(sub => sub.ToSubjectSummaryDto()).ToList(),
+                TotalCount = results.TotalCount,
+                PageNumber = results.PageNumber,
+                PageSize = results.PageSize
+            };
         }
 
         public async Task<SubjectSummaryDto?> GetSubjectByIdAsync(Guid id)

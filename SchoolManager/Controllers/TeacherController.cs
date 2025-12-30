@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Models.Dtos.Teacher;
-using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
@@ -9,8 +8,8 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")]
     public class TeacherController : ControllerBase
     {
-        private readonly ITeacherService _teacherServices;
-        public TeacherController(ITeacherService teacherServices)
+        private readonly ITeacherServices _teacherServices;
+        public TeacherController(ITeacherServices teacherServices)
         {
             _teacherServices = teacherServices;
         }
@@ -64,6 +63,24 @@ namespace SchoolManager.Controllers
             await _teacherServices.DeleteTeacherAsync(id);
             return Ok();
 
+        }
+        [HttpGet("{id:guid}/details")]
+        public async Task<IActionResult> GetTeacherDetailsById(Guid id)
+        {
+            var teacher = await _teacherServices.GetTeacherDetailsByIdAsync(id);
+            if (teacher is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(teacher);
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedResults([FromQuery] TeacherQueryDto teacherQueryDto)
+        {
+            var pagedResults = await _teacherServices.GetPagedTeachersAsync(teacherQueryDto);
+            return Ok(pagedResults);
         }
     }
 }

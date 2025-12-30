@@ -1,4 +1,6 @@
-﻿using SchoolManager.Models.Entities;
+﻿using SchoolManager.Models.Dtos.Class;
+using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces
 {
@@ -11,5 +13,7 @@ namespace SchoolManager.Data.Repositories.Interfaces
         Task<bool> Remove(Class @class);
 
         Task<bool> Update(Class @class);
+
+        Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto);
     }
 }

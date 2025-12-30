@@ -1,4 +1,5 @@
-﻿using SchoolManager.Models.Dtos.Student;
+﻿using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Services.Interfaces
@@ -11,5 +12,6 @@ namespace SchoolManager.Services.Interfaces
         Task<Student?> AddStudentAsync(AddStudentDto addStudentDto);
         Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto);
         Task<bool> DeleteStudentAsync(Guid id);
+        Task<PagedResults<StudentDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto);
     }
 }

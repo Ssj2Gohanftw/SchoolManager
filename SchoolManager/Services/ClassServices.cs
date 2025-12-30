@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Models.Dtos.Class;
+using SchoolManager.Models.Dtos.Common;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings;
+using SchoolManager.Models.Mappings.Class;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -83,6 +85,19 @@ namespace SchoolManager.Services
             {
                 return false;
             }
+        }
+
+        public async Task<PagedResults<ClassesDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto)
+        {
+            classQueryDto = classQueryDto.Normalize();
+            var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
+            return new PagedResults<ClassesDto> {
+                Items = result.Items.Select(c => c.ToClassDto()).ToList(),
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
+
+            };
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using SchoolManager.Models.Dtos.Student;
-using SchoolManager.Models.Entities;
-namespace SchoolManager.Models.Mappings
+namespace SchoolManager.Models.Mappings.Student
 {
     public static class StudentMappings
     {
-        public static StudentDto ToStudentDto(this Student student)
+        public static StudentDto ToStudentDto(this Entities.Student student)
         {
             return new StudentDto()
             {
@@ -16,6 +15,8 @@ namespace SchoolManager.Models.Mappings
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name
             };
+
         }
+
     }
 }
