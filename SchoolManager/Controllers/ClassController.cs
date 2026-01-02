@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Models.Dtos.Class;
+using SchoolManager.Dtos.Class;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
@@ -18,27 +18,48 @@ namespace SchoolManager.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllClasses()
         {
-            var classes = await _classServices.GetAllAsync();
-            return Ok(classes);
+            try
+            {
+                var classes = await _classServices.GetAllAsync();
+                return Ok(classes);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet]
         [Route("{id:guid}")]
         public async Task<IActionResult> GetClassById(Guid id)
         {
-            var @class = await _classServices.GetClassByIdAsync(id);
-            if (@class is null)
+            try
             {
-                return NotFound();
+                var @class = await _classServices.GetClassByIdAsync(id);
+                if (@class is null)
+                {
+                    return NotFound();
+                }
+                return Ok(@class);
             }
-            return Ok(@class);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> AddClass(AddClassDto addClassDto)
         {
-            var @class = await _classServices.AddClassAsync(addClassDto);
-            return Ok(@class);
+            try
+            {
+                var @class = await _classServices.AddClassAsync(addClassDto);
+                return Ok(@class);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut]
@@ -46,12 +67,19 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> UpdateClass(Guid id, UpdateClassDto updateClassDto)
         {
-            var success = await _classServices.UpdateClassAsync(id, updateClassDto);
-            if (!success)
+            try
             {
-                return NotFound();
+                var success = await _classServices.UpdateClassAsync(id, updateClassDto);
+                if (!success)
+                {
+                    return NotFound();
+                }
+                return Ok();
             }
-            return Ok();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete]
@@ -59,19 +87,33 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> DeleteClass(Guid id)
         {
-            var success = await _classServices.DeleteClassAsync(id);
-            if (!success)
+            try
             {
-                return NotFound();
-            }
-            return Ok();
+                var success = await _classServices.DeleteClassAsync(id);
+                if (!success)
+                {
+                    return NotFound();
+                }
+                return Ok();
 
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
         [HttpGet("paged")]
         public async Task<IActionResult> GetClassesPaged([FromQuery] ClassQueryDto classQueryDto)
         {
-            var result = await _classServices.GetPagedClassesAsync(classQueryDto);
-            return Ok(result);
+            try
+            {
+                var result = await _classServices.GetPagedClassesAsync(classQueryDto);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.Class;
-using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Dtos.Class;
+using SchoolManager.Dtos.Common;
+using SchoolManager.Mappers.Classes;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings.Class;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -65,7 +65,16 @@ namespace SchoolManager.Services
                 return false;
             }
             @class.Name = updateClassDto.Name.Trim();
-            return true;
+
+            try
+            {
+                await _classRepository.Update(@class);
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
 
         }
 

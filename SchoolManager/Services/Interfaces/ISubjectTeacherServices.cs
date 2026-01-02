@@ -1,4 +1,4 @@
-﻿using SchoolManager.Models.Dtos.SubjectTeacher;
+﻿using SchoolManager.Dtos.SubjectTeacher;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Services.Interfaces

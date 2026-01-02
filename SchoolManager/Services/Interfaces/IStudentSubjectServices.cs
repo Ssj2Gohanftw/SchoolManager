@@ -1,4 +1,4 @@
-using SchoolManager.Models.Dtos.StudentSubject;
+using SchoolManager.Dtos.StudentSubject;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Services.Interfaces
@@ -8,5 +8,6 @@ namespace SchoolManager.Services.Interfaces
         Task AssignSubjectToStudentAsync(AddStudentSubjectDto dto);
         Task<List<Subject>> GetSubjectsForStudentAsync(Guid studentId);
         Task<bool> RemoveSubjectFromStudentAsync(DeleteStudentSubjectDto dto);
+        Task AssignSubjectsToClassAsync(Guid classId, AssignSubjectsToClassDto dto);
     }
 }

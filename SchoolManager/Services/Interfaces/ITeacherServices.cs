@@ -1,5 +1,5 @@
-﻿using SchoolManager.Models.Dtos.Common;
-using SchoolManager.Models.Dtos.Teacher;
+﻿using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Teacher;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Services.Interfaces

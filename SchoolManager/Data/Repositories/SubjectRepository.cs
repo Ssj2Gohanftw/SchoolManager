@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.Common;
-using SchoolManager.Models.Dtos.Subject;
+using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Subject;
+using SchoolManager.Mappers.Subjects;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings.Subject;
 
 namespace SchoolManager.Data.Repositories
 {

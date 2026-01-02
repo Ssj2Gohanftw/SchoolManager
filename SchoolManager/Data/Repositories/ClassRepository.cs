@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.Class;
-using SchoolManager.Models.Dtos.Common;
+using SchoolManager.Dtos.Class;
+using SchoolManager.Dtos.Common;
+using SchoolManager.Mappers.Classes;
 using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings.Class;
 
 namespace SchoolManager.Data.Repositories
 {

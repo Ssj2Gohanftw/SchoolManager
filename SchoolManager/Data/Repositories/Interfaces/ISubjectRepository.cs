@@ -1,5 +1,5 @@
-﻿using SchoolManager.Models.Dtos.Common;
-using SchoolManager.Models.Dtos.Subject;
+﻿using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Subject;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces

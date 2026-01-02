@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.Common;
-using SchoolManager.Models.Dtos.Teacher;
+using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Teacher;
+using SchoolManager.Mappers.Teachers;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings.Teacher;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -85,7 +85,16 @@ namespace SchoolManager.Services
             teacher.FirstName = updateTeacherDto.FirstName;
             teacher.LastName = updateTeacherDto.LastName;
             teacher.Email = updateTeacherDto.Email;
-            return true;
+
+            try
+            {
+                await _teacherRepository.Update(teacher);
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
         }
         public async Task<PagedResults<TeacherSummaryDto>> GetPagedTeachersAsync(TeacherQueryDto teacherQueryDto)
         {

@@ -1,7 +1,7 @@
 ﻿using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.SubjectTeacher;
+using SchoolManager.Dtos.SubjectTeacher;
+using SchoolManager.Mappers;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services

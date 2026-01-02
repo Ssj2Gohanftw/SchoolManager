@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Dtos.Common;
-using SchoolManager.Models.Dtos.Subject;
+using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Subject;
+using SchoolManager.Mappers.Subjects;
 using SchoolManager.Models.Entities;
-using SchoolManager.Models.Mappings.Subject;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -21,8 +21,16 @@ namespace SchoolManager.Services
             {
                 Name = addSubjectDto.Name
             };
-            await _subjectRepository.AddAsync(subject);
-            return subject;
+
+            try
+            {
+                await _subjectRepository.AddAsync(subject);
+                return subject;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException("Unable to add subject.", ex);
+            }
         }
 
         public async Task<bool> DeleteSubjectAsync(Guid id)
@@ -77,7 +85,16 @@ namespace SchoolManager.Services
                 return false;
             }
             subject.Name = updateSubjectDto.Name;
-            return true;
+
+            try
+            {
+                await _subjectRepository.Update(subject);
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
         }
     }
 }
