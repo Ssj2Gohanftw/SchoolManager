@@ -1,4 +1,5 @@
-﻿using SchoolManager.Dtos.Common;
+﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using SchoolManager.Dtos.Common;
 
 namespace SchoolManager.Dtos.Teacher
 {
@@ -17,7 +18,7 @@ namespace SchoolManager.Dtos.Teacher
         public TeacherFilterBy FilterBy { get; init; } = TeacherFilterBy.None;
         public string? Search { get; init; }
         public TeacherSortBy SortBy { get; init; } = TeacherSortBy.Name;
-        public SortDirection SortDirection { get; init; } = SortDirection.Asc;
+        public SortOrder SortOrder { get; init; } = SortOrder.Ascending;
 
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 20;

@@ -1,3 +1,4 @@
+using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Models.Entities;
 namespace SchoolManager.Mappers.Teachers
@@ -31,6 +32,21 @@ namespace SchoolManager.Mappers.Teachers
                     SubjectName = st.Subject.Name
                 }).ToList()
             };
+        }
+        public static Teacher ToTeacher(this AddTeacherDto addTeacherDto)
+        {
+            return new Teacher
+            {
+                FirstName = addTeacherDto.FirstName,
+                LastName = addTeacherDto.LastName,
+                Email = addTeacherDto.Email
+            };
+        }
+        public static void ToUpdateTeacher(this UpdateTeacherDto updateTeacherDto, Teacher teacher)
+        {
+            teacher.FirstName = updateTeacherDto.FirstName;
+            teacher.LastName = updateTeacherDto.LastName;
+            teacher.Email = updateTeacherDto.Email;
         }
     }
 }

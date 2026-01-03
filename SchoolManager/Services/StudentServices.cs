@@ -27,14 +27,7 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Class doesn't exist");
             }
             //var existingStudent=await _studentRepository.getna
-            var student = new Student()
-            {
-                FirstName = addStudentDto.FirstName,
-                LastName = addStudentDto.LastName,
-                Email = addStudentDto.Email,
-                DateOfBirth = addStudentDto.DateOfBirth,
-                ClassId = @class.ClassId
-            };
+            var student = addStudentDto.ToStudent(@class.ClassId);
             await _studentRepository.AddAsync(student);
             return student;
         }
@@ -56,7 +49,7 @@ namespace SchoolManager.Services
                 return false;
                 
             }
-        }
+        }  
 
         public async Task<List<StudentDto>> GetAllAsync()
         {
@@ -64,19 +57,13 @@ namespace SchoolManager.Services
             return student.Select(s=>s.ToStudentDto()).ToList();
         }
 
-        public async Task<List<StudentDto>> GetAllSortedAsync()
-        {
-            var students = await _studentRepository.GetAllSortedAsync();
-            return students.Select(s=>s.ToStudentDto()).ToList();
-        }
-
-        public async Task<PagedResults<StudentDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
+        public async Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
         {
             studentQueryDto = studentQueryDto.Normalize();
             var result = await _studentRepository.GetPagedAsync(studentQueryDto);
-            return new PagedResults<StudentDto>
+            return new PagedResults<StudentDetailsDto>
             {
-                Items = result.Items.Select(s => s.ToStudentDto()).ToList(),
+                Results = result.Results.Select(s => s.ToStudentDetailsDto()).ToList(),
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,
                 TotalCount = result.TotalCount
@@ -103,11 +90,7 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Class doesn't exist");
             }
 
-            student.FirstName = updateStudentDto.FirstName;
-            student.LastName = updateStudentDto.LastName;
-            student.DateOfBirth = updateStudentDto.DateOfBirth;
-            student.Email = updateStudentDto.Email;
-            student.ClassId = @class.ClassId;
+            updateStudentDto.ToUpdateStudent(student, @class.ClassId);
             try
             {
                 await _studentRepository.Update(student);

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Mappers.Classes;
-using SchoolManager.Models.Dtos.Student;
 using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories
@@ -48,9 +48,9 @@ namespace SchoolManager.Data.Repositories
         private static IOrderedQueryable<Class> ApplySorting(
             IQueryable<Class> query, 
             ClassSortBy sortBy, 
-            SortDirection sortDirection)
+            SortOrder SortOrder)
         {
-            var desc = sortDirection == SortDirection.Desc;
+            var desc = SortOrder == SortOrder.Descending;
 
             return (sortBy, desc) switch
             {
@@ -71,18 +71,18 @@ namespace SchoolManager.Data.Repositories
                     query.Where(c => c.Name.Contains(classQueryDto.Search!)),
                 _ => query
             };
-            var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortDirection)
+            var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)
                 .ThenBy(c=>c.ClassId);
 
             var totalCount = await ordered.CountAsync();
-            var items = await ordered
+            var results = await ordered
                 .Skip((classQueryDto.PageNumber - 1) * classQueryDto.PageSize)
                 .Take(classQueryDto.PageSize)
                 .ToListAsync();
 
             return new PagedResults<Class>
             {
-                Items = items,
+                Results = results,
                 PageNumber = classQueryDto.PageNumber,
                 PageSize = classQueryDto.PageSize,
                 TotalCount = totalCount

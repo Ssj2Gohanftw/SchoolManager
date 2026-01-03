@@ -1,5 +1,5 @@
-﻿using SchoolManager.Dtos.Common;
-using System.ComponentModel;
+﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
 namespace SchoolManager.Dtos.Student
 {
     public enum StudentSortBy
@@ -26,7 +26,7 @@ namespace SchoolManager.Dtos.Student
         public Guid? ClassId { get; init; }
 
         public StudentSortBy SortBy { get; init; } = StudentSortBy.FirstName;
-        public SortDirection SortDirection { get; init; } = SortDirection.Asc;
+        public SortOrder SortOrder { get; init; } = SortOrder.Ascending;
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 20;
     }

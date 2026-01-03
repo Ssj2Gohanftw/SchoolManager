@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
@@ -33,9 +34,9 @@ namespace SchoolManager.Data.Repositories
         {
             return await _subject.FindAsync(id);
         }
-        private static IOrderedQueryable<Subject> ApplySorting(IQueryable<Subject> query, SubjectSortBy sortBy, SortDirection sortDirection)
+        private static IOrderedQueryable<Subject> ApplySorting(IQueryable<Subject> query, SubjectSortBy sortBy, SortOrder SortOrder)
         {
-            var desc = sortDirection == SortDirection.Desc;
+            var desc = SortOrder == SortOrder.Descending;
 
             return (sortBy, desc) switch
             {
@@ -62,7 +63,7 @@ namespace SchoolManager.Data.Repositories
                 _ => query
             };
 
-            var ordered = ApplySorting(query, subjectQueryDto.SortBy, subjectQueryDto.SortDirection)
+            var ordered = ApplySorting(query, subjectQueryDto.SortBy, subjectQueryDto.SortOrder)
                 .ThenBy(sub => sub.SubjectId);
 
             var totalCount = await ordered.CountAsync();
@@ -74,7 +75,7 @@ namespace SchoolManager.Data.Repositories
 
             return new PagedResults<Subject>
             {
-                Items = items,
+                Results = items,
                 PageNumber = subjectQueryDto.PageNumber,
                 PageSize = subjectQueryDto.PageSize,
                 TotalCount = totalCount

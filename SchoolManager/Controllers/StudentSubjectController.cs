@@ -18,69 +18,33 @@ namespace SchoolManager.Controllers
         [HttpGet("{studentId:guid}")]
         public async Task<IActionResult> GetSubjectsForStudent(Guid studentId)
         {
-            try
-            {
-                var subjects = await _studentSubjectServices.GetSubjectsForStudentAsync(studentId);
-                return Ok(subjects);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            var subjects = await _studentSubjectServices.GetSubjectsForStudentAsync(studentId);
+            return Ok(subjects);
         }
 
         [HttpPost]
         public async Task<IActionResult> AssignSubject([FromBody] AddStudentSubjectDto dto)
         {
-            try
-            {
-                await _studentSubjectServices.AssignSubjectToStudentAsync(dto);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            await _studentSubjectServices.AssignSubjectToStudentAsync(dto);
+            return Ok();
         }
 
         [HttpPost("class/{classId:guid}/assign")]
         public async Task<IActionResult> AssignSubjectsToClass(Guid classId, [FromBody] AssignSubjectsToClassDto dto)
         {
-            try
-            {
-                await _studentSubjectServices.AssignSubjectsToClassAsync(classId, dto);
-                return Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            await _studentSubjectServices.AssignSubjectsToClassAsync(classId, dto);
+            return Ok();
         }
 
         [HttpDelete]
         public async Task<IActionResult> UnassignSubject([FromBody] DeleteStudentSubjectDto dto)
         {
-            try
-            {
-                if (dto is null) return BadRequest();
+            if (dto is null) return BadRequest();
 
-                var success = await _studentSubjectServices.RemoveSubjectFromStudentAsync(dto);
-                if (!success) return NotFound();
+            var success = await _studentSubjectServices.RemoveSubjectFromStudentAsync(dto);
+            if (!success) return NotFound();
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
     }
 }

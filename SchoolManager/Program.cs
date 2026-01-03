@@ -5,6 +5,8 @@ using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
+using AspNetCore.Swagger.Themes;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +51,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(Theme.Dark,c=>c.EnableThemeSwitcher());
 }
 
 app.UseHttpsRedirection();

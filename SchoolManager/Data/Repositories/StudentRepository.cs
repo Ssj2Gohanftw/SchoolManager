@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
@@ -32,14 +33,6 @@ namespace SchoolManager.Data.Repositories
                     .ThenInclude(ss => ss.Subject)
                 .ToListAsync();
         }
-        public async Task<List<Student>> GetAllSortedAsync()
-        {
-            return await _students.OrderByDescending(s => s.FirstName)
-                .Include(s => s.Class)
-                .Include(s => s.StudentSubjects)
-                    .ThenInclude(ss => ss.Subject)
-                .ToListAsync();
-        }
 
         public async Task<Student?> GetByIdAsync(Guid id)
         {
@@ -63,9 +56,9 @@ namespace SchoolManager.Data.Repositories
             return true;
         }
 
-        private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortDirection sortDirection)
+        private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
         {
-            var desc = sortDirection == SortDirection.Desc;
+            var desc = SortOrder == SortOrder.Descending;
 
             return (sortBy, desc) switch
             {
@@ -110,7 +103,7 @@ namespace SchoolManager.Data.Repositories
             };
 
             // important: stable ordering for pagination
-            var ordered= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortDirection)
+            var ordered= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
 
             var totalCount = await ordered.CountAsync();
@@ -122,7 +115,7 @@ namespace SchoolManager.Data.Repositories
 
             return new PagedResults<Student>
             {
-                Items = items,
+                Results = items,
                 PageNumber = studentQueryDto.PageNumber,
                 PageSize = studentQueryDto.PageSize,
                 TotalCount = totalCount

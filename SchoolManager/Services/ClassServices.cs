@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
@@ -101,7 +100,7 @@ namespace SchoolManager.Services
             classQueryDto = classQueryDto.Normalize();
             var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
             return new PagedResults<ClassesDto> {
-                Items = result.Items.Select(c => c.ToClassDto()).ToList(),
+                Results = result.Results.Select(c => c.ToClassDto()).ToList(),
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,
                 TotalCount = result.TotalCount

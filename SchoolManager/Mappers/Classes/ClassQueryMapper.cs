@@ -1,5 +1,5 @@
-﻿using SchoolManager.Dtos.Class;
-using SchoolManager.Dtos.Common;
+﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using SchoolManager.Dtos.Class;
 
 namespace SchoolManager.Mappers.Classes
 {
@@ -52,7 +52,7 @@ namespace SchoolManager.Mappers.Classes
                 FilterBy = filterBy,
                 Search = search,
                 SortBy = classQueryDto?.SortBy ?? ClassSortBy.Name,
-                SortDirection = classQueryDto?.SortDirection ?? SortDirection.Asc,
+                SortOrder = classQueryDto?.SortOrder ?? SortOrder.Ascending,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
             };

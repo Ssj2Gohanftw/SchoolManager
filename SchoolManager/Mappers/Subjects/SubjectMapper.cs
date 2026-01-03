@@ -12,5 +12,17 @@ namespace SchoolManager.Mappers.Subjects
                 Name = subject.Name
             };
         }
+        public static Subject ToSubject(this AddSubjectDto addSubjectDto)
+        {
+            return new Subject
+            {
+                Name = addSubjectDto.Name
+            };
+        }
+        public static void ToUpdateSubject(this UpdateSubjectDto updateSubjectDto, Subject subject)
+        {
+
+            subject.Name = updateSubjectDto.Name;
+        }
     }
 }

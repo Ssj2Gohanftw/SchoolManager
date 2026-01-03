@@ -8,7 +8,6 @@ namespace SchoolManager.Data.Repositories.Interfaces
     {
         Task AddAsync(Student student);
         Task<List<Student>> GetAllAsync();
-        Task<List<Student>> GetAllSortedAsync();
         Task<Student?> GetByIdAsync(Guid id);
         Task<bool> Remove(Student student);
         Task<bool> Update(Student student);

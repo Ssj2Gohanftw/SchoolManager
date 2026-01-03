@@ -17,11 +17,7 @@ namespace SchoolManager.Services
         }
         public async Task<Subject> AddSubjectAsync(AddSubjectDto addSubjectDto)
         {
-            var subject = new Subject()
-            {
-                Name = addSubjectDto.Name
-            };
-
+            var subject = addSubjectDto.ToSubject();
             try
             {
                 await _subjectRepository.AddAsync(subject);
@@ -64,7 +60,7 @@ namespace SchoolManager.Services
             var results = await _subjectRepository.GetPagedResults(subjectQueryDto);
             return new PagedResults<SubjectSummaryDto>()
             {
-                Items = results.Items.Select(sub => sub.ToSubjectSummaryDto()).ToList(),
+                Results = results.Results.Select(sub => sub.ToSubjectSummaryDto()).ToList(),
                 TotalCount = results.TotalCount,
                 PageNumber = results.PageNumber,
                 PageSize = results.PageSize
@@ -84,7 +80,7 @@ namespace SchoolManager.Services
             {
                 return false;
             }
-            subject.Name = updateSubjectDto.Name;
+            updateSubjectDto.ToUpdateSubject(subject);
 
             try
             {
