@@ -4,16 +4,9 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces
 {
-    public interface IClassRepository
-    {
-        Task AddAsync(Class @class);
-        Task<List<Class>> GetAllAsync();
-        Task<Class?> GetByIdAsync(Guid id);
+    public interface IClassRepository:IRepository<Class>
+    {  
         Task<Class?> GetByNameAsync(string name);
-        Task<bool> Remove(Class @class);
-
-        Task<bool> Update(Class @class);
-
         Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto);
     }
 }

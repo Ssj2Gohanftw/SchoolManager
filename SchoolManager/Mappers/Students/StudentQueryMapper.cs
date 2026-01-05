@@ -1,5 +1,4 @@
 ﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
 namespace SchoolManager.Mappers.Students
 {

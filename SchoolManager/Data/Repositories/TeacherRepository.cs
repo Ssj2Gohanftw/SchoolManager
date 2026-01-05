@@ -9,32 +9,15 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class TeacherRepository : ITeacherRepository
+    public class TeacherRepository : Repository<Teacher>,ITeacherRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<Teacher> _teachers;
-
-        public TeacherRepository(ApplicationDbContext dbContext)
+        public TeacherRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
-            _teachers = dbContext.Teachers;
+
         }
-
-        public async Task AddAsync(Teacher teacher)
-        {
-            await _teachers.AddAsync(teacher);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Teacher>> GetAllAsync()
-            => await _teachers.ToListAsync();
-
-        public async Task<Teacher?> GetByIdAsync(Guid id)
-            => await _teachers.FindAsync(id);
-
         public async Task<Teacher?> GetByIdWithAssignmentsAsync(Guid id)
         {
-            return await _teachers
+            return await _entity
                 .Include(t => t.SubjectTeachers)
                     .ThenInclude(st => st.Class)
                 .Include(t => t.SubjectTeachers)
@@ -88,7 +71,7 @@ namespace SchoolManager.Data.Repositories
         {
             teacherQueryDto = teacherQueryDto.Normalize();
 
-            IQueryable<Teacher> query = _teachers.AsNoTracking();
+            IQueryable<Teacher> query = _entity.AsNoTracking();
 
             query = teacherQueryDto.FilterBy switch
             {
@@ -114,20 +97,6 @@ namespace SchoolManager.Data.Repositories
                 PageSize = teacherQueryDto.PageSize,
                 TotalCount = totalCount
             };
-        }
-
-        public async Task<bool> Remove(Teacher teacher)
-        {
-            _teachers.Remove(teacher);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> Update(Teacher teacher)
-        {
-            _teachers.Update(teacher);
-            await _dbContext.SaveChangesAsync();
-            return true;
         }
     }
 }

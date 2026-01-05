@@ -1,4 +1,3 @@
-using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Models.Entities;
 namespace SchoolManager.Mappers.Teachers

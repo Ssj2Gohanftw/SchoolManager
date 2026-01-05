@@ -8,52 +8,30 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentRepository : Repository<Student>, IStudentRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<Student> _students;
 
-        public StudentRepository(ApplicationDbContext dbContext)
+        public StudentRepository(ApplicationDbContext dbContext):base(dbContext)
         {
-            _dbContext = dbContext;
-            _students = _dbContext.Students;
+            
         }
 
-        public async Task AddAsync(Student student)
+        public override async Task<List<Student>> GetAllAsync()
         {
-            await _students.AddAsync(student);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Student>> GetAllAsync()
-        {
-            return await _students
+            return await _entity
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
                     .ThenInclude(ss => ss.Subject)
                 .ToListAsync();
         }
 
-        public async Task<Student?> GetByIdAsync(Guid id)
+        public override async Task<Student?> GetByIdAsync(Guid id)
         {
-            return await _students
+            return await _entity
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
                     .ThenInclude(ss => ss.Subject)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
-        }
-
-        public async Task<bool> Remove(Student student)
-        {
-            _students.Remove(student);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-        public async Task<bool> Update(Student student)
-        {
-            _students.Update(student);
-            await _dbContext.SaveChangesAsync();
-            return true;
         }
 
         private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
@@ -83,7 +61,7 @@ namespace SchoolManager.Data.Repositories
         {
             studentQueryDto = studentQueryDto.Normalize();
 
-            IQueryable<Student> query = _students
+            IQueryable<Student> query = _entity
                 .AsNoTracking()
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
@@ -102,7 +80,6 @@ namespace SchoolManager.Data.Repositories
                 _ => query
             };
 
-            // important: stable ordering for pagination
             var ordered= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
 
