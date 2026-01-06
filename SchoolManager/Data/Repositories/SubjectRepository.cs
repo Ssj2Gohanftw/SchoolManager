@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
 using SchoolManager.Mappers.Subjects;
 using SchoolManager.Models.Entities;
+using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
 {
@@ -18,38 +20,40 @@ namespace SchoolManager.Data.Repositories
         private static IOrderedQueryable<Subject> ApplySorting(IQueryable<Subject> query, SubjectSortBy sortBy, SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
-
-            return (sortBy, desc) switch
+            IOrderedQueryable<Subject> orderedQuery;
+            switch(sortBy, desc) 
             {
-                (SubjectSortBy.Name, false) => query.OrderBy(sub => sub.Name),
-                (SubjectSortBy.Name, true) => query.OrderByDescending(sub => sub.Name),
-
-                (SubjectSortBy.SubjectId, false) => query.OrderBy(sub => sub.SubjectId),
-                (SubjectSortBy.SubjectId, true) => query.OrderByDescending(sub => sub.SubjectId),
-
-                _ => query.OrderBy(sub=> sub.Name)
-            };
+                case (SubjectSortBy.Name, false):
+                    orderedQuery=query.OrderBy(sub => sub.Name);
+                    break;
+                case (SubjectSortBy.Name, true):
+                    orderedQuery = query.OrderByDescending(sub => sub.Name);
+                    break;
+                case (SubjectSortBy.SubjectId, false):
+                    orderedQuery = query.OrderBy(sub => sub.SubjectId);
+                    break;
+                case (SubjectSortBy.SubjectId, true):
+                    orderedQuery = query.OrderByDescending(sub => sub.SubjectId);
+                    break;
+                default:
+                    orderedQuery = query.OrderBy(sub => sub.Name);
+                    break;
+            }
+            return orderedQuery;
+            
         }
 
         public async Task<PagedResults<Subject>> GetPagedResults(SubjectQueryDto subjectQueryDto)
         {
             subjectQueryDto = subjectQueryDto.Normalize();
-
-            IQueryable<Subject> query = _entity.AsNoTracking();
-
-            query = subjectQueryDto.FilterBy switch
-            {
-                SubjectFilterBy.Search when !string.IsNullOrWhiteSpace(subjectQueryDto.Search) =>
-                   query.Where(c => c.Name.Contains(subjectQueryDto.Search!)),
-                _ => query
-            };
-
-            var ordered = ApplySorting(query, subjectQueryDto.SortBy, subjectQueryDto.SortOrder)
+            var searchFilter = SearchFilter(subjectQueryDto.Search).Expand();
+            IQueryable<Subject> query = _entity.AsNoTracking().Where(searchFilter);
+            var orderedQuery = ApplySorting(query, subjectQueryDto.SortBy, subjectQueryDto.SortOrder)
                 .ThenBy(sub => sub.SubjectId);
 
-            var totalCount = await ordered.CountAsync();
+            var totalCount = await orderedQuery.CountAsync();
 
-            var items = await ordered
+            var items = await orderedQuery
                 .Skip((subjectQueryDto.PageNumber - 1) * subjectQueryDto.PageSize)
                 .Take(subjectQueryDto.PageSize)
                 .ToListAsync();
@@ -61,6 +65,17 @@ namespace SchoolManager.Data.Repositories
                 PageSize = subjectQueryDto.PageSize,
                 TotalCount = totalCount
             };
+        }
+        public static Expression<Func<Subject, bool>> SearchFilter(string? search)
+        {
+            var query = PredicateBuilder.New<Subject>(false);
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return sub => true;
+
+            }
+            query = query.Or(sub => sub.Name.Contains(search));
+            return query;
         }
     }
 }

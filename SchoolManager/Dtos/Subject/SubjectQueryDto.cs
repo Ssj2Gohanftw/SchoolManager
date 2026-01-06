@@ -1,5 +1,5 @@
 ﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolManager.Dtos.Common;
+
 
 namespace SchoolManager.Dtos.Subject
 {

@@ -42,7 +42,14 @@ builder.Services.AddScoped<IStudentSubjectServices, StudentSubjectServices>();
 builder.Services.AddScoped<ISubjectTeacherRepository, SubjectTeacherRepository>();
 builder.Services.AddScoped<ISubjectTeacherServices, SubjectTeacherServices>();
 
+builder.Services.AddScoped<IApiService,ApiService>();
 
+builder.Services.AddHttpClient("University", client =>
+{
+    client.BaseAddress = new Uri("http://universities.hipolabs.com/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.DefaultRequestHeaders.Add("User-Agent", "SchoolManager/1.0");
+});
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

@@ -27,17 +27,23 @@ namespace SchoolManager.Data.Repositories
         private static IOrderedQueryable<Teacher> ApplySorting(IQueryable<Teacher> query, TeacherSortBy sortBy, SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
-
-            return (sortBy, desc) switch
+            IOrderedQueryable<Teacher> orderedQuery;
+            switch (sortBy, desc) 
             {
-                (TeacherSortBy.Name, false) => query.OrderBy(t => t.FirstName).ThenBy(t => t.FirstName),
-                (TeacherSortBy.Name, true) => query.OrderByDescending(t => t.FirstName).ThenBy(t => t.LastName),
-
-                (TeacherSortBy.Email, false) => query.OrderBy(t => t.Email),
-                (TeacherSortBy.Email, true) => query.OrderByDescending(t => t.Email),
-
-                _ => query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName)
+                case (TeacherSortBy.Name, false):
+                    orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
+                    break;
+                case (TeacherSortBy.Email, false):
+                    orderedQuery = query.OrderBy(t => t.Email);
+                    break;
+                case (TeacherSortBy.Email, true):
+                    orderedQuery = query.OrderByDescending(t => t.Email);
+                    break;
+                default:
+                    orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
+                    break;
             };
+            return orderedQuery;
         }
         private static IQueryable<Teacher> ApplyTeacherSearch(IQueryable<Teacher> query, string search)
         {

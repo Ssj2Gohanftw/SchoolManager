@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Mappers.Classes;
 using SchoolManager.Models.Entities;
+using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
 {
@@ -37,26 +39,31 @@ namespace SchoolManager.Data.Repositories
             SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
-
-            return (sortBy, desc) switch
+            IOrderedQueryable<Class> orderedQuery;
+            switch(sortBy, desc)
             {
-                (ClassSortBy.ClassId, false) => query.OrderBy(c => c.ClassId),
-                (ClassSortBy.ClassId, true) => query.OrderByDescending(c=> c.ClassId),
+                case (ClassSortBy.ClassId, false):
+                    orderedQuery = query.OrderBy(c => c.ClassId);
+                    break;
+                case (ClassSortBy.ClassId, true):
+                    orderedQuery = query.OrderByDescending(c => c.ClassId);
+                    break;
+                case (ClassSortBy.Name, false):
+                    orderedQuery = query.OrderBy(c => c.Name);
+                    break;
+                default: 
+                    orderedQuery = query.OrderByDescending(c => c.Name);
+                    break;
 
-                (ClassSortBy.Name, true) => query.OrderByDescending(c=> c.Name),
-                _ => query.OrderBy(c => c.Name),
-            };
+            }
+            return orderedQuery;
         }
         public async Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto)
         {
             classQueryDto = classQueryDto.Normalize();
-            IQueryable<Class> query = _entity.AsNoTracking();
-            query = classQueryDto.FilterBy switch
-            {
-                ClassFilterBy.Search when !string.IsNullOrWhiteSpace(classQueryDto.Search) =>
-                    query.Where(c => c.Name.Contains(classQueryDto.Search!)),
-                _ => query
-            };
+            var searchFilter = SearchFilter(classQueryDto.Search).Expand();
+            IQueryable<Class> query = _entity.AsNoTracking().Where(searchFilter);
+            
             var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)
                 .ThenBy(c=>c.ClassId);
 
@@ -74,6 +81,17 @@ namespace SchoolManager.Data.Repositories
                 TotalCount = totalCount
             };
 
+        }
+        public static Expression<Func<Class, bool>> SearchFilter(string? search)
+        {
+            var query = PredicateBuilder.New<Class>(false);
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return c=> true;
+
+            }
+            query = query.Or(c=> c.Name.Contains(search));
+            return query;
         }
 
     }

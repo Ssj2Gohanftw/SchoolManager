@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Models.Entities;
+using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
 {
@@ -37,66 +39,124 @@ namespace SchoolManager.Data.Repositories
         private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
-
-            return (sortBy, desc) switch
+            IOrderedQueryable<Student> orderedQuery;
+            //This is a switch statement . Here we mutate the query and return it
+            switch (sortBy, desc)
             {
-                (StudentSortBy.LastName, false) => query.OrderBy(s => s.LastName),
-                (StudentSortBy.LastName, true) => query.OrderByDescending(s => s.LastName),
+                case (StudentSortBy.LastName, false):
+                    orderedQuery= query.OrderBy(s => s.LastName);
+                    break;
 
-                (StudentSortBy.Email, false) => query.OrderBy(s => s.Email),
-                (StudentSortBy.Email, true) => query.OrderByDescending(s => s.Email),
+                case (StudentSortBy.LastName, true):
+                    orderedQuery = query.OrderByDescending(s => s.LastName);
+                    break;
+                case (StudentSortBy.Email, false):
+                    orderedQuery = query.OrderBy(s => s.Email);
+                    break;
+                case (StudentSortBy.Email, true):
+                    orderedQuery = query.OrderByDescending(s => s.Email);
+                    break;
+                case (StudentSortBy.DateOfBirth, false):
+                    orderedQuery = query.OrderBy(s => s.DateOfBirth);
+                    break;
+                case (StudentSortBy.DateOfBirth, true):
+                    orderedQuery = query.OrderByDescending(s => s.DateOfBirth);
+                    break;
+                case (StudentSortBy.ClassName, false):
+                    orderedQuery = query.OrderBy(s => s.Class!.Name);
+                    break;
+                case (StudentSortBy.ClassName, true):
+                    orderedQuery = query.OrderByDescending(s => s.Class!.Name);
+                    break;
+                case (StudentSortBy.FirstName, false):
+                    orderedQuery = query.OrderBy(s => s.FirstName);
+                    break;
+                default:
+                    orderedQuery = query.OrderByDescending(s => s.FirstName);
+                    break;
+            }
+            return (orderedQuery);
 
-                (StudentSortBy.DateOfBirth, false) => query.OrderBy(s => s.DateOfBirth),
-                (StudentSortBy.DateOfBirth, true) => query.OrderByDescending(s => s.DateOfBirth),
+            //This is a switch exp,it returns a value and we don't mutate the query.
 
-                (StudentSortBy.ClassName, false) => query.OrderBy(s => s.Class!.Name),
-                (StudentSortBy.ClassName, true) => query.OrderByDescending(s => s.Class!.Name),
+            //return (sortBy, desc) switch
+            //{
+            //    (StudentSortBy.LastName, false) => query.OrderBy(s => s.LastName),
+            //    (StudentSortBy.LastName, true) => query.OrderByDescending(s => s.LastName),
 
-                (StudentSortBy.FirstName, true) => query.OrderByDescending(s => s.FirstName),
-                _ => query.OrderBy(s => s.FirstName)
-            };
+            //    (StudentSortBy.Email, false) => query.OrderBy(s => s.Email),
+            //    (StudentSortBy.Email, true) => query.OrderByDescending(s => s.Email),
+
+            //    (StudentSortBy.DateOfBirth, false) => query.OrderBy(s => s.DateOfBirth),
+            //    (StudentSortBy.DateOfBirth, true) => query.OrderByDescending(s => s.DateOfBirth),
+
+            //    (StudentSortBy.ClassName, false) => query.OrderBy(s => s.Class!.Name),
+            //    (StudentSortBy.ClassName, true) => query.OrderByDescending(s => s.Class!.Name),
+
+            //    (StudentSortBy.FirstName, true) => query.OrderByDescending(s => s.FirstName),
+            //    _ => query.OrderBy(s => s.FirstName)
+            //};
         }
 
         public async Task<PagedResults<Student>> GetPagedAsync(StudentQueryDto studentQueryDto)
         {
             studentQueryDto = studentQueryDto.Normalize();
-
+            var searchFilter = SearchFilter(studentQueryDto.Search).Expand();
             IQueryable<Student> query = _entity
                 .AsNoTracking()
+                //.AsExpandable()
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
                     .ThenInclude(s => s.Subject);
 
-            query = studentQueryDto.FilterBy switch
+            if (studentQueryDto.ClassId.HasValue)
             {
-                StudentFilterBy.ClassId when studentQueryDto.ClassId is not null => query.Where(s => s.ClassId == studentQueryDto.ClassId),
+                query = query.Where(s => s.ClassId == studentQueryDto.ClassId);
+            }
+            query = query.Where(searchFilter);
 
-                StudentFilterBy.Search when !string.IsNullOrWhiteSpace(studentQueryDto.Search) =>
-                    query.Where(s =>
-                        s.FirstName.Contains(studentQueryDto.Search!) ||
-                        s.LastName.Contains(studentQueryDto.Search!) ||
-                        s.Email.Contains(studentQueryDto.Search!)),
-
-                _ => query
-            };
-
-            var ordered= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
+            var orderedQuery= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
 
-            var totalCount = await ordered.CountAsync();
+            var totalCount = await orderedQuery.CountAsync();
 
-            var items = await ordered
+            var results = await orderedQuery
                 .Skip((studentQueryDto.PageNumber - 1) * studentQueryDto.PageSize)
                 .Take(studentQueryDto.PageSize)
                 .ToListAsync();
 
+
+
             return new PagedResults<Student>
             {
-                Results = items,
+                Results = results,
                 PageNumber = studentQueryDto.PageNumber,
                 PageSize = studentQueryDto.PageSize,
                 TotalCount = totalCount
             };
+        }
+       public static Expression<Func<Student,bool>> SearchFilter(string? search)
+        {
+            var query = PredicateBuilder.New<Student>(false);
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                return s => true;
+
+            }
+            query = query.Or(s => s.LastName.Contains(search));
+            query = query.Or(s =>  s.FirstName.Contains(search));
+            //query = query.Or(s => s.FirstName.Contains(search)).And(s => s.LastName.Contains(search));
+            query = query.Or(s => s.Email.Contains(search));
+
+            var fullName = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if(fullName.Length >= 2)
+            {
+                string fname = fullName[0];
+                string lname = fullName[1];
+                query = query.Or(s => s.FirstName.Contains(fname) && s.LastName.Contains(lname));
+                query = query.Or(s => s.FirstName.Contains(lname) && s.LastName.Contains(fname));
+            }
+            return query;
         }
     }
 }
