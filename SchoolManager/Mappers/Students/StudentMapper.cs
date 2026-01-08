@@ -33,7 +33,7 @@ namespace SchoolManager.Mappers.Students
             };
 
         }
-        public static Student ToStudent(this AddStudentDto addStudent,Guid classId)
+        public static Student ToStudent(this AddStudentDto addStudent)
         {
             return new Student()
             {
@@ -41,7 +41,8 @@ namespace SchoolManager.Mappers.Students
                 LastName = addStudent.LastName,
                 Email = addStudent.Email,
                 DateOfBirth=addStudent.DateOfBirth,
-                ClassId = classId
+                AdditionalInfo=addStudent.AdditionalInfo
+                //ClassId = classId
             };
 
         }

@@ -9,7 +9,7 @@ namespace SchoolManager.Dtos.Student
         public required DateOnly DateOfBirth { get; set; }
 
         public required string Email { get; set; }
-        public required string ClassName { get; set; }
+        //public string ClassName { get; set; }
         public StudentMetaData? AdditionalInfo { get; set; }
 
     }

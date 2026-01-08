@@ -21,15 +21,32 @@ namespace SchoolManager.Services
 
         public async Task<Student?> AddStudentAsync(AddStudentDto addStudentDto)
         {
-            var @class = await _classRepository.GetByNameAsync(addStudentDto.ClassName.Trim());
-            if (@class is null)
-            {
-                throw new InvalidOperationException("Class doesn't exist");
-            }
+            //var @class = await _classRepository.GetByNameAsync(addStudentDto.ClassName.Trim());
+            //if (@class is null)
+            //{
+            //    throw new InvalidOperationException("Class doesn't exist");
+            //}
             //var existingStudent=await _studentRepository.getna
-            var student = addStudentDto.ToStudent(@class.ClassId);
+            var student = addStudentDto.ToStudent();
             await _studentRepository.AddAsync(student);
             return student;
+        }
+
+        public async Task<bool> AssignStudentToClassAsync(Guid studentId, AssignStudentClassDto assignStudentClassDto)
+        {
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+            {
+                return false;
+            }
+            var _class = await _classRepository.GetByNameAsync(assignStudentClassDto.ClassName!);
+            //if(_class == null)
+            //{
+            //    throw new Exception("Class doesn't exist");
+            //}
+            student.ClassId = _class?.ClassId;
+            await _studentRepository.Update(student);
+            return true;
         }
 
         public async Task<bool> DeleteStudentAsync(Guid id)

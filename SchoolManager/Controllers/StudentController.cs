@@ -46,7 +46,7 @@ namespace SchoolManager.Controllers
                 var student = await _studentServices.AddStudentAsync(addStudentDto);
                 if (student is null)
                 {
-                    return NotFound(new { message = "A Class with that name doesn't exist so Student can't be assigned to the class" });
+                    return NotFound(new { message = "Enter required details to add a student" });
                 }
                 return Ok(student);
 
@@ -64,6 +64,19 @@ namespace SchoolManager.Controllers
 
                 return Ok();
             }
+        [HttpPut]
+        [Route("{id:guid}/class")]
+
+        public async Task<IActionResult> AssignStudent(Guid id, AssignStudentClassDto assignStudentClassDto)
+        {
+            var success = await _studentServices.AssignStudentToClassAsync(id, assignStudentClassDto);
+            if (!success)
+            {
+                return NotFound(new { message = "Couldn't assign student to the class! Please try again" });
+            }
+
+            return Ok();
+        }
 
         [HttpDelete]
         [Route("{id:guid}")]
