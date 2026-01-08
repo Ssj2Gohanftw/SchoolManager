@@ -30,6 +30,10 @@ namespace SchoolManager.Data
                 .HasForeignKey(s => s.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Student>()
+                .Property(s => s.AdditionalInfo)
+                .HasColumnType("jsonb");
+
             modelBuilder.Entity<StudentSubject>()
                 .HasKey(ss => new { ss.StudentId, ss.SubjectId });
 

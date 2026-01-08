@@ -1,4 +1,6 @@
-﻿namespace SchoolManager.Dtos.Student
+﻿using SchoolManager.Models.Entities;
+
+namespace SchoolManager.Dtos.Student
 {
     public class UpdateStudentDto
     {
@@ -8,5 +10,6 @@
 
         public required string Email { get; set; }
         public required string ClassName { get; set; }
+        public StudentMetaData? AdditionalInfo { get; set; }
     }
 }

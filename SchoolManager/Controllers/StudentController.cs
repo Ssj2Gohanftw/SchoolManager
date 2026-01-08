@@ -46,7 +46,7 @@ namespace SchoolManager.Controllers
                 var student = await _studentServices.AddStudentAsync(addStudentDto);
                 if (student is null)
                 {
-                    return BadRequest(new { message = "A Class with that name doesn't exist so Student can't be assigned to the class" });
+                    return NotFound(new { message = "A Class with that name doesn't exist so Student can't be assigned to the class" });
                 }
                 return Ok(student);
 
@@ -59,7 +59,7 @@ namespace SchoolManager.Controllers
             var success = await _studentServices.UpdateStudentAsync(id, updateStudentDto);
                 if (!success)
                 {
-                    return BadRequest(new { message = "A Student with that name doesn't exist" });
+                    return NotFound(new { message = "A Student with that name doesn't exist" });
                 }
 
                 return Ok();
@@ -73,7 +73,7 @@ namespace SchoolManager.Controllers
                 var success = await _studentServices.DeleteStudentAsync(id);
                 if (!success)
                 {
-                    return BadRequest(new { message = "A Student with that name doesn't exist" });
+                    return NotFound(new { message = "A Student with that name doesn't exist" });
                 }
                 return Ok();
 

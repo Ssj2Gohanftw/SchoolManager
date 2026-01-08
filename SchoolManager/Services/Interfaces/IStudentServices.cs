@@ -12,5 +12,6 @@ namespace SchoolManager.Services.Interfaces
         Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto);
         Task<bool> DeleteStudentAsync(Guid id);
         Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto);
+
     }
 }

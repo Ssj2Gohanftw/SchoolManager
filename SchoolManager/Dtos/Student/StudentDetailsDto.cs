@@ -1,4 +1,6 @@
-﻿namespace SchoolManager.Dtos.Student
+﻿using SchoolManager.Models.Entities;
+
+namespace SchoolManager.Dtos.Student
 {
     public class StudentDetailsDto
     {
@@ -10,5 +12,6 @@
         public Guid? ClassId { get; set; }
         public string? ClassName { get; set; }
         public List<StudentSubjectDto> Subjects { get; set; } = new();
+        public StudentMetaData? AdditionalInfo { get; set; }
     }
 }

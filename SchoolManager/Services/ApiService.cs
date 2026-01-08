@@ -1,5 +1,4 @@
 ﻿using SchoolManager.Services.Interfaces;
-using System.Text;
 
 namespace SchoolManager.Services
 {
@@ -15,13 +14,24 @@ namespace SchoolManager.Services
 
         public async Task<T> GetDataAsync<T>(string url)
         {
-            var res = await _httpClient.GetFromJsonAsync<T>(url);
-            if (res == null) throw new InvalidOperationException();
+         
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<T>(url);
+                if (response == null) 
+                {
+                    
+                    throw new HttpRequestException(message:"No Results found!");
 
-            return res;
+                 };
+                return response;
+            }
+            catch (HttpIOException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return default ;
+            }
         }
-
         
-
     }
 }

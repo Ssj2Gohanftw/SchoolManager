@@ -7,5 +7,7 @@ namespace SchoolManager.Data.Repositories.Interfaces
     public interface IStudentRepository: IRepository<Student>
     {
         Task<PagedResults<Student>> GetPagedAsync(StudentQueryDto studentQueryDto);
+        //Task<StudentMetaData?> GetMetaDataAsync(Guid studentId);
+        //Task<bool> UpdateMetaDataAsync(Guid studentId,StudentMetaData studentMetaData );
     }
 }

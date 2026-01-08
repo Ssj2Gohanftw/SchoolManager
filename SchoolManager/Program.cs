@@ -6,6 +6,7 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
 using AspNetCore.Swagger.Themes;
+using Npgsql;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +20,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options=> options.UseInlineDefinitionsForEnums());
+var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+var dataSource = new NpgsqlDataSourceBuilder(connString).EnableDynamicJson().Build();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+options.UseNpgsql(dataSource)
 );
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();

@@ -35,6 +35,7 @@ namespace SchoolManager.Data.Repositories
                     .ThenInclude(ss => ss.Subject)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
         }
+        
 
         private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
         {
@@ -158,5 +159,26 @@ namespace SchoolManager.Data.Repositories
             }
             return query;
         }
+
+        //public async Task<StudentMetaData?> GetMetaDataAsync(Guid studentId)
+        //{
+        //    return await _entity
+        //        .AsNoTracking()
+        //        .Where(s => s.StudentId == studentId)
+        //        .Select(s => s.AdditionalInfo)
+        //        .SingleOrDefaultAsync();
+        //}
+
+        //public async Task<bool> UpdateMetaDataAsync(Guid studentId, StudentMetaData studentMetaData)
+        //{
+        //    var student = await _entity.SingleOrDefaultAsync(s => s.StudentId == studentId);
+        //    if(student is null)
+        //    {
+        //        return false;
+        //    }
+        //    student.AdditionalInfo = studentMetaData;
+        //    await _dbContext.SaveChangesAsync();
+        //    return true;
+        //}
     }
 }

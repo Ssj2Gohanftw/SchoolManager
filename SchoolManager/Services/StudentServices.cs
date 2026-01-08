@@ -70,11 +70,13 @@ namespace SchoolManager.Services
             };
         }
 
-        public Task<Student?> GetStudentByIdAsync(Guid id)
+        public async Task<Student?> GetStudentByIdAsync(Guid id)
         {
-            var student = _studentRepository.GetByIdAsync(id);
+            var student =await _studentRepository.GetByIdAsync(id);
             return student;
         }
+
+
 
         public async Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto)
         {
@@ -89,7 +91,7 @@ namespace SchoolManager.Services
             {
                 throw new InvalidOperationException("Class doesn't exist");
             }
-
+            
             updateStudentDto.ToUpdateStudent(student, @class.ClassId);
             try
             {

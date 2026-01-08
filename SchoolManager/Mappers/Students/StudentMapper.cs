@@ -28,6 +28,7 @@ namespace SchoolManager.Mappers.Students
                 Email = student.Email,
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name,
+                AdditionalInfo=student.AdditionalInfo
                 //Subjects=student.StudentSubjects?.Select(ss=>ss.ToStudentSubjectDto()).ToList()??new List<StudentSubjectDto>()
             };
 
@@ -52,6 +53,10 @@ namespace SchoolManager.Mappers.Students
             student.Email = updateStudentDto.Email;
             student.DateOfBirth = updateStudentDto.DateOfBirth;
             student.ClassId = classId;
+            if (updateStudentDto.AdditionalInfo is not null)
+            {
+                student.AdditionalInfo = updateStudentDto.AdditionalInfo;
+            }
         }
     }
 }
