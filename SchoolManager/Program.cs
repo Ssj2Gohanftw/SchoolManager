@@ -1,14 +1,9 @@
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
-using SchoolManager.Data;
-using SchoolManager.Data.Repositories;
-using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Services;
-using SchoolManager.Services.Interfaces;
 using AspNetCore.Swagger.Themes;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
-
-
+using SchoolManager;
+using SchoolManager.Data;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,26 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseNpgsql(dataSource)
 );
 
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IStudentServices, StudentServices>();
-
-builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
-builder.Services.AddScoped<ITeacherServices, TeacherServices>();
-
-builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
-builder.Services.AddScoped<ISubjectServices, SubjectServices>();
-
-builder.Services.AddScoped<IClassRepository, ClassRepository>();
-builder.Services.AddScoped<IClassServices,ClassServices>();
-
-builder.Services.AddScoped<IStudentSubjectRepository, StudentSubjectRepository>();
-builder.Services.AddScoped<IStudentSubjectServices, StudentSubjectServices>();
-
-builder.Services.AddScoped<ISubjectTeacherRepository, SubjectTeacherRepository>();
-builder.Services.AddScoped<ISubjectTeacherServices, SubjectTeacherServices>();
-
-builder.Services.AddScoped<IApiService,ApiService>();
-
+builder.Services.AddServices();
 builder.Services.AddHttpClient("University", client =>
 {
     client.BaseAddress = new Uri("http://universities.hipolabs.com/");

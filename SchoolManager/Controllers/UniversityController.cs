@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using SchoolManager.Dtos.University;
 using SchoolManager.Services.Interfaces;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace SchoolManager.Controllers
 {
@@ -15,14 +15,6 @@ namespace SchoolManager.Controllers
             _iapiService = iapiService;            
         }
 
-        //[HttpGet]
-        //[Route("search")]
-        //public async Task<IActionResult> Search([FromQuery] string? country)
-        //{
-        //    var url = $"search?country={Uri.EscapeDataString(country)}";
-        //    var data = await _iapiService.GetDataAsync<List<UniversityDto>>(url);
-        //    return Ok(data);
-        //}
         [HttpGet]
         [Route("search")]
         public async Task<IActionResult> Search([FromQuery] UniversityQueryDto universityQueryDto)
@@ -36,9 +28,7 @@ namespace SchoolManager.Controllers
                 return BadRequest("Provide a valid search term!");
             }
             var key = universityQueryDto.SearchOptions.Value.ToString();
-           
             var s = universityQueryDto.Search;
-            //var url = $"search?{key}={Uri.EscapeDataString(s)}";
             var url = QueryHelpers.AddQueryString("search", key, s);
             var data = await _iapiService.GetDataAsync<List<UniversityDto>>(url);
             return Ok(data);
