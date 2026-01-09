@@ -20,17 +20,17 @@ namespace SchoolManager.Controllers
             return Ok(allTeachers);
         }
 
-        [HttpGet]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> GetTeacherById(Guid id)
-        {   
-            var teachers = await _teacherServices.GetTeacherByIdAsync(id);
-                if (teachers is null)
-                {
-                    return NotFound();
-                }
-                return Ok(teachers);
-            }
+        //[HttpGet]
+        //[Route("{id:guid}")]
+        //public async Task<IActionResult> GetTeacherById(Guid id)
+        //{   
+        //    var teachers = await _teacherServices.GetTeacherByIdAsync(id);
+        //        if (teachers == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        return Ok(teachers);
+        //    }
         [HttpPost]
         public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto)
         {
@@ -62,11 +62,11 @@ namespace SchoolManager.Controllers
                 }
             return Ok();
         }
-        [HttpGet("{id:guid}/details")]
-        public async Task<IActionResult> GetTeacherDetailsById(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetTeacherById(Guid id)
         {
-               var teacher = await _teacherServices.GetTeacherDetailsByIdAsync(id);
-                if (teacher is null)
+               var teacher = await _teacherServices.GetTeacherByIdAsync(id);
+                if (teacher == null)
                 {
                     return NotFound();
                 }

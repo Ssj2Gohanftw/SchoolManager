@@ -32,7 +32,7 @@ namespace SchoolManager.Services
         public async Task<bool> DeleteSubjectAsync(Guid id)
         {
             var subject = await _subjectRepository.GetByIdAsync(id);
-            if (subject is null)
+            if (subject == null)
             {
                 return false;
             }
@@ -54,29 +54,29 @@ namespace SchoolManager.Services
             return subjects.Select(s=>s.ToSubjectSummaryDto()).ToList();
         }
 
-        public async Task<PagedResults<SubjectSummaryDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)
+        public async Task<PagedResults<SubjectDetailsDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)
         {
             subjectQueryDto = subjectQueryDto.Normalize();
             var results = await _subjectRepository.GetPagedResults(subjectQueryDto);
-            return new PagedResults<SubjectSummaryDto>()
+            return new PagedResults<SubjectDetailsDto>()
             {
-                Results = results.Results.Select(sub => sub.ToSubjectSummaryDto()).ToList(),
+                Results = results.Results.Select(sub => sub.ToSubjectDetailsDto()).ToList(),
                 TotalCount = results.TotalCount,
                 PageNumber = results.PageNumber,
                 PageSize = results.PageSize
             };
         }
 
-        public async Task<SubjectSummaryDto?> GetSubjectByIdAsync(Guid id)
+        public async Task<SubjectDetailsDto?> GetSubjectByIdAsync(Guid id)
         {
             var subject = await _subjectRepository.GetByIdAsync(id);
-            return subject?.ToSubjectSummaryDto();
+            return subject?.ToSubjectDetailsDto();
         }
 
         public async Task<bool> UpdateSubjectAsync(Guid id, UpdateSubjectDto updateSubjectDto)
         {
             var subject = await _subjectRepository.GetByIdAsync(id);
-            if (subject is null)
+            if (subject == null)
             {
                 return false;
             }

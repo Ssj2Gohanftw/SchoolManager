@@ -4,6 +4,14 @@ namespace SchoolManager.Mappers.Teachers
 {
     public static class TeacherMapper
     {
+        public static TeacherDto ToTeacherDto(this Teacher teacher)
+        {
+            return new TeacherDto
+            {
+                TeacherId = teacher.TeacherId,
+                TeacherName=teacher.FirstName + " " +teacher.LastName
+            };
+        }
         public static TeacherSummaryDto ToTeacherSummaryDto(this Teacher teacher )
         {
             return new TeacherSummaryDto

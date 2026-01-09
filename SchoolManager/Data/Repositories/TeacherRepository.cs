@@ -15,7 +15,7 @@ namespace SchoolManager.Data.Repositories
         {
 
         }
-        public async Task<Teacher?> GetByIdWithAssignmentsAsync(Guid id)
+        public override async Task<Teacher?> GetByIdAsync(Guid id)
         {
             return await _entity
                 .Include(t => t.SubjectTeachers)
@@ -77,7 +77,12 @@ namespace SchoolManager.Data.Repositories
         {
             teacherQueryDto = teacherQueryDto.Normalize();
 
-            IQueryable<Teacher> query = _entity.AsNoTracking();
+            IQueryable<Teacher> query = _entity
+                .AsNoTracking()
+                .Include(t=>t.SubjectTeachers)
+                    .ThenInclude(st=>st.Class)
+                .Include(t => t.SubjectTeachers)
+                    .ThenInclude(st => st.Subject);
 
             query = teacherQueryDto.FilterBy switch
             {

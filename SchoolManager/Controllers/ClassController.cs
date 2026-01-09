@@ -26,19 +26,19 @@ namespace SchoolManager.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> GetClassById(Guid id)
         {
-            var @class = await _classServices.GetClassByIdAsync(id);
-                if (@class is null)
+            var _class = await _classServices.GetClassByIdAsync(id);
+                if (_class == null)
                 {
                     return NotFound();
                 }
-                return Ok(@class);
+                return Ok(_class);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddClass(AddClassDto addClassDto)
         {
-              var @class = await _classServices.AddClassAsync(addClassDto);
-                return Ok(@class);
+              var _class = await _classServices.AddClassAsync(addClassDto);
+                return Ok(_class);
         }
 
         [HttpPut]

@@ -29,7 +29,7 @@ namespace SchoolManager.Services
             var student = await _studentRepository.GetByIdAsync(dto.StudentId);
             var subject = await _subjectRepository.GetByIdAsync(dto.SubjectId);
 
-            if (student is null || subject is null)
+            if (student == null || subject == null)
             {
                 throw new InvalidOperationException("Student or Subject doesn't exist");
             }
@@ -54,7 +54,7 @@ namespace SchoolManager.Services
 
         public async Task AssignSubjectsToClassAsync(Guid classId, AssignSubjectsToClassDto dto)
         {
-            if (dto is null)
+            if (dto == null)
             {
                 throw new InvalidOperationException("Subjects can't be empty");
             }
@@ -69,8 +69,8 @@ namespace SchoolManager.Services
                 return;
             }
 
-            var @class = await _classRepository.GetByIdAsync(classId);
-            if (@class is null)
+            var _class = await _classRepository.GetByIdAsync(classId);
+            if (_class == null)
             {
                 throw new InvalidOperationException("Class not found");
             }
@@ -79,14 +79,14 @@ namespace SchoolManager.Services
             foreach (var subjectId in subjectIds)
             {
                 var subject = await _subjectRepository.GetByIdAsync(subjectId);
-                if (subject is null)
+                if (subject == null)
                 {
                     throw new InvalidOperationException("Subject not found");
                 }
             }
 
            
-            foreach (var student in @class.Students)
+            foreach (var student in _class.Students)
             {
                 foreach (var subjectId in subjectIds)
                 {

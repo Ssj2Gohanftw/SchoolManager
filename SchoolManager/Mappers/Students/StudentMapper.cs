@@ -28,8 +28,8 @@ namespace SchoolManager.Mappers.Students
                 Email = student.Email,
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name,
-                AdditionalInfo=student.AdditionalInfo
-                //Subjects=student.StudentSubjects?.Select(ss=>ss.ToStudentSubjectDto()).ToList()??new List<StudentSubjectDto>()
+                AdditionalInfo=student.AdditionalInfo,
+                Subjects=student.StudentSubjects?.Select(ss=>ss.ToStudentSubjectDto()).ToList()??new List<StudentSubjectDto>()
             };
 
         }

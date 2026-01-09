@@ -27,7 +27,7 @@ namespace SchoolManager.Services
         public async Task AssignAsync(AddSubjectTeacherDto addSubjectTeacherDto)
         {
             var teacherExists= await _teacherRepository.GetByIdAsync(addSubjectTeacherDto.TeacherId);
-            if(teacherExists is null)
+            if(teacherExists == null)
             {
                 throw new InvalidOperationException("Teacher not found");
             }
@@ -38,7 +38,7 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Class not found");
             }
             var subjectExists = await _subjectRepository.GetByIdAsync(addSubjectTeacherDto.SubjectId);
-            if (subjectExists is null)
+            if (subjectExists == null)
             {
                 throw new InvalidOperationException("Subject not found");
             }

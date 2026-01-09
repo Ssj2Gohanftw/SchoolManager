@@ -172,7 +172,7 @@ namespace SchoolManager.Data.Repositories
         //public async Task<bool> UpdateMetaDataAsync(Guid studentId, StudentMetaData studentMetaData)
         //{
         //    var student = await _entity.SingleOrDefaultAsync(s => s.StudentId == studentId);
-        //    if(student is null)
+        //    if(student == null)
         //    {
         //        return false;
         //    }

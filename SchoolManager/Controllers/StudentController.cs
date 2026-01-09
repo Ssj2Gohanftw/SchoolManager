@@ -32,7 +32,7 @@ namespace SchoolManager.Controllers
         {
             
                 var student = await _studentServices.GetStudentByIdAsync(id);
-                if (student is null)
+                if (student == null)
                 {
                     return NotFound(new { message = "Student not found" });
                 }
@@ -44,7 +44,7 @@ namespace SchoolManager.Controllers
         {
 
                 var student = await _studentServices.AddStudentAsync(addStudentDto);
-                if (student is null)
+                if (student == null)
                 {
                     return NotFound(new { message = "Enter required details to add a student" });
                 }

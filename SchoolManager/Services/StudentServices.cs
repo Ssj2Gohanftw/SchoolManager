@@ -21,12 +21,6 @@ namespace SchoolManager.Services
 
         public async Task<Student?> AddStudentAsync(AddStudentDto addStudentDto)
         {
-            //var @class = await _classRepository.GetByNameAsync(addStudentDto.ClassName.Trim());
-            //if (@class is null)
-            //{
-            //    throw new InvalidOperationException("Class doesn't exist");
-            //}
-            //var existingStudent=await _studentRepository.getna
             var student = addStudentDto.ToStudent();
             await _studentRepository.AddAsync(student);
             return student;
@@ -40,10 +34,6 @@ namespace SchoolManager.Services
                 return false;
             }
             var _class = await _classRepository.GetByNameAsync(assignStudentClassDto.ClassName!);
-            //if(_class == null)
-            //{
-            //    throw new Exception("Class doesn't exist");
-            //}
             student.ClassId = _class?.ClassId;
             await _studentRepository.Update(student);
             return true;
@@ -52,7 +42,7 @@ namespace SchoolManager.Services
         public async Task<bool> DeleteStudentAsync(Guid id)
         {
             var student = await _studentRepository.GetByIdAsync(id);
-            if (student is null)
+            if (student == null)
             {
                 return false;
             }
@@ -98,18 +88,18 @@ namespace SchoolManager.Services
         public async Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto)
         {
             var student = await _studentRepository.GetByIdAsync(id);
-            if (student is null)
+            if (student == null)
             {
                 return false;
             }
 
-            var @class = await _classRepository.GetByNameAsync(updateStudentDto.ClassName);
-            if (@class is null)
+            var _class = await _classRepository.GetByNameAsync(updateStudentDto.ClassName!);
+            if (_class == null)
             {
                 throw new InvalidOperationException("Class doesn't exist");
             }
             
-            updateStudentDto.ToUpdateStudent(student, @class.ClassId);
+            updateStudentDto.ToUpdateStudent(student, _class.ClassId);
             try
             {
                 await _studentRepository.Update(student);

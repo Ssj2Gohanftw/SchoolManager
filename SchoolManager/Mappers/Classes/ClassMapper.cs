@@ -14,22 +14,22 @@ namespace SchoolManager.Mappers.Classes
             };
         }
 
-        public static ClassesDto ToClassDto(this Class @class)
+        public static ClassesDto ToClassesDto(this Class _class)
         {
             return new ClassesDto
             {
-                ClassId = @class.ClassId,
-                Name = @class.Name,
-                //Students = @class.Students.Select(s => s.ToStudentClassDto()).ToList()
+                ClassId = _class.ClassId,
+                Name = _class.Name,
+                //Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList()
             };
         }
-        public static ClassDetailsDto ToClassDetailsDto(this Class @class)
+        public static ClassDetailsDto ToClassDetailsDto(this Class _class)
         {
             return new ClassDetailsDto
             {
-                ClassId = @class.ClassId,
-                Name = @class.Name,
-                Students = @class.Students.Select(s => s.ToStudentClassDto()).ToList()
+                ClassId = _class.ClassId,
+                Name = _class.Name,
+                Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList()
             };
         }
     }

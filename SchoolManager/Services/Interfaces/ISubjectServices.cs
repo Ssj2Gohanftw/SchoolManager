@@ -7,10 +7,10 @@ namespace SchoolManager.Services.Interfaces
     public interface ISubjectServices
     {
         Task<List<SubjectSummaryDto>> GetAllAsync();
-        Task<SubjectSummaryDto?> GetSubjectByIdAsync(Guid id);
+        Task<SubjectDetailsDto?> GetSubjectByIdAsync(Guid id);
         Task<Subject> AddSubjectAsync(AddSubjectDto addSubjectDto);
         Task<bool> UpdateSubjectAsync(Guid id, UpdateSubjectDto updateSubjectDto);
         Task<bool> DeleteSubjectAsync(Guid id);
-        Task<PagedResults<SubjectSummaryDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto);
+        Task<PagedResults<SubjectDetailsDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto);
     }
 }

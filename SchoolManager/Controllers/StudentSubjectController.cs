@@ -1,50 +1,50 @@
-using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Dtos.StudentSubject;
-using SchoolManager.Services.Interfaces;
+//using Microsoft.AspNetCore.Mvc;
+//using SchoolManager.Dtos.StudentSubject;
+//using SchoolManager.Services.Interfaces;
 
-namespace SchoolManager.Controllers
-{
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StudentSubjectController : ControllerBase
-    {
-        private readonly IStudentSubjectServices _studentSubjectServices;
+//namespace SchoolManager.Controllers
+//{
+//    [ApiController]
+//    [Route("api/[controller]")]
+//    public class StudentSubjectController : ControllerBase
+//    {
+//        private readonly IStudentSubjectServices _studentSubjectServices;
 
-        public StudentSubjectController(IStudentSubjectServices studentSubjectServices)
-        {
-            _studentSubjectServices = studentSubjectServices;
-        }
+//        public StudentSubjectController(IStudentSubjectServices studentSubjectServices)
+//        {
+//            _studentSubjectServices = studentSubjectServices;
+//        }
 
-        [HttpGet("{studentId:guid}")]
-        public async Task<IActionResult> GetSubjectsForStudent(Guid studentId)
-        {
-            var subjects = await _studentSubjectServices.GetSubjectsForStudentAsync(studentId);
-            return Ok(subjects);
-        }
+//        [HttpGet("{studentId:guid}")]
+//        public async Task<IActionResult> GetSubjectsForStudent(Guid studentId)
+//        {
+//            var subjects = await _studentSubjectServices.GetSubjectsForStudentAsync(studentId);
+//            return Ok(subjects);
+//        }
 
-        [HttpPost]
-        public async Task<IActionResult> AssignSubject([FromBody] AddStudentSubjectDto dto)
-        {
-            await _studentSubjectServices.AssignSubjectToStudentAsync(dto);
-            return Ok();
-        }
+//        [HttpPost]
+//        public async Task<IActionResult> AssignSubject([FromBody] AddStudentSubjectDto dto)
+//        {
+//            await _studentSubjectServices.AssignSubjectToStudentAsync(dto);
+//            return Ok();
+//        }
 
-        [HttpPost("class/{classId:guid}/assign")]
-        public async Task<IActionResult> AssignSubjectsToClass(Guid classId, [FromBody] AssignSubjectsToClassDto dto)
-        {
-            await _studentSubjectServices.AssignSubjectsToClassAsync(classId, dto);
-            return Ok();
-        }
+//        [HttpPost("class/{classId:guid}/assign")]
+//        public async Task<IActionResult> AssignSubjectsToClass(Guid classId, [FromBody] AssignSubjectsToClassDto dto)
+//        {
+//            await _studentSubjectServices.AssignSubjectsToClassAsync(classId, dto);
+//            return Ok();
+//        }
 
-        [HttpDelete]
-        public async Task<IActionResult> UnassignSubject([FromBody] DeleteStudentSubjectDto dto)
-        {
-            if (dto is null) return BadRequest();
+//        [HttpDelete]
+//        public async Task<IActionResult> UnassignSubject([FromBody] DeleteStudentSubjectDto dto)
+//        {
+//            if (dto == null) return BadRequest();
 
-            var success = await _studentSubjectServices.RemoveSubjectFromStudentAsync(dto);
-            if (!success) return NotFound();
+//            var success = await _studentSubjectServices.RemoveSubjectFromStudentAsync(dto);
+//            if (!success) return NotFound();
 
-            return Ok();
-        }
-    }
-}
+//            return Ok();
+//        }
+//    }
+//}

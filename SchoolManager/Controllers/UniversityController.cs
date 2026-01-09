@@ -29,11 +29,11 @@ namespace SchoolManager.Controllers
         {
             if (!universityQueryDto.SearchOptions.HasValue)
             {
-                return BadRequest("Select a valid search option");
+                return BadRequest("Choose a valid search option!");
             }
             if (string.IsNullOrWhiteSpace(universityQueryDto.Search))
             {
-                return BadRequest("Provide a valid search term");
+                return BadRequest("Provide a valid search term!");
             }
             var key = universityQueryDto.SearchOptions.Value.ToString();
            

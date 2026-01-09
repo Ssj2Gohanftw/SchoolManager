@@ -17,6 +17,17 @@ namespace SchoolManager.Data.Repositories
         {
 
         }
+
+        public override async Task<Subject?> GetByIdAsync(Guid id)
+        {
+            return await _entity
+                .AsNoTracking()
+                .Include(sub => sub.SubjectTeachers)
+                    .ThenInclude(st => st.Teacher)
+                .Include(sub=>sub.SubjectTeachers)
+                    .ThenInclude(c=>c.Class)
+                .FirstOrDefaultAsync(sub => sub.SubjectId == id);
+        }
         private static IOrderedQueryable<Subject> ApplySorting(IQueryable<Subject> query, SubjectSortBy sortBy, SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
@@ -47,7 +58,13 @@ namespace SchoolManager.Data.Repositories
         {
             subjectQueryDto = subjectQueryDto.Normalize();
             var searchFilter = SearchFilter(subjectQueryDto.Search).Expand();
-            IQueryable<Subject> query = _entity.AsNoTracking().Where(searchFilter);
+            IQueryable<Subject> query = _entity
+                .AsNoTracking()
+                .Include(sub => sub.SubjectTeachers)
+                    .ThenInclude(t => t.Teacher)
+                .Include(sub => sub.SubjectTeachers)
+                    .ThenInclude(c => c.Class)
+                .Where(searchFilter);
             var orderedQuery = ApplySorting(query, subjectQueryDto.SortBy, subjectQueryDto.SortOrder)
                 .ThenBy(sub => sub.SubjectId);
 

@@ -26,7 +26,7 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> GetSubjectById(Guid id)
         {
                 var subject = await _subjectServices.GetSubjectByIdAsync(id);
-                if (subject is null)
+                if (subject == null)
                 {
                     return NotFound();
                 }

@@ -41,7 +41,7 @@ namespace SchoolManager.Data.Repositories
         public async Task<bool> RemoveAsync(Guid studentId, Guid subjectId)
         {
             var entity = await _studentSubjects.FindAsync(studentId, subjectId);
-            if (entity is null) return false;
+            if (entity == null) return false;
             _studentSubjects.Remove(entity);
             await _dbContext.SaveChangesAsync();
             return true;

@@ -69,7 +69,7 @@ namespace SchoolManager.Data.Repositories
                     subjectTeacher.TeacherId ,
                     subjectTeacher.ClassId,
                     subjectTeacher.SubjectId);
-            if(teacher is null)
+            if(teacher == null)
             {
                 return false;
             }

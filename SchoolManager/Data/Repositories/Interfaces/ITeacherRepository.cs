@@ -6,7 +6,6 @@ namespace SchoolManager.Data.Repositories.Interfaces
 {
     public interface ITeacherRepository:IRepository<Teacher>
     {
-        Task<Teacher?> GetByIdWithAssignmentsAsync(Guid id);
         Task<PagedResults<Teacher>> GetPagedAsync(TeacherQueryDto teacherQueryDto);
 
     }

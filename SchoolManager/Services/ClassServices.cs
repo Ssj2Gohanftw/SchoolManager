@@ -19,13 +19,13 @@ namespace SchoolManager.Services
         public async Task<List<ClassesDto>> GetAllAsync()
         {
             var classes = await _classRepository.GetAllAsync();
-            return classes.Select(c => c.ToClassDto()).ToList();
+            return classes.Select(c => c.ToClassesDto()).ToList();
         }
 
         public async Task<ClassDetailsDto?> GetClassByIdAsync(Guid id)
         {
-            var @class = await _classRepository.GetByIdAsync(id);
-            return @class?.ToClassDetailsDto();
+            var _class = await _classRepository.GetByIdAsync(id);
+            return _class?.ToClassDetailsDto();
 
         }
 
@@ -39,15 +39,15 @@ namespace SchoolManager.Services
             {
                 return null;
             }
-            var @class = new Class()
+            var _class = new Class()
             {
                 Name = className
             };
             try
             {
 
-                await _classRepository.AddAsync(@class);
-                return @class;
+                await _classRepository.AddAsync(_class);
+                return _class;
             }
             catch (DbUpdateException)
             {
@@ -58,16 +58,16 @@ namespace SchoolManager.Services
 
         public async Task<bool> UpdateClassAsync(Guid id, UpdateClassDto updateClassDto)
         {
-            var @class = await _classRepository.GetByIdAsync(id);
-            if (@class is null)
+            var _class = await _classRepository.GetByIdAsync(id);
+            if (_class == null)
             {
                 return false;
             }
-            @class.Name = updateClassDto.Name.Trim();
+            _class.Name = updateClassDto.Name.Trim();
 
             try
             {
-                await _classRepository.Update(@class);
+                await _classRepository.Update(_class);
                 return true;
             }
             catch (DbUpdateException)
@@ -79,14 +79,14 @@ namespace SchoolManager.Services
 
         public async Task<bool> DeleteClassAsync(Guid id)
         {
-            var @class = await _classRepository.GetByIdAsync(id);
-            if (@class is null)
+            var _class = await _classRepository.GetByIdAsync(id);
+            if (_class == null)
             {
                 return false;
             }
             try
             {
-                await _classRepository.Remove(@class);
+                await _classRepository.Remove(_class);
                 return true;
             }
             catch (DbUpdateException)
@@ -100,7 +100,7 @@ namespace SchoolManager.Services
             classQueryDto = classQueryDto.Normalize();
             var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
             return new PagedResults<ClassesDto> {
-                Results = result.Results.Select(c => c.ToClassDto()).ToList(),
+                Results = result.Results.Select(c => c.ToClassesDto()).ToList(),
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,
                 TotalCount = result.TotalCount

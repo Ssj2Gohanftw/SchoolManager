@@ -23,15 +23,15 @@ namespace SchoolManager.Services
             return teachers.Select(t => t.ToTeacherSummaryDto()).ToList();
         }
 
-        public async Task<TeacherSummaryDto?> GetTeacherByIdAsync(Guid id)
+        //public async Task<TeacherSummaryDto?> GetTeacherByIdAsync(Guid id)
+        //{
+        //    var teacher = await _teacherRepository.GetByIdAsync(id);
+        //    return teacher?.ToTeacherSummaryDto();
+        //}
+
+        public async Task<TeacherDetailsDto?> GetTeacherByIdAsync(Guid id)
         {
             var teacher = await _teacherRepository.GetByIdAsync(id);
-            return teacher?.ToTeacherSummaryDto();
-        }
-
-        public async Task<TeacherDetailsDto?> GetTeacherDetailsByIdAsync(Guid id)
-        {
-            var teacher = await _teacherRepository.GetByIdWithAssignmentsAsync(id);
             return teacher?.ToTeacherDetailsDto();
         }
 
@@ -52,7 +52,7 @@ namespace SchoolManager.Services
         public async Task<bool> DeleteTeacherAsync(Guid id)
         {
             var teacher = await _teacherRepository.GetByIdAsync(id);
-            if (teacher is null)
+            if (teacher == null)
             {
                 return false;
             }
@@ -71,7 +71,7 @@ namespace SchoolManager.Services
         public async Task<bool> UpdateTeacherAsync(Guid id, UpdateTeacherDto updateTeacherDto)
         {
             var teacher = await _teacherRepository.GetByIdAsync(id);
-            if (teacher is null)
+            if (teacher == null)
             {
                 return false;
             }
@@ -87,13 +87,13 @@ namespace SchoolManager.Services
                 return false;
             }
         }
-        public async Task<PagedResults<TeacherSummaryDto>> GetPagedTeachersAsync(TeacherQueryDto teacherQueryDto)
+        public async Task<PagedResults<TeacherDetailsDto>> GetPagedTeachersAsync(TeacherQueryDto teacherQueryDto)
         {
             teacherQueryDto = teacherQueryDto.Normalize();
             var result = await _teacherRepository.GetPagedAsync(teacherQueryDto);
-            return new PagedResults<TeacherSummaryDto>
+            return new PagedResults<TeacherDetailsDto>
             {
-                Results = result.Results.Select(t => t.ToTeacherSummaryDto()).ToList(),
+                Results = result.Results.Select(t => t.ToTeacherDetailsDto()).ToList(),
                 PageNumber=result.PageNumber,
                 PageSize=result.PageSize,
                 TotalCount=result.TotalCount
