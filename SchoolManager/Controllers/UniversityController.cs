@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using SchoolManager.Dtos.University;
 using SchoolManager.Services.Interfaces;
 
@@ -19,18 +18,22 @@ namespace SchoolManager.Controllers
         [Route("search")]
         public async Task<IActionResult> Search([FromQuery] UniversityQueryDto universityQueryDto)
         {
-            if (!universityQueryDto.SearchOptions.HasValue)
-            {
-                return BadRequest("Choose a valid search option!");
-            }
-            if (string.IsNullOrWhiteSpace(universityQueryDto.Search))
-            {
-                return BadRequest("Provide a valid search term!");
-            }
-            var key = universityQueryDto.SearchOptions.Value.ToString();
-            var s = universityQueryDto.Search;
-            var url = QueryHelpers.AddQueryString("search", key, s);
-            var data = await _iapiService.GetDataAsync<List<UniversityDto>>(url);
+            
+            var country = universityQueryDto?.Country;
+            var name = universityQueryDto?.Name;
+            var limit= universityQueryDto?.Limit;
+            var baseUrl = "search?";
+            
+            var url = $"country={country}&name={(name)}&limit={limit}";
+
+                if ((string.IsNullOrEmpty(country)) && (string.IsNullOrEmpty(name)))
+                {
+                return BadRequest();
+
+                }
+            baseUrl += url;
+            //var url = QueryHelpers.AddQueryString("search", country,name);
+            var data = await _iapiService.GetDataAsync<List<UniversityDto>>(baseUrl);
             return Ok(data);
         }       
 

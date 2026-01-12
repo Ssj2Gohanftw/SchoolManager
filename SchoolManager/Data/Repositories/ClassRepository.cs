@@ -61,8 +61,11 @@ namespace SchoolManager.Data.Repositories
         public async Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto)
         {
             classQueryDto = classQueryDto.Normalize();
-            var searchFilter = SearchFilter(classQueryDto.Search).Expand();
-            IQueryable<Class> query = _entity.AsNoTracking().Where(searchFilter);
+            var searchFilter = SearchFilter(classQueryDto.Search);
+            IQueryable<Class> query = _entity
+                .AsNoTracking()
+                .AsExpandableEFCore()
+                .Where(searchFilter);
             
             var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)
                 .ThenBy(c=>c.ClassId);
@@ -87,7 +90,7 @@ namespace SchoolManager.Data.Repositories
             var query = PredicateBuilder.New<Class>(false);
             if (string.IsNullOrWhiteSpace(search))
             {
-                return c=> true;
+                return PredicateBuilder.New<Class>(true);
 
             }
             query = query.Or(c=> c.Name.Contains(search));

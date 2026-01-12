@@ -32,5 +32,16 @@ namespace SchoolManager.Mappers.Classes
                 Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList()
             };
         }
+        public static Class ToClass(this AddClassDto addClassDto)
+        {
+            return new Class()
+            {
+                Name = addClassDto.Name
+            };
+        }
+        public static void ToUpdateClass(this UpdateClassDto updateClassDto,Class _class)
+        {
+            _class.Name = updateClassDto.Name.Trim();
+        }
     }
 }

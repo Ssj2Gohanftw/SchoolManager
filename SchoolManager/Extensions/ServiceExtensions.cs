@@ -3,7 +3,7 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
 
-namespace SchoolManager
+namespace SchoolManager.Extensions
 {
     public static class ServiceExtensions
     {

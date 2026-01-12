@@ -39,10 +39,12 @@ namespace SchoolManager.Services
             {
                 return null;
             }
-            var _class = new Class()
-            {
-                Name = className
-            };
+
+            //var _class = new Class()
+            //{
+            //    Name = className
+            //};
+            var _class = addClassDto.ToClass();
             try
             {
 
@@ -63,8 +65,8 @@ namespace SchoolManager.Services
             {
                 return false;
             }
-            _class.Name = updateClassDto.Name.Trim();
-
+            //_class.Name = updateClassDto.Name.Trim();
+            updateClassDto.ToUpdateClass(_class);
             try
             {
                 await _classRepository.Update(_class);
@@ -97,7 +99,6 @@ namespace SchoolManager.Services
 
         public async Task<PagedResults<ClassesDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto)
         {
-            classQueryDto = classQueryDto.Normalize();
             var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
             return new PagedResults<ClassesDto> {
                 Results = result.Results.Select(c => c.ToClassesDto()).ToList(),

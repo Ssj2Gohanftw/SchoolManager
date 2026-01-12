@@ -70,7 +70,7 @@ namespace SchoolManager.Data
                 HasOne(st => st.Subject)
                 .WithMany(st => st.SubjectTeachers)
                 .HasForeignKey(st => st.SubjectId);
-
+            //Console.WriteLine(modelBuilder.Model.ToDebugString());
         }
     }
 }

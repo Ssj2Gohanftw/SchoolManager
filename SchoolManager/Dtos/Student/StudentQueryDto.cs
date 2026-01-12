@@ -15,7 +15,7 @@ namespace SchoolManager.Dtos.Student
     {
         None,
         Search,
-        ClassId
+        //ClassId
     }
 
     public class StudentQueryDto
@@ -23,7 +23,7 @@ namespace SchoolManager.Dtos.Student
         public StudentFilterBy FilterBy { get; init; } = StudentFilterBy.None;
 
         public string? Search { get; init; }
-        public Guid? ClassId { get; init; }
+        //public Guid? ClassId { get; init; }
 
         public StudentSortBy SortBy { get; init; } = StudentSortBy.FirstName;
         public SortOrder SortOrder { get; init; } = SortOrder.Ascending;

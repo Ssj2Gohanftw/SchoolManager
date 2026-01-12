@@ -102,18 +102,16 @@ namespace SchoolManager.Data.Repositories
         public async Task<PagedResults<Student>> GetPagedAsync(StudentQueryDto studentQueryDto)
         {
             studentQueryDto = studentQueryDto.Normalize();
-            var searchFilter = SearchFilter(studentQueryDto.Search).Expand();
+            var searchFilter = SearchFilter(studentQueryDto.Search);
+                //.Expand();
             IQueryable<Student> query = _entity
                 .AsNoTracking()
-                //.AsExpandable()
+                .AsExpandableEFCore()
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
                     .ThenInclude(s => s.Subject);
 
-            if (studentQueryDto.ClassId.HasValue)
-            {
-                query = query.Where(s => s.ClassId == studentQueryDto.ClassId);
-            }
+           
             query = query.Where(searchFilter);
 
             var orderedQuery= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
@@ -138,16 +136,22 @@ namespace SchoolManager.Data.Repositories
         }
        public static Expression<Func<Student,bool>> SearchFilter(string? search)
         {
-            var query = PredicateBuilder.New<Student>(false);
             if (string.IsNullOrWhiteSpace(search))
             {
-                return s => true;
+                return PredicateBuilder.New<Student>(true);
 
             }
+            var query = PredicateBuilder.New<Student>(false);
+
             query = query.Or(s => s.LastName.Contains(search));
             query = query.Or(s =>  s.FirstName.Contains(search));
             //query = query.Or(s => s.FirstName.Contains(search)).And(s => s.LastName.Contains(search));
             query = query.Or(s => s.Email.Contains(search));
+           // query = query.Or(s =>
+           // s.AdditionalInfo != null &&
+           // s.AdditionalInfo.Hobbies != null &&
+           // s.AdditionalInfo.Hobbies.Any(hobby => hobby.Contains(search))
+           //);
 
             var fullName = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if(fullName.Length >= 2)
@@ -157,28 +161,9 @@ namespace SchoolManager.Data.Repositories
                 query = query.Or(s => s.FirstName.Contains(fname) && s.LastName.Contains(lname));
                 query = query.Or(s => s.FirstName.Contains(lname) && s.LastName.Contains(fname));
             }
+
             return query;
         }
 
-        //public async Task<StudentMetaData?> GetMetaDataAsync(Guid studentId)
-        //{
-        //    return await _entity
-        //        .AsNoTracking()
-        //        .Where(s => s.StudentId == studentId)
-        //        .Select(s => s.AdditionalInfo)
-        //        .SingleOrDefaultAsync();
-        //}
-
-        //public async Task<bool> UpdateMetaDataAsync(Guid studentId, StudentMetaData studentMetaData)
-        //{
-        //    var student = await _entity.SingleOrDefaultAsync(s => s.StudentId == studentId);
-        //    if(student == null)
-        //    {
-        //        return false;
-        //    }
-        //    student.AdditionalInfo = studentMetaData;
-        //    await _dbContext.SaveChangesAsync();
-        //    return true;
-        //}
     }
 }

@@ -57,9 +57,10 @@ namespace SchoolManager.Data.Repositories
         public async Task<PagedResults<Subject>> GetPagedResults(SubjectQueryDto subjectQueryDto)
         {
             subjectQueryDto = subjectQueryDto.Normalize();
-            var searchFilter = SearchFilter(subjectQueryDto.Search).Expand();
+            var searchFilter = SearchFilter(subjectQueryDto.Search);
             IQueryable<Subject> query = _entity
                 .AsNoTracking()
+                .AsExpandableEFCore()
                 .Include(sub => sub.SubjectTeachers)
                     .ThenInclude(t => t.Teacher)
                 .Include(sub => sub.SubjectTeachers)
@@ -88,8 +89,7 @@ namespace SchoolManager.Data.Repositories
             var query = PredicateBuilder.New<Subject>(false);
             if (string.IsNullOrWhiteSpace(search))
             {
-                return sub => true;
-
+                return PredicateBuilder.New<Subject>(true);
             }
             query = query.Or(sub => sub.Name.Contains(search));
             return query;

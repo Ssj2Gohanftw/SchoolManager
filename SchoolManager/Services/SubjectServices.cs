@@ -56,7 +56,6 @@ namespace SchoolManager.Services
 
         public async Task<PagedResults<SubjectDetailsDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)
         {
-            subjectQueryDto = subjectQueryDto.Normalize();
             var results = await _subjectRepository.GetPagedResults(subjectQueryDto);
             return new PagedResults<SubjectDetailsDto>()
             {

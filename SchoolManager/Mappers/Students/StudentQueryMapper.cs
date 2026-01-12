@@ -33,18 +33,18 @@ namespace SchoolManager.Mappers.Students
             }
 
 
-            var classId = studentQueryDto?.ClassId;
+            //var classId = studentQueryDto?.ClassId;
             var filterBy = studentQueryDto?.FilterBy ?? StudentFilterBy.None;
 
 
             // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
             if (filterBy == StudentFilterBy.None)
             {
-                if (classId is not null)
-                {
-                    filterBy = StudentFilterBy.ClassId;
-                }
-                else if (search is not null)
+                //if (classId is not null)
+                //{
+                //    filterBy = StudentFilterBy.ClassId;
+                //}
+                 if (search != null)
                 {
                     filterBy = StudentFilterBy.Search;
                 }
@@ -56,16 +56,16 @@ namespace SchoolManager.Mappers.Students
                 search = null;
             }
 
-            if (filterBy != StudentFilterBy.ClassId)
-            {
-                classId = null;
-            }
+            //if (filterBy != StudentFilterBy.ClassId)
+            //{
+            //    classId = null;
+            //}
 
             return new StudentQueryDto
             {
                 FilterBy = filterBy,
                 Search = search,
-                ClassId = classId,
+                //ClassId = classId,
                 SortBy = studentQueryDto?.SortBy ?? StudentSortBy.FirstName,
                 SortOrder = studentQueryDto?.SortOrder ?? SortOrder.Ascending,
                 PageNumber = pageNumber,
