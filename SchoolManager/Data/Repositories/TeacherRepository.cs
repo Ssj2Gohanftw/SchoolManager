@@ -3,13 +3,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Teachers;
 using SchoolManager.Models.Entities;
 
 
 namespace SchoolManager.Data.Repositories
 {
-    public class TeacherRepository : Repository<Teacher>,ITeacherRepository
+    public class TeacherRepository : Repository<Teacher>, ITeacherRepository
     {
         public TeacherRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
@@ -28,7 +29,7 @@ namespace SchoolManager.Data.Repositories
         {
             var desc = SortOrder == SortOrder.Descending;
             IOrderedQueryable<Teacher> orderedQuery;
-            switch (sortBy, desc) 
+            switch (sortBy, desc)
             {
                 case (TeacherSortBy.Name, false):
                     orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
@@ -42,7 +43,8 @@ namespace SchoolManager.Data.Repositories
                 default:
                     orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
                     break;
-            };
+            }
+            ;
             return orderedQuery;
         }
         private static IQueryable<Teacher> ApplyTeacherSearch(IQueryable<Teacher> query, string search)
@@ -60,7 +62,7 @@ namespace SchoolManager.Data.Repositories
                 query = query.Where(x =>
                     EF.Functions.ILike(x.FirstName, $"%{t}%") ||
                     EF.Functions.ILike(x.LastName, $"%{t}%") ||
-                    EF.Functions.ILike(x.Email, $"%{t}%") 
+                    EF.Functions.ILike(x.Email, $"%{t}%")
                 );
             }
 
@@ -79,35 +81,36 @@ namespace SchoolManager.Data.Repositories
 
             IQueryable<Teacher> query = _entity
                 .AsNoTracking()
-                .Include(t=>t.SubjectTeachers)
-                    .ThenInclude(st=>st.Class)
+                .Include(t => t.SubjectTeachers)
+                    .ThenInclude(st => st.Class)
                 .Include(t => t.SubjectTeachers)
                     .ThenInclude(st => st.Subject);
 
             query = teacherQueryDto.FilterBy switch
             {
                 TeacherFilterBy.Search when !string.IsNullOrWhiteSpace(teacherQueryDto.Search) =>
-                    ApplyTeacherSearch(query,teacherQueryDto.Search!),
+                    ApplyTeacherSearch(query, teacherQueryDto.Search!),
                 _ => query
             };
 
-            var ordered= ApplySorting(query, teacherQueryDto.SortBy, teacherQueryDto.SortOrder)
+            var ordered = ApplySorting(query, teacherQueryDto.SortBy, teacherQueryDto.SortOrder)
                 .ThenBy(t => t.TeacherId);
 
             var totalCount = await ordered.CountAsync();
 
-            var items = await ordered
+            var results = await ordered
                 .Skip((teacherQueryDto.PageNumber - 1) * teacherQueryDto.PageSize)
                 .Take(teacherQueryDto.PageSize)
                 .ToListAsync();
 
-            return new PagedResults<Teacher>
-            {
-                Results = items,
-                PageNumber = teacherQueryDto.PageNumber,
-                PageSize = teacherQueryDto.PageSize,
-                TotalCount = totalCount
-            };
+            return results.ToPagedResults(teacherQueryDto.PageNumber, teacherQueryDto.PageSize, totalCount);
+            //return new PagedResults<Teacher>
+            //{
+            //    Results = results,
+            //    PageNumber = teacherQueryDto.PageNumber,
+            //    PageSize = teacherQueryDto.PageSize,
+            //    TotalCount = totalCount
+            //};
         }
     }
 }

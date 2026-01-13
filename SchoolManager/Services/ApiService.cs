@@ -2,7 +2,7 @@
 
 namespace SchoolManager.Services
 {
-    public class ApiService:IApiService
+    public class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
 
@@ -14,24 +14,25 @@ namespace SchoolManager.Services
 
         public async Task<T> GetDataAsync<T>(string url)
         {
-         
+
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<T>(url);
-                if (response == null) 
+                if (response == null)
                 {
-                    
-                    throw new HttpRequestException(message:"No Results found!");
 
-                 };
+                    throw new HttpRequestException(message: "No Results found!");
+
+                }
+                ;
                 return response;
             }
             catch (HttpIOException ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                return default ;
+                return default;
             }
         }
-        
+
     }
 }

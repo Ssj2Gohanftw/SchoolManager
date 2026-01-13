@@ -1,5 +1,4 @@
 ﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
 
 namespace SchoolManager.Mappers.Teachers
@@ -47,16 +46,6 @@ namespace SchoolManager.Mappers.Teachers
             {
                 search = null;
             }
-
-            return new TeacherQueryDto
-            {
-                FilterBy = filterBy,
-                Search = search,
-                SortBy = teacherQueryDto?.SortBy ?? TeacherSortBy.Name,
-                SortOrder = teacherQueryDto?.SortOrder ?? SortOrder.Ascending,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-            };
-        }
+            return teacherQueryDto.ToTeacherQueryDto(filterBy, pageNumber, pageSize, search);        }
     }
 }

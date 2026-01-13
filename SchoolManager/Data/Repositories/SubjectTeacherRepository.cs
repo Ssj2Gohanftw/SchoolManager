@@ -16,7 +16,7 @@ namespace SchoolManager.Data.Repositories
         }
         public async Task AddAsync(SubjectTeacher subjectTeacher)
         {
-            if(await Exists(subjectTeacher))
+            if (await Exists(subjectTeacher))
             {
                 return;
             }
@@ -26,10 +26,10 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<bool> Exists(SubjectTeacher subjectTeacher)
         {
-            return await _subjectTeachers.AnyAsync(st=>
-            st.TeacherId==subjectTeacher.TeacherId &&
-            st.ClassId==subjectTeacher.ClassId &&
-            st.SubjectId==subjectTeacher.SubjectId
+            return await _subjectTeachers.AnyAsync(st =>
+            st.TeacherId == subjectTeacher.TeacherId &&
+            st.ClassId == subjectTeacher.ClassId &&
+            st.SubjectId == subjectTeacher.SubjectId
             );
         }
 
@@ -65,11 +65,11 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<bool> Remove(SubjectTeacher subjectTeacher)
         {
-            var teacher= await _subjectTeachers.FindAsync(
-                    subjectTeacher.TeacherId ,
+            var teacher = await _subjectTeachers.FindAsync(
+                    subjectTeacher.TeacherId,
                     subjectTeacher.ClassId,
                     subjectTeacher.SubjectId);
-            if(teacher == null)
+            if (teacher == null)
             {
                 return false;
             }

@@ -9,6 +9,6 @@ namespace SchoolManager.Dtos.Subject
         public required string Name { get; set; }
 
         public List<TeacherDto>? Teachers { get; set; }
-        public List <ClassesDto>? Classes{ get; set; }
+        public List<ClassesDto>? Classes { get; set; }
     }
 }

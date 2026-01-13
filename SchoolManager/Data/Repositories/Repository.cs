@@ -32,7 +32,7 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<bool> Remove(T entity)
         {
-             _entity.Remove(entity);
+            _entity.Remove(entity);
             await _dbContext.SaveChangesAsync();
             return true;
         }

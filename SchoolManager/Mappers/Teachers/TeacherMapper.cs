@@ -1,3 +1,4 @@
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Models.Entities;
 namespace SchoolManager.Mappers.Teachers
@@ -9,10 +10,10 @@ namespace SchoolManager.Mappers.Teachers
             return new TeacherDto
             {
                 TeacherId = teacher.TeacherId,
-                TeacherName=teacher.FirstName + " " +teacher.LastName
+                TeacherName = teacher.FirstName + " " + teacher.LastName
             };
         }
-        public static TeacherSummaryDto ToTeacherSummaryDto(this Teacher teacher )
+        public static TeacherSummaryDto ToTeacherSummaryDto(this Teacher teacher)
         {
             return new TeacherSummaryDto
             {
@@ -23,7 +24,7 @@ namespace SchoolManager.Mappers.Teachers
             };
         }
 
-        public static TeacherDetailsDto ToTeacherDetailsDto(this Teacher teacher )
+        public static TeacherDetailsDto ToTeacherDetailsDto(this Teacher teacher)
         {
             return new TeacherDetailsDto
             {
@@ -38,6 +39,18 @@ namespace SchoolManager.Mappers.Teachers
                     SubjectId = st.SubjectId,
                     SubjectName = st.Subject.Name
                 }).ToList()
+            };
+        }
+        public static TeacherQueryDto ToTeacherQueryDto(this TeacherQueryDto teacherQueryDto, TeacherFilterBy filter, int pageNumber, int pageSize, string? search)
+        {
+            return new TeacherQueryDto
+            {
+                FilterBy = filter,
+                Search = search,
+                SortBy = teacherQueryDto?.SortBy ?? TeacherSortBy.Name,
+                SortOrder = teacherQueryDto?.SortOrder ?? SortOrder.Ascending,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
             };
         }
         public static Teacher ToTeacher(this AddTeacherDto addTeacherDto)

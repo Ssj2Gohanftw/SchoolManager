@@ -1,5 +1,4 @@
-﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolManager.Dtos.Subject;
+﻿using SchoolManager.Dtos.Subject;
 
 namespace SchoolManager.Mappers.Subjects
 {
@@ -46,16 +45,6 @@ namespace SchoolManager.Mappers.Subjects
             {
                 search = null;
             }
-
-            return new SubjectQueryDto
-            {
-                FilterBy = filterBy,
-                Search = search,
-                SortBy = subjectQueryDto?.SortBy ?? SubjectSortBy.Name,
-                SortOrder = subjectQueryDto?.SortOrder ?? SortOrder.Ascending,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-            };
-        }
+            return subjectQueryDto.ToSubjectQueryDto(filterBy, pageNumber, pageSize, search);        }
     }
 }

@@ -100,7 +100,8 @@ namespace SchoolManager.Services
         public async Task<PagedResults<ClassesDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto)
         {
             var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
-            return new PagedResults<ClassesDto> {
+            return new PagedResults<ClassesDto>
+            {
                 Results = result.Results.Select(c => c.ToClassesDto()).ToList(),
                 PageNumber = result.PageNumber,
                 PageSize = result.PageSize,

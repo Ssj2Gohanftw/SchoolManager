@@ -38,7 +38,7 @@ namespace SchoolManager.Services
         public async Task<Teacher?> AddTeacherAsync(AddTeacherDto addTeacherDto)
         {
             var teachers = addTeacherDto.ToTeacher();
-           try
+            try
             {
                 await _teacherRepository.AddAsync(teachers);
                 return teachers;
@@ -76,7 +76,7 @@ namespace SchoolManager.Services
                 return false;
             }
             updateTeacherDto.ToUpdateTeacher(teacher);
-            
+
             try
             {
                 await _teacherRepository.Update(teacher);
@@ -93,11 +93,11 @@ namespace SchoolManager.Services
             return new PagedResults<TeacherDetailsDto>
             {
                 Results = result.Results.Select(t => t.ToTeacherDetailsDto()).ToList(),
-                PageNumber=result.PageNumber,
-                PageSize=result.PageSize,
-                TotalCount=result.TotalCount
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
             };
-            
+
         }
     }
 }

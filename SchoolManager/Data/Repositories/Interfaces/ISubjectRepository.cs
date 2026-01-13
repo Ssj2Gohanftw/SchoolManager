@@ -4,10 +4,10 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces
 {
-    public interface ISubjectRepository:IRepository<Subject>
+    public interface ISubjectRepository : IRepository<Subject>
     {
         Task<PagedResults<Subject>> GetPagedResults(SubjectQueryDto subjectQueryDto);
-        
+
 
     }
 }

@@ -54,14 +54,14 @@ namespace SchoolManager.Services
             catch (DbUpdateException)
             {
                 return false;
-                
+
             }
-        }  
+        }
 
         public async Task<List<StudentDto>> GetAllAsync()
         {
             var student = await _studentRepository.GetAllAsync();
-            return student.Select(s=>s.ToStudentDto()).ToList();
+            return student.Select(s => s.ToStudentDto()).ToList();
         }
 
         public async Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
@@ -78,7 +78,7 @@ namespace SchoolManager.Services
 
         public async Task<Student?> GetStudentByIdAsync(Guid id)
         {
-            var student =await _studentRepository.GetByIdAsync(id);
+            var student = await _studentRepository.GetByIdAsync(id);
             return student;
         }
 
@@ -97,7 +97,7 @@ namespace SchoolManager.Services
             {
                 throw new InvalidOperationException("Class doesn't exist");
             }
-            
+
             updateStudentDto.ToUpdateStudent(student, _class.ClassId);
             try
             {

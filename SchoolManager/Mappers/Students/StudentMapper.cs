@@ -1,6 +1,6 @@
 ﻿using SchoolManager.Dtos.Student;
 using SchoolManager.Models.Entities;
-
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SchoolManager.Mappers.Students
 {
     public static class StudentMapper
@@ -28,10 +28,22 @@ namespace SchoolManager.Mappers.Students
                 Email = student.Email,
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name,
-                AdditionalInfo=student.AdditionalInfo,
-                Subjects=student.StudentSubjects?.Select(ss=>ss.ToStudentSubjectDto()).ToList()??new List<StudentSubjectDto>()
+                AdditionalInfo = student.AdditionalInfo,
+                Subjects = student.StudentSubjects?.Select(ss => ss.ToStudentSubjectDto()).ToList() ?? new List<StudentSubjectDto>()
             };
 
+        }
+        public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,int pageNumber,int pageSize,StudentFilterBy filter,string? search) 
+        {
+            return new StudentQueryDto
+            {
+                FilterBy = filter,
+                Search = search,
+                SortBy = studentQueryDto?.SortBy ?? StudentSortBy.FirstName,
+                SortOrder = studentQueryDto?.SortOrder ?? SortOrder.Ascending,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
         }
         public static Student ToStudent(this AddStudentDto addStudent)
         {
@@ -40,13 +52,12 @@ namespace SchoolManager.Mappers.Students
                 FirstName = addStudent.FirstName,
                 LastName = addStudent.LastName,
                 Email = addStudent.Email,
-                DateOfBirth=addStudent.DateOfBirth,
-                AdditionalInfo=addStudent.AdditionalInfo
-                //ClassId = classId
+                DateOfBirth = addStudent.DateOfBirth,
+                AdditionalInfo = addStudent.AdditionalInfo
             };
 
         }
-        public static void ToUpdateStudent(this UpdateStudentDto updateStudentDto,Student student, Guid classId)
+        public static void ToUpdateStudent(this UpdateStudentDto updateStudentDto, Student student, Guid classId)
         {
 
             student.FirstName = updateStudentDto.FirstName;
@@ -54,7 +65,7 @@ namespace SchoolManager.Mappers.Students
             student.Email = updateStudentDto.Email;
             student.DateOfBirth = updateStudentDto.DateOfBirth;
             student.ClassId = classId;
-            if (updateStudentDto.AdditionalInfo is not null)
+            if (updateStudentDto.AdditionalInfo != null)
             {
                 student.AdditionalInfo = updateStudentDto.AdditionalInfo;
             }

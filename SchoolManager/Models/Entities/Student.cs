@@ -3,8 +3,8 @@
     public class StudentMetaData
     {
         public string? EmergencyContact { get; set; }
-        public List<string>? Hobbies{ get; set; }
-        public List<string>? ExtraCurriculars{ get; set; }
+        public List<string>? Hobbies { get; set; }
+        public List<string>? ExtraCurriculars { get; set; }
     }
     public class Student
     {

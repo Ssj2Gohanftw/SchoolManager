@@ -1,6 +1,4 @@
-﻿using SchoolManager.Models.Entities;
-
-namespace SchoolManager.Dtos.Teacher
+﻿namespace SchoolManager.Dtos.Teacher
 {
     public class AddTeacherDto
     {

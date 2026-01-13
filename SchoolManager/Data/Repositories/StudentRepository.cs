@@ -4,6 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Models.Entities;
 using System.Linq.Expressions;
@@ -13,9 +14,9 @@ namespace SchoolManager.Data.Repositories
     public class StudentRepository : Repository<Student>, IStudentRepository
     {
 
-        public StudentRepository(ApplicationDbContext dbContext):base(dbContext)
+        public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            
+
         }
 
         public override async Task<List<Student>> GetAllAsync()
@@ -35,7 +36,7 @@ namespace SchoolManager.Data.Repositories
                     .ThenInclude(ss => ss.Subject)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
         }
-        
+
 
         private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
         {
@@ -45,7 +46,7 @@ namespace SchoolManager.Data.Repositories
             switch (sortBy, desc)
             {
                 case (StudentSortBy.LastName, false):
-                    orderedQuery= query.OrderBy(s => s.LastName);
+                    orderedQuery = query.OrderBy(s => s.LastName);
                     break;
 
                 case (StudentSortBy.LastName, true):
@@ -103,7 +104,7 @@ namespace SchoolManager.Data.Repositories
         {
             studentQueryDto = studentQueryDto.Normalize();
             var searchFilter = SearchFilter(studentQueryDto.Search);
-                //.Expand();
+            //.Expand();
             IQueryable<Student> query = _entity
                 .AsNoTracking()
                 .AsExpandableEFCore()
@@ -111,10 +112,10 @@ namespace SchoolManager.Data.Repositories
                 .Include(s => s.StudentSubjects)
                     .ThenInclude(s => s.Subject);
 
-           
+
             query = query.Where(searchFilter);
 
-            var orderedQuery= ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
+            var orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
 
             var totalCount = await orderedQuery.CountAsync();
@@ -124,17 +125,9 @@ namespace SchoolManager.Data.Repositories
                 .Take(studentQueryDto.PageSize)
                 .ToListAsync();
 
-
-
-            return new PagedResults<Student>
-            {
-                Results = results,
-                PageNumber = studentQueryDto.PageNumber,
-                PageSize = studentQueryDto.PageSize,
-                TotalCount = totalCount
-            };
+            return results.ToPagedResults<Student>(pageNumber: studentQueryDto.PageNumber, pageSize: studentQueryDto.PageSize, totalCount: totalCount);
         }
-       public static Expression<Func<Student,bool>> SearchFilter(string? search)
+        public static Expression<Func<Student, bool>> SearchFilter(string? search)
         {
             if (string.IsNullOrWhiteSpace(search))
             {
@@ -144,17 +137,17 @@ namespace SchoolManager.Data.Repositories
             var query = PredicateBuilder.New<Student>(false);
 
             query = query.Or(s => s.LastName.Contains(search));
-            query = query.Or(s =>  s.FirstName.Contains(search));
+            query = query.Or(s => s.FirstName.Contains(search));
             //query = query.Or(s => s.FirstName.Contains(search)).And(s => s.LastName.Contains(search));
             query = query.Or(s => s.Email.Contains(search));
-           // query = query.Or(s =>
-           // s.AdditionalInfo != null &&
-           // s.AdditionalInfo.Hobbies != null &&
-           // s.AdditionalInfo.Hobbies.Any(hobby => hobby.Contains(search))
-           //);
+            // query = query.Or(s =>
+            // s.AdditionalInfo != null &&
+            // s.AdditionalInfo.Hobbies != null &&
+            // s.AdditionalInfo.Hobbies.Any(hobby => hobby.Contains(search))
+            //);
 
             var fullName = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if(fullName.Length >= 2)
+            if (fullName.Length >= 2)
             {
                 string fname = fullName[0];
                 string lname = fullName[1];

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using SchoolManager.Models.Entities;
 
 #nullable disable
 

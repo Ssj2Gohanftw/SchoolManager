@@ -18,7 +18,7 @@ namespace SchoolManager.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllClasses()
         {
-              var classes = await _classServices.GetAllAsync();
+            var classes = await _classServices.GetAllAsync();
             return Ok(classes);
         }
 
@@ -27,31 +27,31 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> GetClassById(Guid id)
         {
             var _class = await _classServices.GetClassByIdAsync(id);
-                if (_class == null)
-                {
-                    return NotFound();
-                }
-                return Ok(_class);
+            if (_class == null)
+            {
+                return NotFound();
+            }
+            return Ok(_class);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddClass(AddClassDto addClassDto)
         {
-              var _class = await _classServices.AddClassAsync(addClassDto);
-                return Ok(_class);
+            var _class = await _classServices.AddClassAsync(addClassDto);
+            return Ok(_class);
         }
 
         [HttpPut]
         [Route("{id:guid}")]
 
         public async Task<IActionResult> UpdateClass(Guid id, UpdateClassDto updateClassDto)
-        {   
-                var success = await _classServices.UpdateClassAsync(id, updateClassDto);
-                if (!success)
-                {
-                    return NotFound();
-                }
-                return Ok();
+        {
+            var success = await _classServices.UpdateClassAsync(id, updateClassDto);
+            if (!success)
+            {
+                return NotFound();
+            }
+            return Ok();
         }
 
         [HttpDelete]
@@ -61,12 +61,12 @@ namespace SchoolManager.Controllers
         {
             var success = await _classServices.DeleteClassAsync(id);
             if (!success)
-                {
-                    return NotFound();
-                }
+            {
+                return NotFound();
+            }
             return Ok();
 
-            }
+        }
         [HttpGet("list")]
         public async Task<IActionResult> GetClassesPaged([FromQuery] ClassQueryDto classQueryDto)
         {

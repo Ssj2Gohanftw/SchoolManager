@@ -4,6 +4,6 @@
     {
         public Task<T> GetDataAsync<T>(string url);
 
-         
+
     }
 }

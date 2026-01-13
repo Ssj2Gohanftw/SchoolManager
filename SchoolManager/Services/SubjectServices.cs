@@ -43,15 +43,15 @@ namespace SchoolManager.Services
             }
             catch (DbUpdateException)
             {
-            return false;
+                return false;
             }
-            
+
         }
 
         public async Task<List<SubjectSummaryDto>> GetAllAsync()
         {
             var subjects = await _subjectRepository.GetAllAsync();
-            return subjects.Select(s=>s.ToSubjectSummaryDto()).ToList();
+            return subjects.Select(s => s.ToSubjectSummaryDto()).ToList();
         }
 
         public async Task<PagedResults<SubjectDetailsDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)

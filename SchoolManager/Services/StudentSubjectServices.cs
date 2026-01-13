@@ -85,7 +85,7 @@ namespace SchoolManager.Services
                 }
             }
 
-           
+
             foreach (var student in _class.Students)
             {
                 foreach (var subjectId in subjectIds)

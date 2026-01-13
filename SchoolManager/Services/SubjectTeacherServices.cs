@@ -11,7 +11,7 @@ namespace SchoolManager.Services
         private readonly ISubjectTeacherRepository _subjectTeacherRepository;
         private readonly ITeacherRepository _teacherRepository;
         private readonly IClassRepository _classRepository;
-        private readonly  ISubjectRepository _subjectRepository;
+        private readonly ISubjectRepository _subjectRepository;
         public SubjectTeacherServices(
             ISubjectTeacherRepository subjectTeacherRepository,
             ITeacherRepository teacherRepository,
@@ -26,14 +26,14 @@ namespace SchoolManager.Services
         }
         public async Task AssignAsync(AddSubjectTeacherDto addSubjectTeacherDto)
         {
-            var teacherExists= await _teacherRepository.GetByIdAsync(addSubjectTeacherDto.TeacherId);
-            if(teacherExists == null)
+            var teacherExists = await _teacherRepository.GetByIdAsync(addSubjectTeacherDto.TeacherId);
+            if (teacherExists == null)
             {
                 throw new InvalidOperationException("Teacher not found");
             }
             var classExists = await _classRepository.GetByIdAsync(addSubjectTeacherDto.ClassId);
-            
-            if (classExists is  null)
+
+            if (classExists is null)
             {
                 throw new InvalidOperationException("Class not found");
             }
@@ -43,11 +43,11 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Subject not found");
             }
 
-            var assignment=new SubjectTeacher
+            var assignment = new SubjectTeacher
             {
-                TeacherId=addSubjectTeacherDto.TeacherId,
-                ClassId=addSubjectTeacherDto.ClassId,
-                SubjectId=addSubjectTeacherDto.SubjectId
+                TeacherId = addSubjectTeacherDto.TeacherId,
+                ClassId = addSubjectTeacherDto.ClassId,
+                SubjectId = addSubjectTeacherDto.SubjectId
             };
             await _subjectTeacherRepository.AddAsync(assignment);
         }

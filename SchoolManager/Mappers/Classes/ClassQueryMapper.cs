@@ -1,5 +1,4 @@
-﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolManager.Dtos.Class;
+﻿using SchoolManager.Dtos.Class;
 
 namespace SchoolManager.Mappers.Classes
 {
@@ -38,24 +37,16 @@ namespace SchoolManager.Mappers.Classes
 
 
             // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
-            if (filterBy == ClassFilterBy.None && search is not null)
+            if (filterBy == ClassFilterBy.None && search != null)
             {
                 filterBy = ClassFilterBy.Search;
             }
-            if (filterBy !=ClassFilterBy.Search)
+            if (filterBy != ClassFilterBy.Search)
             {
-                search=null;
+                search = null;
             }
 
-            return new ClassQueryDto
-            {
-                FilterBy = filterBy,
-                Search = search,
-                SortBy = classQueryDto?.SortBy ?? ClassSortBy.Name,
-                SortOrder = classQueryDto?.SortOrder ?? SortOrder.Ascending,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-            };
+            return classQueryDto.ToClassQueryDto(pageNumber, pageSize, filterBy, search);
         }
     }
 }

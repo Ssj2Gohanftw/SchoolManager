@@ -24,46 +24,46 @@ namespace SchoolManager.Controllers
             return Ok(allStudents);
         }
 
-    
+
 
         [HttpGet]
         [Route("{id:guid}")]
         public async Task<IActionResult> GetStudentById(Guid id)
         {
-            
-                var student = await _studentServices.GetStudentByIdAsync(id);
-                if (student == null)
-                {
-                    return NotFound(new { message = "Student not found" });
-                }
-                var studentDetails = student.ToStudentDetailsDto(); 
-                return Ok(studentDetails);
+
+            var student = await _studentServices.GetStudentByIdAsync(id);
+            if (student == null)
+            {
+                return NotFound(new { message = "Student not found" });
+            }
+            var studentDetails = student.ToStudentDetailsDto();
+            return Ok(studentDetails);
         }
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto)
         {
 
-                var student = await _studentServices.AddStudentAsync(addStudentDto);
-                if (student == null)
-                {
-                    return NotFound(new { message = "Enter required details to add a student" });
-                }
-                return Ok(student);
-
+            var student = await _studentServices.AddStudentAsync(addStudentDto);
+            if (student == null)
+            {
+                return NotFound(new { message = "Enter required details to add a student" });
             }
+            return Ok(student);
+
+        }
         [HttpPut]
         [Route("{id:guid}")]
 
         public async Task<IActionResult> UpdateStudent(Guid id, UpdateStudentDto updateStudentDto)
-        {    
+        {
             var success = await _studentServices.UpdateStudentAsync(id, updateStudentDto);
-                if (!success)
-                {
-                    return NotFound(new { message = "A Student with that name doesn't exist" });
-                }
-
-                return Ok();
+            if (!success)
+            {
+                return NotFound(new { message = "A Student with that name doesn't exist" });
             }
+
+            return Ok();
+        }
         [HttpPut]
         [Route("{id:guid}/class")]
 
@@ -83,19 +83,19 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> DeleteStudent(Guid id)
         {
-                var success = await _studentServices.DeleteStudentAsync(id);
-                if (!success)
-                {
-                    return NotFound(new { message = "A Student with that name doesn't exist" });
-                }
-                return Ok();
+            var success = await _studentServices.DeleteStudentAsync(id);
+            if (!success)
+            {
+                return NotFound(new { message = "A Student with that name doesn't exist" });
+            }
+            return Ok();
 
         }
         [HttpGet("list")]
         public async Task<IActionResult> GetStudentsPaged([FromQuery] StudentQueryDto studentQueryDto)
         {
-                var result = await _studentServices.GetPagedStudentsAsync(studentQueryDto);
-                return Ok(result);
+            var result = await _studentServices.GetPagedStudentsAsync(studentQueryDto);
+            return Ok(result);
         }
     }
 }

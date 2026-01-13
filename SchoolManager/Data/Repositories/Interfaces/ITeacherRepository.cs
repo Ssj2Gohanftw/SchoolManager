@@ -4,7 +4,7 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data.Repositories.Interfaces
 {
-    public interface ITeacherRepository:IRepository<Teacher>
+    public interface ITeacherRepository : IRepository<Teacher>
     {
         Task<PagedResults<Teacher>> GetPagedAsync(TeacherQueryDto teacherQueryDto);
 

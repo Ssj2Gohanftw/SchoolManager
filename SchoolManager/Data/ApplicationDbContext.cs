@@ -3,7 +3,7 @@ using SchoolManager.Models.Entities;
 
 namespace SchoolManager.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -53,12 +53,12 @@ namespace SchoolManager.Data
 
 
             modelBuilder.Entity<SubjectTeacher>()
-                .HasKey(st => new { st.TeacherId, st.ClassId, st.SubjectId});
+                .HasKey(st => new { st.TeacherId, st.ClassId, st.SubjectId });
 
 
             modelBuilder.Entity<SubjectTeacher>()
                 .HasOne(st => st.Class)
-                .WithMany(st=>st.SubjectTeachers)
+                .WithMany(st => st.SubjectTeachers)
                 .HasForeignKey(st => st.ClassId);
 
             modelBuilder.Entity<SubjectTeacher>()

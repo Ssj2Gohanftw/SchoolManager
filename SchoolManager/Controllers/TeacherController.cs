@@ -34,18 +34,18 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto)
         {
-                var teachers = await _teacherServices.AddTeacherAsync(addTeacherDto);
-                return Ok(teachers);
+            var teachers = await _teacherServices.AddTeacherAsync(addTeacherDto);
+            return Ok(teachers);
         }
         [HttpPut]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateTeacher(UpdateTeacherDto updateTeacherDto, Guid id)
         {
-                var success = await _teacherServices.UpdateTeacherAsync(id, updateTeacherDto);
-                if (!success)
-                {
-                    return NotFound();
-                }
+            var success = await _teacherServices.UpdateTeacherAsync(id, updateTeacherDto);
+            if (!success)
+            {
+                return NotFound();
+            }
             return Ok();
         }
 
@@ -54,31 +54,31 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> DeleteTeacher(Guid id)
         {
-            
-              var success = await _teacherServices.DeleteTeacherAsync(id);
-                if (!success)
-                {
-                    return NotFound();
-                }
+
+            var success = await _teacherServices.DeleteTeacherAsync(id);
+            if (!success)
+            {
+                return NotFound();
+            }
             return Ok();
         }
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetTeacherById(Guid id)
         {
-               var teacher = await _teacherServices.GetTeacherByIdAsync(id);
-                if (teacher == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(teacher);
+            var teacher = await _teacherServices.GetTeacherByIdAsync(id);
+            if (teacher == null)
+            {
+                return NotFound();
             }
+
+            return Ok(teacher);
+        }
 
         [HttpGet("list")]
         public async Task<IActionResult> GetPagedResults([FromQuery] TeacherQueryDto teacherQueryDto)
         {
             var pagedResults = await _teacherServices.GetPagedTeachersAsync(teacherQueryDto);
-                return Ok(pagedResults);
-         }
+            return Ok(pagedResults);
+        }
     }
 }

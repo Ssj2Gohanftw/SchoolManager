@@ -6,13 +6,13 @@ namespace SchoolManager.Dtos.University
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }
-        
+
         [JsonPropertyName("domains")]
         public List<string>? Domains { get; set; }
 
         [JsonPropertyName("country")]
         public string? Country { get; set; }
-        
+
         [JsonPropertyName("alpha_two_code")]
         public string? AlphaTwoCode { get; set; }
 

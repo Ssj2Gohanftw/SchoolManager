@@ -19,7 +19,6 @@ namespace SchoolManager.Dtos.Subject
         public string? Search { get; init; }
         public SubjectSortBy SortBy { get; init; } = SubjectSortBy.Name;
         public SortOrder SortOrder { get; init; } = SortOrder.Ascending;
-
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 20;
     }

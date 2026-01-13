@@ -5,17 +5,18 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Mappers.Classes;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Models.Entities;
 using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class ClassRepository : Repository<Class>,IClassRepository
+    public class ClassRepository : Repository<Class>, IClassRepository
     {
 
-        public ClassRepository(ApplicationDbContext dbContext):base(dbContext)
+        public ClassRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            
+
         }
 
         public override async Task<Class?> GetByIdAsync(Guid id)
@@ -34,13 +35,13 @@ namespace SchoolManager.Data.Repositories
         }
 
         private static IOrderedQueryable<Class> ApplySorting(
-            IQueryable<Class> query, 
-            ClassSortBy sortBy, 
+            IQueryable<Class> query,
+            ClassSortBy sortBy,
             SortOrder SortOrder)
         {
             var desc = SortOrder == SortOrder.Descending;
             IOrderedQueryable<Class> orderedQuery;
-            switch(sortBy, desc)
+            switch (sortBy, desc)
             {
                 case (ClassSortBy.ClassId, false):
                     orderedQuery = query.OrderBy(c => c.ClassId);
@@ -51,7 +52,7 @@ namespace SchoolManager.Data.Repositories
                 case (ClassSortBy.Name, false):
                     orderedQuery = query.OrderBy(c => c.Name);
                     break;
-                default: 
+                default:
                     orderedQuery = query.OrderByDescending(c => c.Name);
                     break;
 
@@ -66,9 +67,9 @@ namespace SchoolManager.Data.Repositories
                 .AsNoTracking()
                 .AsExpandableEFCore()
                 .Where(searchFilter);
-            
+
             var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)
-                .ThenBy(c=>c.ClassId);
+                .ThenBy(c => c.ClassId);
 
             var totalCount = await ordered.CountAsync();
             var results = await ordered
@@ -76,13 +77,7 @@ namespace SchoolManager.Data.Repositories
                 .Take(classQueryDto.PageSize)
                 .ToListAsync();
 
-            return new PagedResults<Class>
-            {
-                Results = results,
-                PageNumber = classQueryDto.PageNumber,
-                PageSize = classQueryDto.PageSize,
-                TotalCount = totalCount
-            };
+            return results.ToPagedResults(classQueryDto.PageNumber, classQueryDto.PageSize, totalCount);
 
         }
         public static Expression<Func<Class, bool>> SearchFilter(string? search)
@@ -93,7 +88,7 @@ namespace SchoolManager.Data.Repositories
                 return PredicateBuilder.New<Class>(true);
 
             }
-            query = query.Or(c=> c.Name.Contains(search));
+            query = query.Or(c => c.Name.Contains(search));
             return query;
         }
 
