@@ -1,4 +1,5 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
 using SchoolManager.Mappers.Classes;
 using SchoolManager.Mappers.Teachers;
@@ -25,7 +26,7 @@ namespace SchoolManager.Mappers.Subjects
                 Teachers = subject.SubjectTeachers.Select(t => t.Teacher.ToTeacherDto()).ToList()
             };
         }
-        public static SubjectQueryDto ToSubjectQueryDto(this SubjectQueryDto subjectQueryDto,SubjectFilterBy filter,int pageNumber,int pageSize,string? search)
+        public static SubjectQueryDto ToSubjectQueryDto(this SubjectQueryDto subjectQueryDto,FilterBy filter,int pageNumber,int pageSize,string? search)
         {
             return new SubjectQueryDto
             {

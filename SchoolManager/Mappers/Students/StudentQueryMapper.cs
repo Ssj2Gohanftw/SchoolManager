@@ -1,4 +1,5 @@
-﻿using SchoolManager.Dtos.Student;
+﻿using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Student;
 namespace SchoolManager.Mappers.Students
 {
     public static class StudentQueryMapper
@@ -32,19 +33,19 @@ namespace SchoolManager.Mappers.Students
             }
 
 
-            var filterBy = studentQueryDto?.FilterBy ?? StudentFilterBy.None;
+            var filterBy = studentQueryDto?.FilterBy ?? FilterBy.None;
 
-            if (filterBy == StudentFilterBy.None)
+            if (filterBy == FilterBy.None)
 
             {
                 if (search != null)
                 {
-                    filterBy = StudentFilterBy.Search;
+                    filterBy = FilterBy.Search;
                 }
             }
 
             // Keep filter inputs consistent with selected filter option
-            if (filterBy != StudentFilterBy.Search)
+            if (filterBy != FilterBy.Search)
             {
                 search = null;
             }

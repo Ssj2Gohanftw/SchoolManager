@@ -1,4 +1,5 @@
 ﻿using SchoolManager.Dtos.Class;
+using SchoolManager.Dtos.Common;
 
 namespace SchoolManager.Mappers.Classes
 {
@@ -33,15 +34,15 @@ namespace SchoolManager.Mappers.Classes
             }
 
 
-            var filterBy = classQueryDto?.FilterBy ?? ClassFilterBy.None;
+            var filterBy = classQueryDto?.FilterBy ?? FilterBy.None;
 
 
             // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
-            if (filterBy == ClassFilterBy.None && search != null)
+            if (filterBy == FilterBy.None && search != null)
             {
-                filterBy = ClassFilterBy.Search;
+                filterBy = FilterBy.Search;
             }
-            if (filterBy != ClassFilterBy.Search)
+            if (filterBy != FilterBy.Search)
             {
                 search = null;
             }

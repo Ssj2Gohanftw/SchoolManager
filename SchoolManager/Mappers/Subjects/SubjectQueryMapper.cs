@@ -1,4 +1,5 @@
-﻿using SchoolManager.Dtos.Subject;
+﻿using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.Subject;
 
 namespace SchoolManager.Mappers.Subjects
 {
@@ -33,15 +34,15 @@ namespace SchoolManager.Mappers.Subjects
             }
 
 
-            var filterBy = subjectQueryDto?.FilterBy ?? SubjectFilterBy.None;
+            var filterBy = subjectQueryDto?.FilterBy ?? FilterBy.None;
 
 
             // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
-            if (filterBy == SubjectFilterBy.None && search is not null)
+            if (filterBy == FilterBy.None && search is not null)
             {
-                filterBy = SubjectFilterBy.Search;
+                filterBy = FilterBy.Search;
             }
-            if (filterBy != SubjectFilterBy.Search)
+            if (filterBy != FilterBy.Search)
             {
                 search = null;
             }

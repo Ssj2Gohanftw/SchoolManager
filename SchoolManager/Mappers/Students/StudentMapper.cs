@@ -1,6 +1,7 @@
 ﻿using SchoolManager.Dtos.Student;
 using SchoolManager.Models.Entities;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using SchoolManager.Dtos.Common;
 namespace SchoolManager.Mappers.Students
 {
     public static class StudentMapper
@@ -33,7 +34,7 @@ namespace SchoolManager.Mappers.Students
             };
 
         }
-        public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,int pageNumber,int pageSize,StudentFilterBy filter,string? search) 
+        public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,int pageNumber,int pageSize,FilterBy filter,string? search) 
         {
             return new StudentQueryDto
             {

@@ -1,4 +1,4 @@
-﻿using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+﻿using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
 
 namespace SchoolManager.Mappers.Teachers
@@ -34,18 +34,19 @@ namespace SchoolManager.Mappers.Teachers
             }
 
 
-            var filterBy = teacherQueryDto?.FilterBy ?? TeacherFilterBy.None;
+            var filterBy = teacherQueryDto?.FilterBy ?? FilterBy.None;
 
 
             // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
-            if (filterBy == TeacherFilterBy.None && search is not null)
+            if (filterBy == FilterBy.None && search is not null)
             {
-                filterBy = TeacherFilterBy.Search;
+                filterBy = FilterBy.Search;
             }
-            if (filterBy != TeacherFilterBy.Search)
+            if (filterBy != FilterBy.Search)
             {
                 search = null;
             }
-            return teacherQueryDto.ToTeacherQueryDto(filterBy, pageNumber, pageSize, search);        }
+            return teacherQueryDto.ToTeacherQueryDto(filterBy, pageNumber, pageSize, search);      
+        }
     }
 }

@@ -1,5 +1,6 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Dtos.Class;
+using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
 using SchoolManager.Models.Entities;
 namespace SchoolManager.Mappers.Classes
@@ -34,7 +35,7 @@ namespace SchoolManager.Mappers.Classes
                 Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList()
             };
         }
-        public static ClassQueryDto ToClassQueryDto(this ClassQueryDto classQueryDto, int pageNumber, int pageSize, ClassFilterBy filter, string? search)
+        public static ClassQueryDto ToClassQueryDto(this ClassQueryDto classQueryDto, int pageNumber, int pageSize, FilterBy filter, string? search)
         {
             return new ClassQueryDto
             {

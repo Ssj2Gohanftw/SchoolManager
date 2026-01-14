@@ -88,7 +88,7 @@ namespace SchoolManager.Data.Repositories
 
             query = teacherQueryDto.FilterBy switch
             {
-                TeacherFilterBy.Search when !string.IsNullOrWhiteSpace(teacherQueryDto.Search) =>
+                FilterBy.Search when !string.IsNullOrWhiteSpace(teacherQueryDto.Search) =>
                     ApplyTeacherSearch(query, teacherQueryDto.Search!),
                 _ => query
             };
