@@ -1,52 +1,16 @@
-﻿using SchoolManager.Dtos.Common;
-using SchoolManager.Dtos.Teacher;
+﻿using SchoolManager.Dtos.Teacher;
+using SchoolManager.Extensions;
 
 namespace SchoolManager.Mappers.Teachers
 {
     public static class TeacherQueryMapper
     {
-        private const int DefaultPageNumber = 1;
-        private const int DefaultPageSize = 20;
-        private const int MaxPageSize = 200;
-
         public static TeacherQueryDto Normalize(this TeacherQueryDto teacherQueryDto)
         {
-            var pageNumber = teacherQueryDto?.PageNumber ?? DefaultPageNumber;
-            if (pageNumber < 1)
-            {
-                pageNumber = DefaultPageNumber;
-            }
-
-            var pageSize = teacherQueryDto?.PageSize ?? DefaultPageSize;
-            if (pageSize < 1)
-            {
-                pageSize = DefaultPageSize;
-            }
-            if (pageSize > MaxPageSize)
-            {
-                pageSize = MaxPageSize;
-            }
-
-            var search = teacherQueryDto?.Search?.Trim();
-            if (string.IsNullOrWhiteSpace(search))
-            {
-                search = null;
-            }
-
-
-            var filterBy = teacherQueryDto?.FilterBy ?? FilterBy.None;
-
-
-            // Infer filter when caller provides parameters but doesn't set FilterBy explicitly
-            if (filterBy == FilterBy.None && search is not null)
-            {
-                filterBy = FilterBy.Search;
-            }
-            if (filterBy != FilterBy.Search)
-            {
-                search = null;
-            }
-            return teacherQueryDto.ToTeacherQueryDto(filterBy, pageNumber, pageSize, search);      
+            return teacherQueryDto.QueryNormalize(
+            (dto, pageNumber, pageSize, FilterBy, search) =>
+                dto.ToTeacherQueryDto(FilterBy, pageNumber, pageSize, search)
+            );
         }
     }
 }

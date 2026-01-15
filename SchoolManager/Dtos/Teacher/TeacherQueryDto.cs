@@ -4,11 +4,12 @@ namespace SchoolManager.Dtos.Teacher
 {
     public enum TeacherSortBy
     {
-        Name,
+        FirstName,
+        LastName,
         Email
     }
     public class TeacherQueryDto:QueryDto
     {
-        public TeacherSortBy SortBy { get; init; } = TeacherSortBy.Name;
+        public TeacherSortBy SortBy { get; init; } = TeacherSortBy.FirstName;
     }
 }

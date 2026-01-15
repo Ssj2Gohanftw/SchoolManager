@@ -31,5 +31,15 @@ namespace SchoolManager.Extensions
             services.AddScoped<IApiService, ApiService>();
             return services;
         }
+        public static IServiceCollection AddClient(this IServiceCollection services) 
+        {
+            services.AddHttpClient("University", client =>
+            {
+                client.BaseAddress = new Uri("http://universities.hipolabs.com/");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("User-Agent", "SchoolManager/1.0");
+            });
+            return services;
+        }
     }
 }

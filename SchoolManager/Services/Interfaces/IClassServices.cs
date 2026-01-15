@@ -11,7 +11,7 @@ namespace SchoolManager.Services.Interfaces
         Task<bool> UpdateClassAsync(Guid id, UpdateClassDto updateClassDto);
         Task<bool> DeleteClassAsync(Guid id);
         Task<Class?> AddClassAsync(AddClassDto addClassDto);
-        Task<PagedResults<ClassesDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto);
+        Task<PagedResults<ClassDetailsDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto);
 
     }
 }

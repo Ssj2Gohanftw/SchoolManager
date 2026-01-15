@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
@@ -6,6 +7,7 @@ using SchoolManager.Dtos.Teacher;
 using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Teachers;
 using SchoolManager.Models.Entities;
+using System.Linq.Expressions;
 
 
 namespace SchoolManager.Data.Repositories
@@ -31,8 +33,14 @@ namespace SchoolManager.Data.Repositories
             IOrderedQueryable<Teacher> orderedQuery;
             switch (sortBy, desc)
             {
-                case (TeacherSortBy.Name, false):
-                    orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
+                case (TeacherSortBy.FirstName, true):
+                    orderedQuery = query.OrderByDescending(t => t.FirstName);
+                    break;
+                case (TeacherSortBy.LastName, false):
+                    orderedQuery = query.OrderBy(t => t.LastName);
+                    break;
+                case (TeacherSortBy.LastName, true):
+                    orderedQuery = query.OrderByDescending(t => t.LastName);
                     break;
                 case (TeacherSortBy.Email, false):
                     orderedQuery = query.OrderBy(t => t.Email);
@@ -41,57 +49,45 @@ namespace SchoolManager.Data.Repositories
                     orderedQuery = query.OrderByDescending(t => t.Email);
                     break;
                 default:
-                    orderedQuery = query.OrderBy(t => t.FirstName).ThenBy(t => t.LastName);
+                    orderedQuery = query.OrderBy(t => t.FirstName);
                     break;
             }
-            ;
+            
             return orderedQuery;
         }
-        private static IQueryable<Teacher> ApplyTeacherSearch(IQueryable<Teacher> query, string search)
-        {
-            search = search.Trim();
+        //private static IQueryable<Teacher> ApplyTeacherSearch(IQueryable<Teacher> query, string search)
+        //{
+        //    search = search.Trim();
 
-            // Tokenize "john doe" -> ["john","doe"]
-            var tokens = search
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        //    // Tokenize "john doe" -> ["john","doe"]
+        //    var tokens = search
+        //        .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            // 1) Token approach: each token must match either first or last name (AND across tokens)
-            foreach (var token in tokens)
-            {
-                var t = token;
-                query = query.Where(x =>
-                    EF.Functions.ILike(x.FirstName, $"%{t}%") ||
-                    EF.Functions.ILike(x.LastName, $"%{t}%") ||
-                    EF.Functions.ILike(x.Email, $"%{t}%")
-                );
-            }
+        //    // 1) Token approach: each token must match either first or last name (AND across tokens)
+        //    foreach (var token in tokens)
+        //    {
+        //        var t = token;
+        //        query = query.Where(x =>
+        //            EF.Functions.ILike(x.FirstName, $"%{t}%") ||
+        //            EF.Functions.ILike(x.LastName, $"%{t}%") ||
+        //            EF.Functions.ILike(x.Email, $"%{t}%")
+        //        );
+        //    }
 
-            //// 2) Full-string approach to support exact-ish "first last" and "last first"
-            //// (keeps behavior intuitive when search contains spaces)
-            //query = query.Where(x =>
-            //    x.Email.Contains(search) ||
-            //    (x.FirstName + " " + x.LastName).Contains(search) ||
-            //    (x.LastName + " " + x.FirstName).Contains(search));
-
-            return query;
-        }
+        //    return query;
+        //}
         public async Task<PagedResults<Teacher>> GetPagedAsync(TeacherQueryDto teacherQueryDto)
         {
             teacherQueryDto = teacherQueryDto.Normalize();
+            var searchFilter=SearchFilter(teacherQueryDto.Search);
 
             IQueryable<Teacher> query = _entity
                 .AsNoTracking()
                 .Include(t => t.SubjectTeachers)
                     .ThenInclude(st => st.Class)
                 .Include(t => t.SubjectTeachers)
-                    .ThenInclude(st => st.Subject);
-
-            query = teacherQueryDto.FilterBy switch
-            {
-                FilterBy.Search when !string.IsNullOrWhiteSpace(teacherQueryDto.Search) =>
-                    ApplyTeacherSearch(query, teacherQueryDto.Search!),
-                _ => query
-            };
+                    .ThenInclude(st => st.Subject)
+                .Where(searchFilter);
 
             var ordered = ApplySorting(query, teacherQueryDto.SortBy, teacherQueryDto.SortOrder)
                 .ThenBy(t => t.TeacherId);
@@ -104,13 +100,19 @@ namespace SchoolManager.Data.Repositories
                 .ToListAsync();
 
             return results.ToPagedResults(teacherQueryDto.PageNumber, teacherQueryDto.PageSize, totalCount);
-            //return new PagedResults<Teacher>
-            //{
-            //    Results = results,
-            //    PageNumber = teacherQueryDto.PageNumber,
-            //    PageSize = teacherQueryDto.PageSize,
-            //    TotalCount = totalCount
-            //};
+            
+        }
+        public static Expression<Func<Teacher,bool>> SearchFilter(string? search) 
+        {
+            var query = PredicateBuilder.New<Teacher>(true);
+            if (string.IsNullOrWhiteSpace(search)) 
+            {
+                return PredicateBuilder.New<Teacher>(false);
+            }
+            query = query.Or(t => t.FirstName.Contains(search));
+            query = query.Or(t => t.LastName.Contains(search));
+            query = query.Or(t => t.Email.Contains(search));
+            return query;
         }
     }
 }

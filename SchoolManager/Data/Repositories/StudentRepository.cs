@@ -104,16 +104,14 @@ namespace SchoolManager.Data.Repositories
         {
             studentQueryDto = studentQueryDto.Normalize();
             var searchFilter = SearchFilter(studentQueryDto.Search);
-            //.Expand();
+
             IQueryable<Student> query = _entity
                 .AsNoTracking()
                 .AsExpandableEFCore()
                 .Include(s => s.Class)
                 .Include(s => s.StudentSubjects)
-                    .ThenInclude(s => s.Subject);
-
-
-            query = query.Where(searchFilter);
+                    .ThenInclude(s => s.Subject)
+                .Where(searchFilter);
 
             var orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
@@ -125,7 +123,11 @@ namespace SchoolManager.Data.Repositories
                 .Take(studentQueryDto.PageSize)
                 .ToListAsync();
 
-            return results.ToPagedResults<Student>(pageNumber: studentQueryDto.PageNumber, pageSize: studentQueryDto.PageSize, totalCount: totalCount);
+            return results.ToPagedResults<Student>(
+                pageNumber: studentQueryDto.PageNumber,
+                pageSize: studentQueryDto.PageSize,
+                totalCount: totalCount
+                );
         }
         public static Expression<Func<Student, bool>> SearchFilter(string? search)
         {

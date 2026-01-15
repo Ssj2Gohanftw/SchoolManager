@@ -77,20 +77,13 @@ namespace SchoolManager.Data.Repositories
                 .Take(subjectQueryDto.PageSize)
                 .ToListAsync();
             return results.ToPagedResults(subjectQueryDto.PageNumber, subjectQueryDto.PageSize, totalCount);
-            //return new PagedResults<Subject>
-            //{
-            //    Results = results,
-            //    PageNumber = subjectQueryDto.PageNumber,
-            //    PageSize = subjectQueryDto.PageSize,
-            //    TotalCount = totalCount
-            //};
         }
         public static Expression<Func<Subject, bool>> SearchFilter(string? search)
         {
-            var query = PredicateBuilder.New<Subject>(false);
+            var query = PredicateBuilder.New<Subject>(true);
             if (string.IsNullOrWhiteSpace(search))
             {
-                return PredicateBuilder.New<Subject>(true);
+                return PredicateBuilder.New<Subject>(false);
             }
             query = query.Or(sub => sub.Name.Contains(search));
             return query;

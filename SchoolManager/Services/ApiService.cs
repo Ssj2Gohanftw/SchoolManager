@@ -24,7 +24,6 @@ namespace SchoolManager.Services
                     throw new HttpRequestException(message: "No Results found!");
 
                 }
-                ;
                 return response;
             }
             catch (HttpIOException ex)

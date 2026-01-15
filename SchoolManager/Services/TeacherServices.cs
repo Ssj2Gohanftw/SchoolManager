@@ -23,12 +23,6 @@ namespace SchoolManager.Services
             return teachers.Select(t => t.ToTeacherSummaryDto()).ToList();
         }
 
-        //public async Task<TeacherSummaryDto?> GetTeacherByIdAsync(Guid id)
-        //{
-        //    var teacher = await _teacherRepository.GetByIdAsync(id);
-        //    return teacher?.ToTeacherSummaryDto();
-        //}
-
         public async Task<TeacherDetailsDto?> GetTeacherByIdAsync(Guid id)
         {
             var teacher = await _teacherRepository.GetByIdAsync(id);

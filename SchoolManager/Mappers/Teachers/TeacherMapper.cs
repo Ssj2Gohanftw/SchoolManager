@@ -48,12 +48,13 @@ namespace SchoolManager.Mappers.Teachers
             {
                 FilterBy = filter,
                 Search = search,
-                SortBy = teacherQueryDto?.SortBy ?? TeacherSortBy.Name,
+                SortBy = teacherQueryDto?.SortBy ?? TeacherSortBy.FirstName,
                 SortOrder = teacherQueryDto?.SortOrder ?? SortOrder.Ascending,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
             };
         }
+
         public static Teacher ToTeacher(this AddTeacherDto addTeacherDto)
         {
             return new Teacher

@@ -23,12 +23,7 @@ options.UseNpgsql(dataSource)
 );
 
 builder.Services.AddServices();
-builder.Services.AddHttpClient("University", client =>
-{
-    client.BaseAddress = new Uri("http://universities.hipolabs.com/");
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-    client.DefaultRequestHeaders.Add("User-Agent", "SchoolManager/1.0");
-});
+builder.Services.AddClient();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 

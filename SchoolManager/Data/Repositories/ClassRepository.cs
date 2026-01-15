@@ -66,6 +66,7 @@ namespace SchoolManager.Data.Repositories
             IQueryable<Class> query = _entity
                 .AsNoTracking()
                 .AsExpandableEFCore()
+                .Include(c => c.Students)
                 .Where(searchFilter);
 
             var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)

@@ -24,6 +24,7 @@ namespace SchoolManager.Controllers
             var limit = universityQueryDto?.Limit;
             var baseUrl = "search?";
 
+
             var url = $"country={country}&name={(name)}&limit={limit}";
 
             if ((string.IsNullOrEmpty(country)) && (string.IsNullOrEmpty(name)))

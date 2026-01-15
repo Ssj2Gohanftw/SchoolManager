@@ -71,5 +71,5 @@ namespace SchoolManager.Mappers.Students
                 student.AdditionalInfo = updateStudentDto.AdditionalInfo;
             }
         }
+        }
     }
-}
