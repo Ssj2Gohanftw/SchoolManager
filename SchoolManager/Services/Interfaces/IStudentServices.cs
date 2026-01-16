@@ -14,5 +14,8 @@ namespace SchoolManager.Services.Interfaces
         Task<bool> AssignStudentToClassAsync(Guid studentId, AssignStudentClassDto assignStudentClassDto);
         Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto);
 
+        Task<List<StudentHobbiesDto>> GetStudentHobbies();
+
+        //Task<>
     }
 }

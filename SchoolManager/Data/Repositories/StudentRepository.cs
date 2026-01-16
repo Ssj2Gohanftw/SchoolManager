@@ -160,5 +160,12 @@ namespace SchoolManager.Data.Repositories
             return query;
         }
 
+        public async Task<List<Student>> GetHobbies()
+        {
+            return await _entity
+                .Where(s=>s.AdditionalInfo!=null && s.AdditionalInfo.Hobbies!=null)
+                .ToListAsync();
+        }
     }
-}
+    }
+

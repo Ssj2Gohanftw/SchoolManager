@@ -25,12 +25,23 @@ namespace SchoolManager.Mappers.Students
                 StudentId = student.StudentId,
                 FirstName = student.FirstName,
                 LastName = student.LastName,
+                Gender=student.Gender,
                 DateOfBirth = student.DateOfBirth,
                 Email = student.Email,
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name,
                 AdditionalInfo = student.AdditionalInfo,
                 Subjects = student.StudentSubjects?.Select(ss => ss.ToStudentSubjectDto()).ToList() ?? new List<StudentSubjectDto>()
+            };
+
+        }
+        public static StudentHobbiesDto ToStudentHobbiesDto(this Student student)
+        {
+            return new StudentHobbiesDto()
+            {
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Hobbies = student.AdditionalInfo?.Hobbies
             };
 
         }
@@ -52,24 +63,20 @@ namespace SchoolManager.Mappers.Students
             {
                 FirstName = addStudent.FirstName,
                 LastName = addStudent.LastName,
-                Email = addStudent.Email,
+                Gender=addStudent.Gender,
                 DateOfBirth = addStudent.DateOfBirth,
+                Email = addStudent.Email,
                 AdditionalInfo = addStudent.AdditionalInfo
             };
 
         }
-        public static void ToUpdateStudent(this UpdateStudentDto updateStudentDto, Student student, Guid classId)
+        public static void ToUpdateStudent(this Student student, UpdateStudentDto updateStudentDto)
         {
-
-            student.FirstName = updateStudentDto.FirstName;
-            student.LastName = updateStudentDto.LastName;
-            student.Email = updateStudentDto.Email;
-            student.DateOfBirth = updateStudentDto.DateOfBirth;
-            student.ClassId = classId;
-            if (updateStudentDto.AdditionalInfo != null)
-            {
-                student.AdditionalInfo = updateStudentDto.AdditionalInfo;
-            }
+            if (updateStudentDto.FirstName != null) student.FirstName = updateStudentDto.FirstName;
+            if (updateStudentDto.LastName != null) student.LastName = updateStudentDto.LastName;
+            if (updateStudentDto.DateOfBirth.HasValue) student.DateOfBirth = updateStudentDto.DateOfBirth.Value;
+            if (updateStudentDto.Email != null) student.Email = updateStudentDto.Email;
+            if (updateStudentDto.AdditionalInfo != null) student.AdditionalInfo = updateStudentDto.AdditionalInfo;
         }
         }
     }

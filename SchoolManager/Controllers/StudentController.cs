@@ -97,5 +97,12 @@ namespace SchoolManager.Controllers
             var result = await _studentServices.GetPagedStudentsAsync(studentQueryDto);
             return Ok(result);
         }
+
+        [HttpGet("hobbies")]
+        public async Task<IActionResult> GetHobbies()
+        {
+            var result = await _studentServices.GetStudentHobbies();
+            return Ok(result);
+        }
     }
 }

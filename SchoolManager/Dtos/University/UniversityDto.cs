@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace SchoolManager.Dtos.University
 {
@@ -19,7 +20,7 @@ namespace SchoolManager.Dtos.University
         [JsonPropertyName("web_pages")]
         public List<string>? WebPages { get; set; }
 
-        [JsonPropertyName("state-province")]
+        [FromQuery(Name = "state-province")]
         public string? StateProvince { get; set; }
     }
 }

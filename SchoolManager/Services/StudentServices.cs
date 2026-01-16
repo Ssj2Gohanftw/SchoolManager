@@ -38,7 +38,7 @@ namespace SchoolManager.Services
             await _studentRepository.Update(student);
             return true;
         }
-
+        
         public async Task<bool> DeleteStudentAsync(Guid id)
         {
             var student = await _studentRepository.GetByIdAsync(id);
@@ -82,7 +82,11 @@ namespace SchoolManager.Services
             return student;
         }
 
-
+        public async Task<List<StudentHobbiesDto>> GetStudentHobbies()
+        {
+            var student = await _studentRepository.GetHobbies();
+            return student.Select(s => s.ToStudentHobbiesDto()).ToList();
+        }
 
         public async Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto)
         {
@@ -91,14 +95,7 @@ namespace SchoolManager.Services
             {
                 return false;
             }
-
-            var _class = await _classRepository.GetByNameAsync(updateStudentDto.ClassName!);
-            if (_class == null)
-            {
-                throw new InvalidOperationException("Class doesn't exist");
-            }
-
-            updateStudentDto.ToUpdateStudent(student, _class.ClassId);
+            student.ToUpdateStudent(updateStudentDto);
             try
             {
                 await _studentRepository.Update(student);

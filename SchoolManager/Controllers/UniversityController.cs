@@ -22,12 +22,13 @@ namespace SchoolManager.Controllers
             var country = universityQueryDto?.Country?.Trim();
             var name = universityQueryDto?.Name?.Trim();
             var limit = universityQueryDto?.Limit;
+            var province = universityQueryDto?.StateProvince?.Trim();
             var baseUrl = "search?";
 
 
-            var url = $"country={country}&name={(name)}&limit={limit}";
+            var url = $"country={country}&name={(name)}&limit={limit}&state-province={province}";
 
-            if ((string.IsNullOrEmpty(country)) && (string.IsNullOrEmpty(name)))
+            if ((string.IsNullOrEmpty(country)) && (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(province)))
             {
                 return BadRequest();
 
