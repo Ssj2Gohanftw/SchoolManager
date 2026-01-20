@@ -6,7 +6,7 @@ using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
 using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Subjects;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
@@ -22,7 +22,7 @@ namespace SchoolManager.Data.Repositories
         public override async Task<Subject?> GetByIdAsync(Guid id)
         {
             return await _entity
-                .AsNoTracking()
+                //.AsNoTracking()
                 .Include(sub => sub.SubjectTeachers)
                     .ThenInclude(st => st.Teacher)
                 .Include(sub => sub.SubjectTeachers)
@@ -80,13 +80,14 @@ namespace SchoolManager.Data.Repositories
         }
         public static Expression<Func<Subject, bool>> SearchFilter(string? search)
         {
-            var query = PredicateBuilder.New<Subject>(true);
             if (string.IsNullOrWhiteSpace(search))
             {
-                return PredicateBuilder.New<Subject>(false);
+                return PredicateBuilder.New<Subject>(true);
             }
+            var query = PredicateBuilder.New<Subject>(false);
             query = query.Or(sub => sub.Name.Contains(search));
             return query;
         }
+
     }
 }

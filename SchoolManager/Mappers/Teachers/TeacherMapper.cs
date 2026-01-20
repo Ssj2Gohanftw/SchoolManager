@@ -1,7 +1,8 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
+
 namespace SchoolManager.Mappers.Teachers
 {
     public static class TeacherMapper

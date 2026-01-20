@@ -1,4 +1,4 @@
-﻿using SchoolManager.Models.Entities;
+﻿using SchoolManager.Models;
 
 namespace SchoolManager.Dtos.Student
 {

@@ -14,7 +14,7 @@ namespace SchoolManager.Data.Repositories
             _entity = _dbContext.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
             await _entity.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
@@ -30,14 +30,14 @@ namespace SchoolManager.Data.Repositories
             return await _entity.FindAsync(id);
         }
 
-        public async Task<bool> Remove(T entity)
+        public virtual async Task<bool> Remove(T entity)
         {
             _entity.Remove(entity);
             await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> Update(T entity)
+        public virtual async Task<bool> Update(T entity)
         {
             _entity.Update(entity);
             await _dbContext.SaveChangesAsync();

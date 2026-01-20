@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Data.Repositories
 {

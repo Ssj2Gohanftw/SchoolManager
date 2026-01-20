@@ -67,7 +67,7 @@ namespace SchoolManager.Migrations
             migrationBuilder.Sql(@"
                 UPDATE ""Students"" s
                 SET ""ClassId"" = (SELECT ""ClassId"" FROM ""Class"" ORDER BY ""ClassId"" LIMIT 1)
-                WHERE ""ClassId"" IS NULL
+                WHERE ""ClassId"" ==null
                   AND EXISTS (SELECT 1 FROM ""Class"");
             ");
         }

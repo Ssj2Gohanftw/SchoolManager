@@ -6,7 +6,7 @@ using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
 using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Students;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories

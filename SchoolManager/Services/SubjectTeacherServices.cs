@@ -1,12 +1,11 @@
 ﻿using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.SubjectTeacher;
 using SchoolManager.Mappers;
-using SchoolManager.Models.Entities;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
 {
-    public class SubjectTeacherServices : ISubjectTeacherServices
+    public class SubjectTeacherServices :ISubjectTeacherServices
     {
         private readonly ISubjectTeacherRepository _subjectTeacherRepository;
         private readonly ITeacherRepository _teacherRepository;
@@ -17,7 +16,7 @@ namespace SchoolManager.Services
             ITeacherRepository teacherRepository,
             IClassRepository classRepository,
             ISubjectRepository subjectRepository
-            )
+            ) 
         {
             _subjectTeacherRepository = subjectTeacherRepository;
             _teacherRepository = teacherRepository;
@@ -33,7 +32,7 @@ namespace SchoolManager.Services
             }
             var classExists = await _classRepository.GetByIdAsync(addSubjectTeacherDto.ClassId);
 
-            if (classExists is null)
+            if (classExists == null)
             {
                 throw new InvalidOperationException("Class not found");
             }
@@ -43,12 +42,7 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Subject not found");
             }
 
-            var assignment = new SubjectTeacher
-            {
-                TeacherId = addSubjectTeacherDto.TeacherId,
-                ClassId = addSubjectTeacherDto.ClassId,
-                SubjectId = addSubjectTeacherDto.SubjectId
-            };
+            var assignment = addSubjectTeacherDto.ToSubjectTeacher(); 
             await _subjectTeacherRepository.AddAsync(assignment);
         }
 
@@ -77,14 +71,9 @@ namespace SchoolManager.Services
             ).ToList();
         }
 
-        public async Task<bool> UnassignAsync(DeleteSubjectTeacherDto subjectTeacherDto)
+        public async Task<bool> UnassignAsync(DeleteSubjectTeacherDto deleteSubjectTeacherDto)
         {
-            var unassignTeacher = new SubjectTeacher
-            {
-                TeacherId = subjectTeacherDto.TeacherId,
-                ClassId = subjectTeacherDto.ClassId,
-                SubjectId = subjectTeacherDto.SubjectId
-            };
+            var unassignTeacher = deleteSubjectTeacherDto.ToUnassignSubjectTeacher();
             return await _subjectTeacherRepository.Remove(unassignTeacher);
         }
     }

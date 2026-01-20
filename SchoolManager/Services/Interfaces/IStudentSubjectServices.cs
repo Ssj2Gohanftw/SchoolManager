@@ -1,5 +1,5 @@
 using SchoolManager.Dtos.StudentSubject;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Services.Interfaces
 {

@@ -3,7 +3,8 @@ using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
 using SchoolManager.Mappers.Classes;
 using SchoolManager.Mappers.Teachers;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
+
 namespace SchoolManager.Mappers.Subjects
 {
     public static class SubjectMapper

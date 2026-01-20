@@ -1,5 +1,5 @@
 ﻿using SchoolManager.Dtos.SubjectTeacher;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Mappers
 {
@@ -17,5 +17,24 @@ namespace SchoolManager.Mappers
                 SubjectName = subjectTeacher.Subject.Name
             };
         }
+        public static SubjectTeacher ToSubjectTeacher(this AddSubjectTeacherDto addSubjectTeacherDto)
+        {
+            return new SubjectTeacher
+            {
+                TeacherId = addSubjectTeacherDto.TeacherId,
+                ClassId = addSubjectTeacherDto.ClassId,
+                SubjectId = addSubjectTeacherDto.SubjectId,
+            };
+        }
+        public static SubjectTeacher ToUnassignSubjectTeacher(this DeleteSubjectTeacherDto deleteSubjectTeacherDto)
+        {
+            return new SubjectTeacher
+            {
+                TeacherId = deleteSubjectTeacherDto.TeacherId,
+                ClassId = deleteSubjectTeacherDto.ClassId,
+                SubjectId = deleteSubjectTeacherDto.SubjectId,
+            };
+        }
+
     }
 }

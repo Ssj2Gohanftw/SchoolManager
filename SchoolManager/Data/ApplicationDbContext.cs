@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Data
 {
@@ -15,7 +15,7 @@ namespace SchoolManager.Data
         public DbSet<Class> Class { get; set; }
         public DbSet<SubjectTeacher> SubjectTeacher { get; set; }
         public DbSet<StudentSubject> StudentSubjects { get; set; }
-
+        public DbSet<SubjectClass> SubjectClasses{ get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -53,6 +53,20 @@ namespace SchoolManager.Data
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            modelBuilder.Entity<SubjectClass>()
+                .HasKey(sc => new{sc.SubjectId,sc.ClassId});
+
+            modelBuilder.Entity<SubjectClass>()
+                .HasOne(sc => sc.Subject)
+                .WithMany(s => s.SubjectClasses)
+                .HasForeignKey(sc => sc.SubjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SubjectClass>()
+                .HasOne(sc => sc.Class)
+                .WithMany(s => s.SubjectClasses)
+                .HasForeignKey(sc => sc.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SubjectTeacher>()
                 .HasKey(st => new { st.TeacherId, st.ClassId, st.SubjectId });

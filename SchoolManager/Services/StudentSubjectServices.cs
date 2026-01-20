@@ -1,6 +1,6 @@
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.StudentSubject;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services

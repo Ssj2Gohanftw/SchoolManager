@@ -6,7 +6,7 @@ using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Teachers;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 using System.Linq.Expressions;
 
 
@@ -104,11 +104,12 @@ namespace SchoolManager.Data.Repositories
         }
         public static Expression<Func<Teacher,bool>> SearchFilter(string? search) 
         {
-            var query = PredicateBuilder.New<Teacher>(true);
-            if (string.IsNullOrWhiteSpace(search)) 
+            if (string.IsNullOrWhiteSpace(search))
             {
-                return PredicateBuilder.New<Teacher>(false);
+                return PredicateBuilder.New<Teacher>(true);
             }
+            var query = PredicateBuilder.New<Teacher>(false);
+           
             query = query.Or(t => t.FirstName.Contains(search));
             query = query.Or(t => t.LastName.Contains(search));
             query = query.Or(t => t.Email.Contains(search));

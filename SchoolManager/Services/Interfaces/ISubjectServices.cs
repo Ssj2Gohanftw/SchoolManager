@@ -1,6 +1,6 @@
 ﻿using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Services.Interfaces
 {

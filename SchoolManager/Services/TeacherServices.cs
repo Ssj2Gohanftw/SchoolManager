@@ -3,7 +3,7 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Mappers.Teachers;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services

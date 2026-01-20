@@ -1,32 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Data.Repositories.Interfaces;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class SubjectTeacherRepository : ISubjectTeacherRepository
+    public class SubjectTeacherRepository :Repository<SubjectTeacher>,ISubjectTeacherRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<SubjectTeacher> _subjectTeachers;
-
-        public SubjectTeacherRepository(ApplicationDbContext dbContext)
+        public SubjectTeacherRepository(ApplicationDbContext dbContext):base(dbContext)
         {
-            _dbContext = dbContext;
-            _subjectTeachers = _dbContext.SubjectTeacher;
+          
         }
-        public async Task AddAsync(SubjectTeacher subjectTeacher)
+        public override async Task AddAsync(SubjectTeacher subjectTeacher)
         {
             if (await Exists(subjectTeacher))
             {
                 return;
             }
-            await _subjectTeachers.AddAsync(subjectTeacher);
+            await _entity.AddAsync(subjectTeacher);
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> Exists(SubjectTeacher subjectTeacher)
         {
-            return await _subjectTeachers.AnyAsync(st =>
+            return await _entity.AnyAsync(st =>
             st.TeacherId == subjectTeacher.TeacherId &&
             st.ClassId == subjectTeacher.ClassId &&
             st.SubjectId == subjectTeacher.SubjectId
@@ -35,7 +31,7 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<List<SubjectTeacher>> GetAssignmentsForClass(Guid classId)
         {
-            return await _subjectTeachers
+            return await _entity
                 .Where(st => st.ClassId == classId)
                 .Include(st => st.Teacher)
                 .Include(st => st.Class)
@@ -45,7 +41,7 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<List<SubjectTeacher>> GetAssignmentsForSubject(Guid subjectId)
         {
-            return await _subjectTeachers
+            return await _entity
                 .Where(st => st.SubjectId == subjectId)
                 .Include(st => st.Teacher)
                 .Include(st => st.Class)
@@ -55,7 +51,7 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<List<SubjectTeacher>> GetAssignmentsForTeacher(Guid teacherId)
         {
-            return await _subjectTeachers
+            return await _entity
               .Where(st => st.TeacherId == teacherId)
               .Include(st => st.Teacher)
               .Include(st => st.Class)
@@ -63,9 +59,9 @@ namespace SchoolManager.Data.Repositories
               .ToListAsync();
         }
 
-        public async Task<bool> Remove(SubjectTeacher subjectTeacher)
+        public override async Task<bool> Remove(SubjectTeacher subjectTeacher)
         {
-            var teacher = await _subjectTeachers.FindAsync(
+            var teacher = await _entity.FindAsync(
                     subjectTeacher.TeacherId,
                     subjectTeacher.ClassId,
                     subjectTeacher.SubjectId);
@@ -73,7 +69,7 @@ namespace SchoolManager.Data.Repositories
             {
                 return false;
             }
-            _subjectTeachers.Remove(teacher);
+            _entity.Remove(teacher);
             await _dbContext.SaveChangesAsync();
             return true;
         }

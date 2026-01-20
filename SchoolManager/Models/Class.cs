@@ -1,4 +1,4 @@
-﻿namespace SchoolManager.Models.Entities
+﻿namespace SchoolManager.Models
 {
     public class Class
     {
@@ -9,5 +9,7 @@
         public List<Student> Students { get; set; } = new();
         public List<SubjectTeacher> SubjectTeachers { get; set; }
             = new List<SubjectTeacher>();
+        public List<SubjectClass> SubjectClasses { get; set; }
+            = new List<SubjectClass>();
     }
 }

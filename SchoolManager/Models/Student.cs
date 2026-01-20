@@ -1,4 +1,4 @@
-﻿namespace SchoolManager.Models.Entities
+﻿namespace SchoolManager.Models
 {
     public class StudentMetaData
     {

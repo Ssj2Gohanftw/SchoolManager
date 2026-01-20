@@ -1,5 +1,5 @@
 ﻿using SchoolManager.Dtos.Student;
-using SchoolManager.Models.Entities;
+using SchoolManager.Models;
 
 namespace SchoolManager.Mappers
 {
