@@ -1,4 +1,4 @@
-﻿namespace SchoolManager.Dtos.Class
+﻿namespace SchoolManager.Dtos.StudentClass
 {
     //Helper Dto that is used to return student details which is used in classdetails Dto
     public class StudentClassDto

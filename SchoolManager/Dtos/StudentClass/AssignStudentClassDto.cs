@@ -1,4 +1,4 @@
-﻿namespace SchoolManager.Dtos.Student
+﻿namespace SchoolManager.Dtos.StudentClass
 {
     public class AssignStudentClassDto
     {

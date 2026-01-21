@@ -1,4 +1,5 @@
-﻿using SchoolManager.Models;
+﻿using SchoolManager.Dtos.StudentSubject;
+using SchoolManager.Models;
 
 namespace SchoolManager.Dtos.Student
 {
@@ -12,6 +13,7 @@ namespace SchoolManager.Dtos.Student
         public required string Email { get; set; }
         public Guid? ClassId { get; set; }
         public string? ClassName { get; set; }
+        public string? Branch { get; set; }
         public List<StudentSubjectDto> Subjects { get; set; } = new();
         public StudentMetaData? AdditionalInfo { get; set; }
     }

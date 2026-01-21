@@ -23,8 +23,10 @@ namespace SchoolManager.Data.Repositories
         {
             return await _entity
                 .Include(s => s.Class)
-                .Include(s => s.StudentSubjects)
-                    .ThenInclude(ss => ss.Subject)
+                    .ThenInclude(c=>c.SubjectClasses)
+                    .ThenInclude(c=>c.Subject)
+                //.Include(s => s.StudentSubjects)
+                //    .ThenInclude(ss => ss.Subject)
                 .ToListAsync();
         }
 
@@ -32,8 +34,12 @@ namespace SchoolManager.Data.Repositories
         {
             return await _entity
                 .Include(s => s.Class)
-                .Include(s => s.StudentSubjects)
-                    .ThenInclude(ss => ss.Subject)
+                .ThenInclude(c => c.SubjectClasses)
+                    .ThenInclude(c => c.Subject)
+                //.Include(s => s.StudentSubjects)
+                //.ThenInclude(ss => ss.Subject)
+                //.ThenInclude(ss=>ss.SubjectClasses)
+                //.ThenInclude(ss=>ss.Subject.Name)
                 .FirstOrDefaultAsync(s => s.StudentId == id);
         }
 
@@ -109,9 +115,11 @@ namespace SchoolManager.Data.Repositories
                 .AsNoTracking()
                 .AsExpandableEFCore()
                 .Include(s => s.Class)
-                .Include(s => s.StudentSubjects)
-                    .ThenInclude(s => s.Subject)
-                .Where(searchFilter);
+                .ThenInclude(c => c.SubjectClasses)
+                    .ThenInclude(c=> c.Subject)
+                //.Include(s => s.Subjects)
+                .Where(s => s.Class.Branch != null)
+                    .Where(searchFilter);
 
             var orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
@@ -147,7 +155,7 @@ namespace SchoolManager.Data.Repositories
             // s.AdditionalInfo.Hobbies != null &&
             // s.AdditionalInfo.Hobbies.Any(hobby => hobby.Contains(search))
             //);
-
+            query = query.Or(s => s.Gender.Contains(search));
             var fullName = search.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (fullName.Length >= 2)
             {

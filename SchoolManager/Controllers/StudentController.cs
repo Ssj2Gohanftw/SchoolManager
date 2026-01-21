@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Dtos.Student;
+using SchoolManager.Dtos.StudentClass;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Services.Interfaces;
 

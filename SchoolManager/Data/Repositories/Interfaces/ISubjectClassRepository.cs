@@ -8,5 +8,6 @@ namespace SchoolManager.Data.Repositories.Interfaces
         Task AssignSubjectsToClass(List<Guid> subjectIds,Guid classId);
             //IReadOnlyCollection<Guid> subjectIds); 
             //Guid classId);
+        
     }
 }

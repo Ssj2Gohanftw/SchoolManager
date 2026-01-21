@@ -1,5 +1,6 @@
 ﻿using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
+using SchoolManager.Dtos.StudentClass;
 using SchoolManager.Models;
 
 namespace SchoolManager.Services.Interfaces

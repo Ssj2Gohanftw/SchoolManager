@@ -30,8 +30,13 @@ namespace SchoolManager.Mappers.Students
                 Email = student.Email,
                 ClassId = student.ClassId,
                 ClassName = student.Class?.Name,
+                Branch=student.Class.Branch.ToString(),
                 AdditionalInfo = student.AdditionalInfo,
-                Subjects = student.StudentSubjects?.Select(ss => ss.ToStudentSubjectDto()).ToList() ?? new List<StudentSubjectDto>()
+                //Subjects = student.StudentSubjects?.Select(ss => ss.ToStudentSubjectDto()).ToList() ?? new List<StudentSubjectDto>()
+                Subjects = student?.Class?
+                .SubjectClasses?
+                .Select(ss=>ss.ToStudentSubjectDto())
+                .ToList() 
             };
 
         }

@@ -28,6 +28,9 @@ namespace SchoolManager.Extensions
             services.AddScoped<ISubjectTeacherRepository, SubjectTeacherRepository>();
             services.AddScoped<ISubjectTeacherServices, SubjectTeacherServices>();
 
+            services.AddScoped<ISubjectClassRepository, SubjectClassRepository>();
+            services.AddScoped<ISubjectClassServices, SubjectClassServices>();
+            
             services.AddScoped<IApiService, ApiService>();
             return services;
         }

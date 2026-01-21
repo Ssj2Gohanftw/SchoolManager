@@ -2,6 +2,7 @@
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
+using SchoolManager.Dtos.StudentClass;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;

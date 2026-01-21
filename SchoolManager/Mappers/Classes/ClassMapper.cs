@@ -1,6 +1,7 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
+using SchoolManager.Dtos.StudentClass;
 using SchoolManager.Models;
 namespace SchoolManager.Mappers.Classes
 {
@@ -31,7 +32,9 @@ namespace SchoolManager.Mappers.Classes
             {
                 ClassId = _class.ClassId,
                 Name = _class.Name,
-                Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList()
+                Students = _class.Students.Select(s => s.ToStudentClassDto()).ToList(),
+                Branch = _class.Branch,
+                Subjects = _class.SubjectClasses?.Select(c => c.Subject.Name).ToList()
             };
         }
         public static ClassQueryDto ToClassQueryDto(this ClassQueryDto classQueryDto, int pageNumber, int pageSize, FilterBy filter, string? search)
@@ -50,12 +53,14 @@ namespace SchoolManager.Mappers.Classes
         {
             return new Class()
             {
-                Name = addClassDto.Name
+                Name = addClassDto.Name,
+                Branch = addClassDto.Branch
             };
         }
         public static void ToUpdateClass(this UpdateClassDto updateClassDto, Class _class)
         {
             _class.Name = updateClassDto.Name.Trim();
+            _class.Branch = updateClassDto.Branch;
         }
     }
 }

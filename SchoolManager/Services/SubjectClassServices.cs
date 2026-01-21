@@ -44,6 +44,10 @@ namespace SchoolManager.Services
                 .Select(sub => sub.SubjectId)
                 .ToHashSet();
 
+            var missing = subjectsIdToAssign.Where(id => !existingSubjectIds.Contains(id)).ToList();
+            if (missing.Count > 0)
+                throw new Exception($"Subject(s) not found: {string.Join(", ", missing)}");
+
             await _subjectClassRepository.AssignSubjectsToClass(subjectsIdToAssign,addSubjectClassDto.ClassId);
             var assignments = await _subjectClassRepository
              .GetAllAsync();

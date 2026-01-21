@@ -18,6 +18,7 @@
         public Guid? ClassId { get; set; }
         public Class? Class { get; set; }
         public List<StudentSubject> StudentSubjects { get; set; } = new();
+        //public List<SubjectClass> Subjects { get; set; } = new();
         public StudentMetaData? AdditionalInfo { get; set; }
     }
 }

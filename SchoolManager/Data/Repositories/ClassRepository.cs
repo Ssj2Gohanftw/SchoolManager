@@ -23,7 +23,7 @@ namespace SchoolManager.Data.Repositories
         {
             return await _entity
                 .Include(c => c.Students)
-                    .ThenInclude(s => s.StudentSubjects)
+                .Include(sc=>sc.SubjectClasses)
                         .ThenInclude(ss => ss.Subject)
                 .FirstOrDefaultAsync(c => c.ClassId == id);
         }
@@ -67,6 +67,8 @@ namespace SchoolManager.Data.Repositories
                 .AsNoTracking()
                 .AsExpandableEFCore()
                 .Include(c => c.Students)
+                .Include(sc => sc.SubjectClasses)
+                        .ThenInclude(ss => ss.Subject)
                 .Where(searchFilter);
 
             var ordered = ApplySorting(query, classQueryDto.SortBy, classQueryDto.SortOrder)
@@ -91,6 +93,7 @@ namespace SchoolManager.Data.Repositories
             var query = PredicateBuilder.New<Class>(false);
 
             query = query.Or(c => c.Name.Contains(search));
+            query = query.Or(c => c.Branch.ToString().Contains(search));
             return query;
         }
 
