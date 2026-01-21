@@ -3,6 +3,7 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.StudentClass;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
@@ -22,19 +23,19 @@ namespace SchoolManager.Services
 
         public async Task<Student?> AddStudentAsync(AddStudentDto addStudentDto)
         {
-            var student = addStudentDto.ToStudent();
+            Student student = addStudentDto.ToStudent();
             await _studentRepository.AddAsync(student);
             return student;
         }
 
         public async Task<bool> AssignStudentToClassAsync(Guid studentId, AssignStudentClassDto assignStudentClassDto)
         {
-            var student = await _studentRepository.GetByIdAsync(studentId);
+            Student? student = await _studentRepository.GetByIdAsync(studentId);
             if (student == null)
             {
                 return false;
             }
-            var _class = await _classRepository.GetByNameAsync(assignStudentClassDto.ClassName!);
+            Class? _class = await _classRepository.GetByNameAsync(assignStudentClassDto.ClassName!);
             student.ClassId = _class?.ClassId;
             await _studentRepository.Update(student);
             return true;
@@ -42,7 +43,7 @@ namespace SchoolManager.Services
         
         public async Task<bool> DeleteStudentAsync(Guid id)
         {
-            var student = await _studentRepository.GetByIdAsync(id);
+            Student? student = await _studentRepository.GetByIdAsync(id);
             if (student == null)
             {
                 return false;
@@ -61,37 +62,41 @@ namespace SchoolManager.Services
 
         public async Task<List<StudentDto>> GetAllAsync()
         {
-            var student = await _studentRepository.GetAllAsync();
+            List<Student> student = await _studentRepository.GetAllAsync();
             return student.Select(s => s.ToStudentDto()).ToList();
         }
 
         public async Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
         {
-            var result = await _studentRepository.GetPagedAsync(studentQueryDto);
-            return new PagedResults<StudentDetailsDto>
+            try
             {
-                Results = result.Results.Select(s => s.ToStudentDetailsDto()).ToList(),
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalCount = result.TotalCount
-            };
+                PagedResults<Student> result = await _studentRepository.GetPagedAsync(studentQueryDto);
+                List<StudentDetailsDto> studentDetails = result.Results.Select(s => s.ToStudentDetailsDto()).ToList();
+                return studentDetails.ToPagedResults(result.PageNumber, result.PageSize, result.TotalCount);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Something went wrong!") ;
+            }
+            
         }
 
         public async Task<Student?> GetStudentByIdAsync(Guid id)
         {
-            var student = await _studentRepository.GetByIdAsync(id);
+            Student? student = await _studentRepository.GetByIdAsync(id);
             return student;
         }
 
         public async Task<List<StudentHobbiesDto>> GetStudentHobbies()
         {
-            var student = await _studentRepository.GetHobbies();
+            List<Student> student = await _studentRepository.GetHobbies();
             return student.Select(s => s.ToStudentHobbiesDto()).ToList();
         }
 
         public async Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto)
         {
-            var student = await _studentRepository.GetByIdAsync(id);
+            Student? student = await _studentRepository.GetByIdAsync(id);
             if (student == null)
             {
                 return false;

@@ -3,6 +3,7 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Mappers.Classes;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
 
@@ -18,13 +19,13 @@ namespace SchoolManager.Services
 
         public async Task<List<ClassesDto>> GetAllAsync()
         {
-            var classes = await _classRepository.GetAllAsync();
+            List<Class> classes = await _classRepository.GetAllAsync();
             return classes.Select(c => c.ToClassesDto()).ToList();
         }
 
         public async Task<ClassDetailsDto?> GetClassByIdAsync(Guid id)
         {
-            var _class = await _classRepository.GetByIdAsync(id);
+            Class? _class = await _classRepository.GetByIdAsync(id);
             return _class?.ToClassDetailsDto();
 
         }
@@ -32,15 +33,15 @@ namespace SchoolManager.Services
         public async Task<Class?> AddClassAsync(AddClassDto addClassDto)
         {
 
-            var className = addClassDto.Name.Trim();
+            string className = addClassDto.Name.Trim();
 
-            var existingClass = await _classRepository.GetByNameAsync(className);
+            Class? existingClass = await _classRepository.GetByNameAsync(className);
             if (existingClass !=null)
             {
                 return null;
             }
 
-            var _class = addClassDto.ToClass();
+            Class _class = addClassDto.ToClass();
             try
             {
 
@@ -56,7 +57,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> UpdateClassAsync(Guid id, UpdateClassDto updateClassDto)
         {
-            var _class = await _classRepository.GetByIdAsync(id);
+            Class? _class = await _classRepository.GetByIdAsync(id);
             if (_class == null)
             {
                 return false;
@@ -76,7 +77,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> DeleteClassAsync(Guid id)
         {
-            var _class = await _classRepository.GetByIdAsync(id);
+            Class? _class = await _classRepository.GetByIdAsync(id);
             if (_class == null)
             {
                 return false;
@@ -94,15 +95,9 @@ namespace SchoolManager.Services
 
         public async Task<PagedResults<ClassDetailsDto>> GetPagedClassesAsync(ClassQueryDto classQueryDto)
         {
-            var result = await _classRepository.GetPagedResultsAsync(classQueryDto);
-            return new PagedResults<ClassDetailsDto>
-            {
-                Results = result.Results.Select(c => c.ToClassDetailsDto()).ToList(),
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalCount = result.TotalCount
-
-            };
+            PagedResults<Class> result = await _classRepository.GetPagedResultsAsync(classQueryDto);
+            List<ClassDetailsDto> classDetails = result.Results.Select(c => c.ToClassDetailsDto()).ToList();
+            return classDetails.ToPagedResults(result.PageNumber, result.PageSize, result.TotalCount);
         }
     }
 }

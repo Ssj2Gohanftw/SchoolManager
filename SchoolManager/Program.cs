@@ -16,12 +16,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options => options.UseInlineDefinitionsForEnums());
-var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-var dataSource = new NpgsqlDataSourceBuilder(connString).EnableDynamicJson().Build();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseNpgsql(dataSource)
-);
-
+builder.Services.AddDb(builder);
 builder.Services.AddServices();
 builder.Services.AddClient();
 builder.Services.AddEndpointsApiExplorer();

@@ -46,7 +46,7 @@ namespace SchoolManager.Data.Repositories
 
         private static IOrderedQueryable<Student> ApplySorting(IQueryable<Student> query, StudentSortBy sortBy, SortOrder SortOrder)
         {
-            var desc = SortOrder == SortOrder.Descending;
+            bool desc = SortOrder == SortOrder.Descending;
             IOrderedQueryable<Student> orderedQuery;
             //This is a switch statement . Here we mutate the query and return it
             switch (sortBy, desc)
@@ -109,7 +109,7 @@ namespace SchoolManager.Data.Repositories
         public async Task<PagedResults<Student>> GetPagedAsync(StudentQueryDto studentQueryDto)
         {
             studentQueryDto = studentQueryDto.Normalize();
-            var searchFilter = SearchFilter(studentQueryDto.Search);
+            Expression<Func<Student, bool>> searchFilter = SearchFilter(studentQueryDto.Search);
 
             IQueryable<Student> query = _entity
                 .AsNoTracking()
@@ -121,17 +121,17 @@ namespace SchoolManager.Data.Repositories
                 .Where(s => s.Class.Branch != null)
                     .Where(searchFilter);
 
-            var orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
+            IOrderedQueryable<Student> orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
                 .ThenBy(s => s.StudentId);
 
-            var totalCount = await orderedQuery.CountAsync();
+            int totalCount = await orderedQuery.CountAsync();
 
-            var results = await orderedQuery
+            List<Student> results = await orderedQuery
                 .Skip((studentQueryDto.PageNumber - 1) * studentQueryDto.PageSize)
                 .Take(studentQueryDto.PageSize)
                 .ToListAsync();
 
-            return results.ToPagedResults<Student>(
+            return results.ToPagedResults(
                 pageNumber: studentQueryDto.PageNumber,
                 pageSize: studentQueryDto.PageSize,
                 totalCount: totalCount

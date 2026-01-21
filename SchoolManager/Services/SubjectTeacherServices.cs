@@ -1,6 +1,7 @@
 ﻿using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.SubjectTeacher;
 using SchoolManager.Mappers;
+using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Services
@@ -25,30 +26,30 @@ namespace SchoolManager.Services
         }
         public async Task AssignAsync(AddSubjectTeacherDto addSubjectTeacherDto)
         {
-            var teacherExists = await _teacherRepository.GetByIdAsync(addSubjectTeacherDto.TeacherId);
+            Teacher? teacherExists = await _teacherRepository.GetByIdAsync(addSubjectTeacherDto.TeacherId);
             if (teacherExists == null)
             {
                 throw new InvalidOperationException("Teacher not found");
             }
-            var classExists = await _classRepository.GetByIdAsync(addSubjectTeacherDto.ClassId);
+            Class? classExists = await _classRepository.GetByIdAsync(addSubjectTeacherDto.ClassId);
 
             if (classExists == null)
             {
                 throw new InvalidOperationException("Class not found");
             }
-            var subjectExists = await _subjectRepository.GetByIdAsync(addSubjectTeacherDto.SubjectId);
+            Subject? subjectExists = await _subjectRepository.GetByIdAsync(addSubjectTeacherDto.SubjectId);
             if (subjectExists == null)
             {
                 throw new InvalidOperationException("Subject not found");
             }
 
-            var assignment = addSubjectTeacherDto.ToSubjectTeacher(); 
+            SubjectTeacher assignment = addSubjectTeacherDto.ToSubjectTeacher();
             await _subjectTeacherRepository.AddAsync(assignment);
         }
 
         public async Task<List<SubjectTeacherDto>> GetAssignmentsForClassAsync(Guid classId)
         {
-            var assignments = await _subjectTeacherRepository.GetAssignmentsForClass(classId);
+            List<SubjectTeacher> assignments = await _subjectTeacherRepository.GetAssignmentsForClass(classId);
             return assignments.Select(a =>
             a.ToSubjectTeacherDto()
             ).ToList();
@@ -56,7 +57,7 @@ namespace SchoolManager.Services
 
         public async Task<List<SubjectTeacherDto>> GetAssignmentsForSubjectAsync(Guid subjectId)
         {
-            var assignments = await _subjectTeacherRepository.GetAssignmentsForSubject(subjectId);
+            List<SubjectTeacher> assignments = await _subjectTeacherRepository.GetAssignmentsForSubject(subjectId);
             return assignments.Select(a =>
             a.ToSubjectTeacherDto()
             ).ToList();
@@ -65,7 +66,7 @@ namespace SchoolManager.Services
 
         public async Task<List<SubjectTeacherDto>> GetAssignmentsForTeacherAsync(Guid teacherId)
         {
-            var assignments = await _subjectTeacherRepository.GetAssignmentsForTeacher(teacherId);
+            List<SubjectTeacher> assignments = await _subjectTeacherRepository.GetAssignmentsForTeacher(teacherId);
             return assignments.Select(a =>
             a.ToSubjectTeacherDto()
             ).ToList();
@@ -73,7 +74,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> UnassignAsync(DeleteSubjectTeacherDto deleteSubjectTeacherDto)
         {
-            var unassignTeacher = deleteSubjectTeacherDto.ToUnassignSubjectTeacher();
+            SubjectTeacher unassignTeacher = deleteSubjectTeacherDto.ToUnassignSubjectTeacher();
             return await _subjectTeacherRepository.Remove(unassignTeacher);
         }
     }

@@ -1,4 +1,7 @@
-﻿using SchoolManager.Data.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using SchoolManager.Data;
+using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
@@ -42,6 +45,15 @@ namespace SchoolManager.Extensions
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("User-Agent", "SchoolManager/1.0");
             });
+            return services;
+        }
+        public static IServiceCollection AddDb(this IServiceCollection services,WebApplicationBuilder builder)
+        {
+            var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var dataSource = new NpgsqlDataSourceBuilder(connString).EnableDynamicJson().Build();
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(dataSource)
+            );
             return services;
         }
     }

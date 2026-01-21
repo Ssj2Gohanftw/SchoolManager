@@ -4,34 +4,31 @@ using SchoolManager.Models;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class StudentSubjectRepository : IStudentSubjectRepository
+    public class StudentSubjectRepository :Repository<StudentSubject>, IStudentSubjectRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly DbSet<StudentSubject> _studentSubjects;
-
-        public StudentSubjectRepository(ApplicationDbContext dbContext)
+       
+        public StudentSubjectRepository(ApplicationDbContext dbContext):base(dbContext)
         {
-            _dbContext = dbContext;
-            _studentSubjects = _dbContext.StudentSubjects;
+            
         }
 
         public async Task AddAsync(StudentSubject studentSubject)
         {
             if (!await ExistsAsync(studentSubject.StudentId, studentSubject.SubjectId))
             {
-                await _studentSubjects.AddAsync(studentSubject);
+                await _entity.AddAsync(studentSubject);
                 await _dbContext.SaveChangesAsync();
             }
         }
 
         public Task<bool> ExistsAsync(Guid studentId, Guid subjectId)
         {
-            return _studentSubjects.AnyAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
+            return _entity.AnyAsync(ss => ss.StudentId == studentId && ss.SubjectId == subjectId);
         }
 
         public async Task<List<Subject>> GetSubjectsForStudentAsync(Guid studentId)
         {
-            return await _studentSubjects
+            return await _entity
                 .Where(ss => ss.StudentId == studentId)
                 .Include(ss => ss.Subject)
                 .Select(ss => ss.Subject)
@@ -40,9 +37,9 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<bool> RemoveAsync(Guid studentId, Guid subjectId)
         {
-            var entity = await _studentSubjects.FindAsync(studentId, subjectId);
+            StudentSubject? entity = await _entity.FindAsync(studentId, subjectId);
             if (entity == null) return false;
-            _studentSubjects.Remove(entity);
+            _entity.Remove(entity);
             await _dbContext.SaveChangesAsync();
             return true;
         }

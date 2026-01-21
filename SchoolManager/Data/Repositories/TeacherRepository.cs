@@ -29,7 +29,7 @@ namespace SchoolManager.Data.Repositories
         }
         private static IOrderedQueryable<Teacher> ApplySorting(IQueryable<Teacher> query, TeacherSortBy sortBy, SortOrder SortOrder)
         {
-            var desc = SortOrder == SortOrder.Descending;
+            bool desc = SortOrder == SortOrder.Descending;
             IOrderedQueryable<Teacher> orderedQuery;
             switch (sortBy, desc)
             {
@@ -79,7 +79,7 @@ namespace SchoolManager.Data.Repositories
         public async Task<PagedResults<Teacher>> GetPagedAsync(TeacherQueryDto teacherQueryDto)
         {
             teacherQueryDto = teacherQueryDto.Normalize();
-            var searchFilter=SearchFilter(teacherQueryDto.Search);
+            Expression<Func<Teacher, bool>> searchFilter =SearchFilter(teacherQueryDto.Search);
 
             IQueryable<Teacher> query = _entity
                 .AsNoTracking()
@@ -89,12 +89,12 @@ namespace SchoolManager.Data.Repositories
                     .ThenInclude(st => st.Subject)
                 .Where(searchFilter);
 
-            var ordered = ApplySorting(query, teacherQueryDto.SortBy, teacherQueryDto.SortOrder)
+            IOrderedQueryable<Teacher> ordered = ApplySorting(query, teacherQueryDto.SortBy, teacherQueryDto.SortOrder)
                 .ThenBy(t => t.TeacherId);
 
-            var totalCount = await ordered.CountAsync();
+            int totalCount = await ordered.CountAsync();
 
-            var results = await ordered
+            List<Teacher> results = await ordered
                 .Skip((teacherQueryDto.PageNumber - 1) * teacherQueryDto.PageSize)
                 .Take(teacherQueryDto.PageSize)
                 .ToListAsync();

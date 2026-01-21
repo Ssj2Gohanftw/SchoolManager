@@ -61,7 +61,7 @@ namespace SchoolManager.Data.Repositories
 
         public override async Task<bool> Remove(SubjectTeacher subjectTeacher)
         {
-            var teacher = await _entity.FindAsync(
+            SubjectTeacher? teacher = await _entity.FindAsync(
                     subjectTeacher.TeacherId,
                     subjectTeacher.ClassId,
                     subjectTeacher.SubjectId);

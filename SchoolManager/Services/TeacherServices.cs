@@ -2,6 +2,7 @@
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Teachers;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
@@ -19,19 +20,19 @@ namespace SchoolManager.Services
 
         public async Task<List<TeacherSummaryDto>> GetAllAsync()
         {
-            var teachers = await _teacherRepository.GetAllAsync();
+            List<Teacher> teachers = await _teacherRepository.GetAllAsync();
             return teachers.Select(t => t.ToTeacherSummaryDto()).ToList();
         }
 
         public async Task<TeacherDetailsDto?> GetTeacherByIdAsync(Guid id)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id);
+            Teacher? teacher = await _teacherRepository.GetByIdAsync(id);
             return teacher?.ToTeacherDetailsDto();
         }
 
         public async Task<Teacher?> AddTeacherAsync(AddTeacherDto addTeacherDto)
         {
-            var teachers = addTeacherDto.ToTeacher();
+            Teacher teachers = addTeacherDto.ToTeacher();
             try
             {
                 await _teacherRepository.AddAsync(teachers);
@@ -45,7 +46,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> DeleteTeacherAsync(Guid id)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id);
+            Teacher? teacher = await _teacherRepository.GetByIdAsync(id);
             if (teacher == null)
             {
                 return false;
@@ -64,7 +65,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> UpdateTeacherAsync(Guid id, UpdateTeacherDto updateTeacherDto)
         {
-            var teacher = await _teacherRepository.GetByIdAsync(id);
+            Teacher? teacher = await _teacherRepository.GetByIdAsync(id);
             if (teacher == null)
             {
                 return false;
@@ -83,15 +84,9 @@ namespace SchoolManager.Services
         }
         public async Task<PagedResults<TeacherDetailsDto>> GetPagedTeachersAsync(TeacherQueryDto teacherQueryDto)
         {
-            var result = await _teacherRepository.GetPagedAsync(teacherQueryDto);
-            return new PagedResults<TeacherDetailsDto>
-            {
-                Results = result.Results.Select(t => t.ToTeacherDetailsDto()).ToList(),
-                PageNumber = result.PageNumber,
-                PageSize = result.PageSize,
-                TotalCount = result.TotalCount
-            };
-
+            PagedResults<Teacher> result = await _teacherRepository.GetPagedAsync(teacherQueryDto);
+            List<TeacherDetailsDto> teacherDetails = result.Results.Select(t => t.ToTeacherDetailsDto()).ToList();
+            return teacherDetails.ToPagedResults(result.PageNumber, result.PageSize, result.TotalCount);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace SchoolManager.Mappers.Common
         {
             return new PagedResults<T>
             {
-                Results = results.ToList(),
+                Results = results,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = totalCount

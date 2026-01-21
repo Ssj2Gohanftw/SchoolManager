@@ -12,12 +12,12 @@ namespace SchoolManager.Data.Repositories
         }
         public async Task AssignSubjectsToClass(List<Guid> subjectIds, Guid classId)
         {
-            var existingSubs = await _entity
+            List<Guid> existingSubs = await _entity
                 .Where(sc => sc.ClassId == classId)
                 .Select(sc => sc.SubjectId)
                 .ToListAsync();
 
-            var newAssignments = subjectIds
+            List<SubjectClass> newAssignments = subjectIds
                 .Except(existingSubs)
                 .Select(subjectId => new SubjectClass
                 {

@@ -26,8 +26,8 @@ namespace SchoolManager.Services
 
         public async Task AssignSubjectToStudentAsync(AddStudentSubjectDto dto)
         {
-            var student = await _studentRepository.GetByIdAsync(dto.StudentId);
-            var subject = await _subjectRepository.GetByIdAsync(dto.SubjectId);
+            Student? student = await _studentRepository.GetByIdAsync(dto.StudentId);
+            Subject? subject = await _subjectRepository.GetByIdAsync(dto.SubjectId);
 
             if (student == null || subject == null)
             {
@@ -59,7 +59,7 @@ namespace SchoolManager.Services
                 throw new InvalidOperationException("Subjects can't be empty");
             }
 
-            var subjectIds = dto.SubjectIds
+            List<Guid> subjectIds = dto.SubjectIds
                 .Where(id => id != Guid.Empty)
                 .Distinct()
                 .ToList();
@@ -69,16 +69,16 @@ namespace SchoolManager.Services
                 return;
             }
 
-            var _class = await _classRepository.GetByIdAsync(classId);
+            Class? _class = await _classRepository.GetByIdAsync(classId);
             if (_class == null)
             {
                 throw new InvalidOperationException("Class not found");
             }
 
             // Validate subjects exist
-            foreach (var subjectId in subjectIds)
+            foreach (Guid subjectId in subjectIds)
             {
-                var subject = await _subjectRepository.GetByIdAsync(subjectId);
+                Subject? subject = await _subjectRepository.GetByIdAsync(subjectId);
                 if (subject == null)
                 {
                     throw new InvalidOperationException("Subject not found");
@@ -86,9 +86,9 @@ namespace SchoolManager.Services
             }
 
 
-            foreach (var student in _class.Students)
+            foreach (Student student in _class.Students)
             {
-                foreach (var subjectId in subjectIds)
+                foreach (Guid subjectId in subjectIds)
                 {
                     if (student.StudentSubjects.Any(ss => ss.SubjectId == subjectId))
                     {

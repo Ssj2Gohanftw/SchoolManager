@@ -2,6 +2,7 @@
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Subject;
+using SchoolManager.Mappers.Common;
 using SchoolManager.Mappers.Subjects;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
@@ -17,7 +18,7 @@ namespace SchoolManager.Services
         }
         public async Task<Subject> AddSubjectAsync(AddSubjectDto addSubjectDto)
         {
-            var subject = addSubjectDto.ToSubject();
+            Subject subject = addSubjectDto.ToSubject();
             try
             {
                 await _subjectRepository.AddAsync(subject);
@@ -31,7 +32,7 @@ namespace SchoolManager.Services
 
         public async Task<bool> DeleteSubjectAsync(Guid id)
         {
-            var subject = await _subjectRepository.GetByIdAsync(id);
+            Subject? subject = await _subjectRepository.GetByIdAsync(id);
             if (subject == null)
             {
                 return false;
@@ -50,31 +51,26 @@ namespace SchoolManager.Services
 
         public async Task<List<SubjectSummaryDto>> GetAllAsync()
         {
-            var subjects = await _subjectRepository.GetAllAsync();
+            List<Subject> subjects = await _subjectRepository.GetAllAsync();
             return subjects.Select(s => s.ToSubjectSummaryDto()).ToList();
         }
 
         public async Task<PagedResults<SubjectDetailsDto>> GetPagedSubjectsAsync(SubjectQueryDto subjectQueryDto)
         {
-            var results = await _subjectRepository.GetPagedResults(subjectQueryDto);
-            return new PagedResults<SubjectDetailsDto>()
-            {
-                Results = results.Results.Select(sub => sub.ToSubjectDetailsDto()).ToList(),
-                TotalCount = results.TotalCount,
-                PageNumber = results.PageNumber,
-                PageSize = results.PageSize
-            };
+            PagedResults<Subject> results = await _subjectRepository.GetPagedResults(subjectQueryDto);
+            List<SubjectDetailsDto> subjectDetails = results.Results.Select(sub => sub.ToSubjectDetailsDto()).ToList();
+            return subjectDetails.ToPagedResults(results.PageNumber, results.PageSize, results.TotalCount);
         }
 
         public async Task<SubjectDetailsDto?> GetSubjectByIdAsync(Guid id)
         {
-            var subject = await _subjectRepository.GetByIdAsync(id);
+            Subject? subject = await _subjectRepository.GetByIdAsync(id);
             return subject?.ToSubjectDetailsDto();
         }
 
         public async Task<bool> UpdateSubjectAsync(Guid id, UpdateSubjectDto updateSubjectDto)
         {
-            var subject = await _subjectRepository.GetByIdAsync(id);
+            Subject? subject = await _subjectRepository.GetByIdAsync(id);
             if (subject == null)
             {
                 return false;

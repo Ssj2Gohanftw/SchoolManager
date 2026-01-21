@@ -1,5 +1,6 @@
 ﻿using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.SubjectClass;
+using SchoolManager.Mappers;
 using SchoolManager.Models;
 using SchoolManager.Services.Interfaces;
 
@@ -22,12 +23,12 @@ namespace SchoolManager.Services
         }
         public async Task<List<SubjectClassDto>> AssignSubjects(AddSubjectClassDto addSubjectClassDto)
         {
-            var _class = await _classRepository.GetByIdAsync(addSubjectClassDto.ClassId);
+            Class? _class = await _classRepository.GetByIdAsync(addSubjectClassDto.ClassId);
             if (_class == null)
             {
                 throw new Exception("Class not found");
             }
-            var subjectsIdToAssign = addSubjectClassDto.SubjectId
+            List<Guid> subjectsIdToAssign = addSubjectClassDto.SubjectId
                 .Where(subId => subId != Guid.Empty)
                 .Distinct()
                 .ToList();
@@ -35,32 +36,26 @@ namespace SchoolManager.Services
             {
                  throw new Exception("Subjects not found!");
             }
-            var existingSubjects = await _subjectRepository.GetAllAsync();
+            List<Subject> existingSubjects = await _subjectRepository.GetAllAsync();
             if (existingSubjects == null)
             {
                 throw new Exception("Subjects not found!");
             }
-            var existingSubjectIds = existingSubjects
+            HashSet<Guid> existingSubjectIds = existingSubjects
                 .Select(sub => sub.SubjectId)
                 .ToHashSet();
 
-            var missing = subjectsIdToAssign.Where(id => !existingSubjectIds.Contains(id)).ToList();
+            List<Guid> missing = subjectsIdToAssign.Where(id => !existingSubjectIds.Contains(id)).ToList();
             if (missing.Count > 0)
                 throw new Exception($"Subject(s) not found: {string.Join(", ", missing)}");
 
             await _subjectClassRepository.AssignSubjectsToClass(subjectsIdToAssign,addSubjectClassDto.ClassId);
-            var assignments = await _subjectClassRepository
+            List<SubjectClass> assignments = await _subjectClassRepository
              .GetAllAsync();
 
             return assignments
                 .Where(sc => sc.ClassId == addSubjectClassDto.ClassId && subjectsIdToAssign.Contains(sc.SubjectId))
-                .Select(sc => new SubjectClassDto
-                {
-                    SubjectId = sc.SubjectId,
-                    ClassId = sc.ClassId,
-                    SubjectName = sc.Subject?.Name,
-                    ClassName = sc.Class?.Name 
-                })
+                .Select(sc => sc.ToSubjectClassDto())
                 .ToList();
         }
     }
