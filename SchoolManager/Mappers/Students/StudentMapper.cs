@@ -50,6 +50,20 @@ namespace SchoolManager.Mappers.Students
             };
 
         }
+        public static OldestStudentDto ToOldestStudentDto(this Student student)
+        {
+            var today = DateTime.Today;
+            var age = today.Year - student.DateOfBirth.Year;
+            return new OldestStudentDto()
+            {
+                StudentId = student.StudentId,
+                Name = student.FirstName + " " + student.LastName,
+                Age = age,
+                ClassName = student?.Class.Name
+            };
+
+        }
+
         public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,int pageNumber,int pageSize,FilterBy filter,string? search) 
         {
             return new StudentQueryDto

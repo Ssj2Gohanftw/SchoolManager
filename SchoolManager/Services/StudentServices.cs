@@ -66,6 +66,12 @@ namespace SchoolManager.Services
             return student.Select(s => s.ToStudentDto()).ToList();
         }
 
+        public async Task<OldestStudentDto> GetOldestStudentAsync()
+        {
+            var student = await _studentRepository.GetOldestStudentAsync();
+            return student.ToOldestStudentDto();
+        }
+
         public async Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto)
         {
             try

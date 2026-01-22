@@ -7,5 +7,6 @@ namespace SchoolManager.Data.Repositories.Interfaces
     public interface ISubjectRepository : IRepository<Subject>
     {
         Task<PagedResults<Subject>> GetPagedResults(SubjectQueryDto subjectQueryDto);
+        
     }
 }

@@ -118,7 +118,7 @@ namespace SchoolManager.Data.Repositories
                 .ThenInclude(c => c.SubjectClasses)
                     .ThenInclude(c=> c.Subject)
                 //.Include(s => s.Subjects)
-                .Where(s => s.Class.Branch != null)
+                .Where(s => s.Class != null)
                     .Where(searchFilter);
 
             IOrderedQueryable<Student> orderedQuery = ApplySorting(query, studentQueryDto.SortBy, studentQueryDto.SortOrder)
@@ -173,6 +173,16 @@ namespace SchoolManager.Data.Repositories
             return await _entity
                 .Where(s=>s.AdditionalInfo!=null && s.AdditionalInfo.Hobbies!=null)
                 .ToListAsync();
+        }
+
+        public async Task<Student> GetOldestStudentAsync()
+        {
+            DateOnly oldestStudent = await _entity.MinAsync(s => s.DateOfBirth);
+            IQueryable<Student> student = _entity
+                .Include(s=>s.Class)
+                .Where(s => s.DateOfBirth == oldestStudent)
+                .Where(s=>s.Class!=null);
+            return await student.FirstAsync();
         }
     }
     }

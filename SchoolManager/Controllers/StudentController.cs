@@ -105,5 +105,11 @@ namespace SchoolManager.Controllers
             var result = await _studentServices.GetStudentHobbies();
             return Ok(result);
         }
+        [HttpGet("oldest")]
+        public async Task<IActionResult> GetOldest()
+        {
+            var result = await _studentServices.GetOldestStudentAsync();
+            return Ok(result);
+        }
     }
 }

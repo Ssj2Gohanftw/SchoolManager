@@ -49,7 +49,7 @@ namespace SchoolManager.Mappers.Subjects
         public static void ToUpdateSubject(this UpdateSubjectDto updateSubjectDto, Subject subject)
         {
 
-            subject.Name = updateSubjectDto.Name;
+            subject.Name = updateSubjectDto.Name;                
         }
     }
 }

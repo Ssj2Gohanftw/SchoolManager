@@ -12,7 +12,7 @@ namespace SchoolManager.Data.Repositories
             
         }
 
-        public async Task AddAsync(StudentSubject studentSubject)
+        public override async Task AddAsync(StudentSubject studentSubject)
         {
             if (!await ExistsAsync(studentSubject.StudentId, studentSubject.SubjectId))
             {

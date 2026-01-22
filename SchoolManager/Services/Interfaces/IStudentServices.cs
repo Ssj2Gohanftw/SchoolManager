@@ -7,6 +7,7 @@ namespace SchoolManager.Services.Interfaces
 {
     public interface IStudentServices
     {
+
         Task<List<StudentDto>> GetAllAsync();
         Task<Student?> GetStudentByIdAsync(Guid id);
         Task<Student?> AddStudentAsync(AddStudentDto addStudentDto);
@@ -17,6 +18,6 @@ namespace SchoolManager.Services.Interfaces
 
         Task<List<StudentHobbiesDto>> GetStudentHobbies();
 
-        //Task<>
+        Task<OldestStudentDto> GetOldestStudentAsync(); 
     }
 }

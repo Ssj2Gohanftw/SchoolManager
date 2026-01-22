@@ -16,13 +16,13 @@ namespace SchoolManager.Extensions
             ) where TQueryDto : QueryDto
         {
             ArgumentNullException.ThrowIfNull(dto);
-            var pageNumber = dto?.PageNumber ?? DefaultPageNumber;
+            int pageNumber = dto?.PageNumber ?? DefaultPageNumber;
             if (pageNumber < 1)
             {
                 pageNumber = DefaultPageNumber;
             }
 
-            var pageSize = dto?.PageSize ?? DefaultPageSize;
+            int pageSize = dto?.PageSize ?? DefaultPageSize;
             if (pageSize < 1)
             {
                 pageSize = DefaultPageSize;
@@ -32,14 +32,14 @@ namespace SchoolManager.Extensions
                 pageSize = MaxPageSize;
             }
 
-            var search = dto?.Search?.Trim();
+            string? search = dto?.Search?.Trim();
             if (string.IsNullOrWhiteSpace(search))
             {
                 search = null;
             }
 
 
-            var filterBy = dto?.FilterBy ?? FilterBy.None;
+            FilterBy filterBy = dto?.FilterBy ?? FilterBy.None;
 
             if (filterBy == FilterBy.None && search !=null)
             {
