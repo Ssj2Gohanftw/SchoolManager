@@ -76,6 +76,12 @@ namespace SchoolManager.Data.Repositories
                 case (StudentSortBy.ClassName, true):
                     orderedQuery = query.OrderByDescending(s => s.Class!.Name);
                     break;
+                case (StudentSortBy.Gender, false):
+                    orderedQuery = query.OrderBy(s => s.Gender);
+                    break;
+                case (StudentSortBy.Gender, true):
+                    orderedQuery = query.OrderByDescending(s => s.Gender);
+                    break;
                 case (StudentSortBy.FirstName, false):
                     orderedQuery = query.OrderBy(s => s.FirstName);
                     break;

@@ -52,6 +52,13 @@ namespace SchoolManager.Data.Repositories
                 case (ClassSortBy.Name, false):
                     orderedQuery = query.OrderBy(c => c.Name);
                     break;
+
+                case (ClassSortBy.Branch, false):
+                    orderedQuery = query.OrderBy(c => c.Branch);
+                    break;
+                case (ClassSortBy.Branch, true):
+                    orderedQuery = query.OrderByDescending(c => c.Branch);
+                    break;
                 default:
                     orderedQuery = query.OrderByDescending(c => c.Name);
                     break;

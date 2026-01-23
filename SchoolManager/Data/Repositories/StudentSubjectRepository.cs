@@ -4,12 +4,12 @@ using SchoolManager.Models;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class StudentSubjectRepository :Repository<StudentSubject>, IStudentSubjectRepository
+    public class StudentSubjectRepository : Repository<StudentSubject>, IStudentSubjectRepository
     {
-       
-        public StudentSubjectRepository(ApplicationDbContext dbContext):base(dbContext)
+
+        public StudentSubjectRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            
+
         }
 
         public override async Task AddAsync(StudentSubject studentSubject)

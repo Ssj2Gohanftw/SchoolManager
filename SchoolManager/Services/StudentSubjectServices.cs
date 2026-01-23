@@ -76,6 +76,7 @@ namespace SchoolManager.Services
             }
 
             // Validate subjects exist
+            
             foreach (Guid subjectId in subjectIds)
             {
                 Subject? subject = await _subjectRepository.GetByIdAsync(subjectId);
@@ -101,7 +102,8 @@ namespace SchoolManager.Services
                         SubjectId = subjectId
                     });
                 }
-            }
         }
     }
 }
+
+            }

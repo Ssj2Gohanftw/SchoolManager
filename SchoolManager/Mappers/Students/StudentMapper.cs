@@ -36,7 +36,7 @@ namespace SchoolManager.Mappers.Students
                 Subjects = student?.Class?
                 .SubjectClasses?
                 .Select(ss=>ss.ToStudentSubjectDto())
-                .ToList() 
+                .ToList()
             };
 
         }
@@ -54,6 +54,7 @@ namespace SchoolManager.Mappers.Students
         {
             var today = DateTime.Today;
             var age = today.Year - student.DateOfBirth.Year;
+            
             return new OldestStudentDto()
             {
                 StudentId = student.StudentId,
@@ -64,7 +65,11 @@ namespace SchoolManager.Mappers.Students
 
         }
 
-        public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,int pageNumber,int pageSize,FilterBy filter,string? search) 
+        public static StudentQueryDto ToStudentQueryDto(this StudentQueryDto studentQueryDto,
+                                                        int pageNumber,
+                                                        int pageSize,
+                                                        FilterBy filter,
+                                                        string? search) 
         {
             return new StudentQueryDto
             {

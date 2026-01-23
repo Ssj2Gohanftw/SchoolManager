@@ -8,7 +8,8 @@ namespace SchoolManager.Dtos.Student
         LastName,
         Email,
         DateOfBirth,
-        ClassName
+        ClassName,
+        Gender
     }
 
     public class StudentQueryDto:QueryDto

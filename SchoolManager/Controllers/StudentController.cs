@@ -103,12 +103,14 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> GetHobbies()
         {
             var result = await _studentServices.GetStudentHobbies();
+            if (result == null) return NotFound();
             return Ok(result);
         }
         [HttpGet("oldest")]
         public async Task<IActionResult> GetOldest()
         {
             var result = await _studentServices.GetOldestStudentAsync();
+            if (result == null) return NotFound();
             return Ok(result);
         }
     }

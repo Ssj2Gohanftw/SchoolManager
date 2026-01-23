@@ -1,5 +1,4 @@
-﻿using SchoolManager.Dtos.Common;
-using SchoolManager.Dtos.Subject;
+﻿using SchoolManager.Dtos.Subject;
 using SchoolManager.Extensions;
 
 namespace SchoolManager.Mappers.Subjects

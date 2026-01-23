@@ -5,7 +5,8 @@ namespace SchoolManager.Dtos.Class
     public enum ClassSortBy
     {
         Name,
-        ClassId
+        ClassId,
+        Branch
     }
 
     public class ClassQueryDto:QueryDto
