@@ -15,9 +15,7 @@ namespace SchoolManager.Services.Interfaces
         Task<bool> DeleteStudentAsync(Guid id);
         Task<bool> AssignStudentToClassAsync(Guid studentId, AssignStudentClassDto assignStudentClassDto);
         Task<PagedResults<StudentDetailsDto>> GetPagedStudentsAsync(StudentQueryDto studentQueryDto);
-
         Task<List<StudentHobbiesDto>> GetStudentHobbies();
-
-        Task<OldestStudentDto> GetOldestStudentAsync(); 
+        Task<OldestStudentDto> GetOldestStudentAsync();
     }
 }

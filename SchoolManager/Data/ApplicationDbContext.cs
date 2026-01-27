@@ -16,6 +16,8 @@ namespace SchoolManager.Data
         public DbSet<SubjectTeacher> SubjectTeacher { get; set; }
         public DbSet<StudentSubject> StudentSubjects { get; set; }
         public DbSet<SubjectClass> SubjectClasses{ get; set; }
+        public DbSet<Fee> Fees { get; set; }
+        public DbSet<StudentFee> StudentFee { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -35,6 +37,26 @@ namespace SchoolManager.Data
                 .Property(s => s.AdditionalInfo)
                 .HasColumnType("jsonb");
 
+            modelBuilder.Entity<StudentFee>()
+                .HasOne(s => s.Student)
+                .WithMany(sf => sf.StudentFees)
+                .HasForeignKey(s => s.StudentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            modelBuilder.Entity<StudentFee>()
+                .HasOne(f => f.Fee)
+                .WithMany(sf => sf.StudentFees)
+                .HasForeignKey(f => f.FeeId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            modelBuilder.Entity<StudentFee>()
+                .HasIndex(ss => new { ss.StudentId, ss.FeeId})
+                .IsUnique();
+
+            modelBuilder.Entity<StudentFee>()
+                .HasKey(sf => new { sf.StudentId, sf.FeeId });
 
             modelBuilder.Entity<StudentSubject>()
                 .HasKey(ss => new { ss.StudentId, ss.SubjectId });

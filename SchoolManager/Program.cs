@@ -1,7 +1,5 @@
 using AspNetCore.Swagger.Themes;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using SchoolManager.Data;
 using SchoolManager.Extensions;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);

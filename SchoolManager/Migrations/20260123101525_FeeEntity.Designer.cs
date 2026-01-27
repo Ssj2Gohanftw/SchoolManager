@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data;
@@ -12,9 +13,11 @@ using SchoolManager.Models;
 namespace SchoolManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260123101525_FeeEntity")]
+    partial class FeeEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,13 +56,21 @@ namespace SchoolManager.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
 
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
+
                     b.Property<int>("FeeType")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer");
 
                     b.HasKey("FeeId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Fees");
                 });
@@ -100,30 +111,6 @@ namespace SchoolManager.Migrations
                     b.HasIndex("ClassId");
 
                     b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("SchoolManager.Models.StudentFee", b =>
-                {
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("FeeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("AmountPaid")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Balance")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("StudentId", "FeeId");
-
-                    b.HasIndex("FeeId");
-
-                    b.HasIndex("StudentId", "FeeId")
-                        .IsUnique();
-
-                    b.ToTable("StudentFee");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.StudentSubject", b =>
@@ -214,6 +201,17 @@ namespace SchoolManager.Migrations
                     b.ToTable("Teachers");
                 });
 
+            modelBuilder.Entity("SchoolManager.Models.Fee", b =>
+                {
+                    b.HasOne("SchoolManager.Models.Student", "Students")
+                        .WithMany("Fees")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("SchoolManager.Models.Student", b =>
                 {
                     b.HasOne("SchoolManager.Models.Class", "Class")
@@ -222,25 +220,6 @@ namespace SchoolManager.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Class");
-                });
-
-            modelBuilder.Entity("SchoolManager.Models.StudentFee", b =>
-                {
-                    b.HasOne("SchoolManager.Models.Fee", "Fee")
-                        .WithMany("StudentFees")
-                        .HasForeignKey("FeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SchoolManager.Models.Student", "Student")
-                        .WithMany("StudentFees")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fee");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("SchoolManager.Models.StudentSubject", b =>
@@ -317,14 +296,9 @@ namespace SchoolManager.Migrations
                     b.Navigation("SubjectTeachers");
                 });
 
-            modelBuilder.Entity("SchoolManager.Models.Fee", b =>
-                {
-                    b.Navigation("StudentFees");
-                });
-
             modelBuilder.Entity("SchoolManager.Models.Student", b =>
                 {
-                    b.Navigation("StudentFees");
+                    b.Navigation("Fees");
 
                     b.Navigation("StudentSubjects");
                 });

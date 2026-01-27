@@ -14,11 +14,15 @@ namespace SchoolManager.Services
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IClassRepository _classRepository;
-
-        public StudentServices(IStudentRepository studentRepository, IClassRepository classRepository)
+        private readonly IFeeRepository _feeRepository;
+        public StudentServices(
+            IStudentRepository studentRepository,
+            IClassRepository classRepository,
+            IFeeRepository feeRepository)
         {
             _studentRepository = studentRepository;
             _classRepository = classRepository;
+            _feeRepository = feeRepository;
         }
 
         public async Task<Student?> AddStudentAsync(AddStudentDto addStudentDto)
@@ -100,6 +104,15 @@ namespace SchoolManager.Services
             return student.Select(s => s.ToStudentHobbiesDto()).ToList();
         }
 
+        //public async Task<List<StudentFee>> PayFeesAsync(Guid studentId, Guid feeId)
+        //{
+        //    if (studentId == null || feeId == null)
+        //    {
+        //        throw new ArgumentNullException("Provide a valid studentId and feeId to pay!");
+        //    }
+        //    Student student = await _studentRepository.GetByIdAsync(studentId);
+        //    Fee fee = await _feeRepository.GetByIdAsync(feeId);
+        //}
         public async Task<bool> UpdateStudentAsync(Guid id, UpdateStudentDto updateStudentDto)
         {
             Student? student = await _studentRepository.GetByIdAsync(id);

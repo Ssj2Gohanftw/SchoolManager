@@ -20,5 +20,7 @@
         public List<StudentSubject> StudentSubjects { get; set; } = new();
         //public List<SubjectClass> Subjects { get; set; } = new();
         public StudentMetaData? AdditionalInfo { get; set; }
+
+        public List<StudentFee> StudentFees { get; set; } = new List<StudentFee>();
     }
 }
