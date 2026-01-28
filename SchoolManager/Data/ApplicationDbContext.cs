@@ -20,95 +20,9 @@ namespace SchoolManager.Data
         public DbSet<StudentFee> StudentFee { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);         
 
-            modelBuilder.Entity<Class>()
-                .HasIndex(c => c.Name)
-                .IsUnique();
-
-            modelBuilder.Entity<Student>()
-                .HasOne(s => s.Class)
-                .WithMany(c => c.Students)
-                .HasForeignKey(s => s.ClassId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Student>()
-                .Property(s => s.AdditionalInfo)
-                .HasColumnType("jsonb");
-
-            modelBuilder.Entity<StudentFee>()
-                .HasOne(s => s.Student)
-                .WithMany(sf => sf.StudentFees)
-                .HasForeignKey(s => s.StudentId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
-
-            modelBuilder.Entity<StudentFee>()
-                .HasOne(f => f.Fee)
-                .WithMany(sf => sf.StudentFees)
-                .HasForeignKey(f => f.FeeId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
-
-            modelBuilder.Entity<StudentFee>()
-                .HasIndex(ss => new { ss.StudentId, ss.FeeId})
-                .IsUnique();
-
-            modelBuilder.Entity<StudentFee>()
-                .HasKey(sf => new { sf.StudentId, sf.FeeId });
-
-            modelBuilder.Entity<StudentSubject>()
-                .HasKey(ss => new { ss.StudentId, ss.SubjectId });
-
-            modelBuilder.Entity<StudentSubject>()
-                .HasOne(ss => ss.Student)
-                .WithMany(s => s.StudentSubjects)
-                .HasForeignKey(ss => ss.StudentId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
-
-            modelBuilder.Entity<StudentSubject>()
-                .HasOne(ss => ss.Subject)
-                .WithMany()
-                .HasForeignKey(ss => ss.SubjectId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
-
-            modelBuilder.Entity<SubjectClass>()
-                .HasKey(sc => new{sc.SubjectId,sc.ClassId});
-
-            modelBuilder.Entity<SubjectClass>()
-                .HasOne(sc => sc.Subject)
-                .WithMany(s => s.SubjectClasses)
-                .HasForeignKey(sc => sc.SubjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<SubjectClass>()
-                .HasOne(sc => sc.Class)
-                .WithMany(s => s.SubjectClasses)
-                .HasForeignKey(sc => sc.ClassId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<SubjectTeacher>()
-                .HasKey(st => new { st.TeacherId, st.ClassId, st.SubjectId });
-
-
-            modelBuilder.Entity<SubjectTeacher>()
-                .HasOne(st => st.Class)
-                .WithMany(st => st.SubjectTeachers)
-                .HasForeignKey(st => st.ClassId);
-
-            modelBuilder.Entity<SubjectTeacher>()
-                .HasOne(st => st.Teacher)
-                .WithMany(st => st.SubjectTeachers)
-                .HasForeignKey(st => st.TeacherId);
-
-            modelBuilder.Entity<SubjectTeacher>().
-                HasOne(st => st.Subject)
-                .WithMany(st => st.SubjectTeachers)
-                .HasForeignKey(st => st.SubjectId);
-            //Console.WriteLine(modelBuilder.Model.ToDebugString());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }
