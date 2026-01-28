@@ -10,10 +10,10 @@
                = new List<SubjectClass>();
             
     }
-    public class ElectiveSubject
-    {
-        public Guid ElectiveId {get;set;}
-        public string? Name { get; set; } = null;
-        public List<StudentSubject> StudentSubjects { get; set; } = new();
-    }
+    //public class ElectiveSubject
+    //{
+    //    public Guid ElectiveId {get;set;}
+    //    public string? Name { get; set; } = null;
+    //    public List<StudentSubject> StudentSubjects { get; set; } = new();
+    //}
 }

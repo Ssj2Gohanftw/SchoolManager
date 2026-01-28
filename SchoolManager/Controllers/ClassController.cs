@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Dtos.Class;
+using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
@@ -9,10 +11,11 @@ namespace SchoolManager.Controllers
     public class ClassController : ControllerBase
     {
         private readonly IClassServices _classServices;
-        public ClassController(IClassServices classServices)
+        private readonly IValidator<AddClassDto> _validator;
+        public ClassController(IClassServices classServices, IValidator<AddClassDto> validator)
         {
             _classServices = classServices;
-
+            _validator = validator;
         }
 
         [HttpGet]
@@ -37,7 +40,14 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddClass(AddClassDto addClassDto)
         {
+            var validationResult = await _validator.ValidateAsync(addClassDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
             var _class = await _classServices.AddClassAsync(addClassDto);
+
             return Ok(_class);
         }
 

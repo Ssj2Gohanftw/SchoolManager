@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using SchoolManager.Data;
 using SchoolManager.Data.Repositories;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Services;
 using SchoolManager.Services.Interfaces;
+using SchoolManager.Validators.Students;
 
 namespace SchoolManager.Extensions
 {

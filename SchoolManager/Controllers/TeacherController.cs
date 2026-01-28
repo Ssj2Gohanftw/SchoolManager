@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.Teacher;
+using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManager.Controllers
 {
@@ -9,9 +13,11 @@ namespace SchoolManager.Controllers
     public class TeacherController : ControllerBase
     {
         private readonly ITeacherServices _teacherServices;
-        public TeacherController(ITeacherServices teacherServices)
+        private readonly IValidator<AddTeacherDto> _validator;
+        public TeacherController(ITeacherServices teacherServices, IValidator<AddTeacherDto> validator)
         {
             _teacherServices = teacherServices;
+            _validator = validator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllTeachers()
@@ -20,20 +26,17 @@ namespace SchoolManager.Controllers
             return Ok(allTeachers);
         }
 
-        //[HttpGet]
-        //[Route("{id:guid}")]
-        //public async Task<IActionResult> GetTeacherById(Guid id)
-        //{   
-        //    var teachers = await _teacherServices.GetTeacherByIdAsync(id);
-        //        if (teachers == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        return Ok(teachers);
-        //    }
         [HttpPost]
         public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto)
         {
+            var validationResult = await _validator.ValidateAsync(addTeacherDto);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
+
             var teachers = await _teacherServices.AddTeacherAsync(addTeacherDto);
             return Ok(teachers);
         }

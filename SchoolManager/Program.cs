@@ -1,4 +1,5 @@
 using AspNetCore.Swagger.Themes;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.Extensions;
 using System.Text.Json.Serialization;
@@ -16,6 +17,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options => options.UseInlineDefinitionsForEnums());
 builder.Services.AddDb(builder);
 builder.Services.AddServices();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 builder.Services.AddClient();
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();

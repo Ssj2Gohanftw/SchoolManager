@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.StudentClass;
+using SchoolManager.Extensions;
 using SchoolManager.Mappers.Students;
 using SchoolManager.Services.Interfaces;
 
@@ -10,11 +12,13 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")]
     public class StudentController : ControllerBase
     {
+        private readonly IValidator<AddStudentDto> _validator;
         private readonly IStudentServices _studentServices;
 
-        public StudentController(IStudentServices studentServices)
+        public StudentController(IStudentServices studentServices,IValidator<AddStudentDto> validator)
         {
             _studentServices = studentServices;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -43,6 +47,13 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto)
         {
+            var validationResult = await _validator.ValidateAsync(addStudentDto);
+
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
 
             var student = await _studentServices.AddStudentAsync(addStudentDto);
             if (student == null)

@@ -11,7 +11,8 @@ using System.Linq.Expressions;
 
 namespace SchoolManager.Data.Repositories
 {
-    public class StudentRepository : Repository<Student>, IStudentRepository
+    public class StudentRepository : Repository<Student>, 
+        IStudentRepository
     {
 
         public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)

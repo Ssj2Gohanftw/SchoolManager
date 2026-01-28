@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Dtos.University;
+using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
@@ -9,9 +11,11 @@ namespace SchoolManager.Controllers
     public class UniversityController : ControllerBase
     {
         private readonly IApiService _iapiService;
-        public UniversityController(IApiService iapiService)
+        private readonly IValidator<UniversityQueryDto> _validator;
+        public UniversityController(IApiService iapiService, IValidator<UniversityQueryDto> validator)
         {
             _iapiService = iapiService;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -27,11 +31,12 @@ namespace SchoolManager.Controllers
 
 
             var url = $"country={country}&name={(name)}&limit={limit}&state-province={province}";
+            var validationResult = await _validator.ValidateAsync(universityQueryDto);
 
-            if ((string.IsNullOrEmpty(country)) && (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(province)))
+            if (!validationResult.IsValid)
             {
-                return BadRequest();
-
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
             }
             baseUrl += url;
             //var url = QueryHelpers.AddQueryString("search", country,name);

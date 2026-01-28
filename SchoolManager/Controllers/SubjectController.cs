@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Subject;
+using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
 
 namespace SchoolManager.Controllers
@@ -9,9 +12,11 @@ namespace SchoolManager.Controllers
     public class SubjectController : ControllerBase
     {
         private readonly ISubjectServices _subjectServices;
-        public SubjectController(ISubjectServices subjectServices)
+        private readonly IValidator<AddSubjectDto> _validator;
+        public SubjectController(ISubjectServices subjectServices, IValidator<AddSubjectDto> validator)
         {
             _subjectServices = subjectServices;
+            _validator = validator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllSubjects()
@@ -35,6 +40,12 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSubject(AddSubjectDto addSubjectDto)
         {
+            var validationResult = await _validator.ValidateAsync(addSubjectDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
             var subject = await _subjectServices.AddSubjectAsync(addSubjectDto);
             return Ok(subject);
         }
