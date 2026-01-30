@@ -18,75 +18,42 @@ namespace SchoolManager.Controllers
         [Route("teacher/{teacherId:guid}")]
         public async Task<IActionResult> GetAssignmentForTeachers(Guid teacherId)
         {
-            try
-            {
-                var teacherAssignment = await _subjectTeacherServices.GetAssignmentsForTeacherAsync(teacherId);
-                return Ok(teacherAssignment);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+            var teacherAssignment = await _subjectTeacherServices.GetAssignmentsForTeacherAsync(teacherId);
+            return Ok(teacherAssignment);
+           }
         [HttpGet]
         [Route("class/{classId:guid}")]
         public async Task<IActionResult> GetAssignmentForClass(Guid classId)
         {
-            try
-            {
-                var classAssignment = await _subjectTeacherServices.GetAssignmentsForClassAsync(classId);
-                return Ok(classAssignment);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+
+            var classAssignment = await _subjectTeacherServices.GetAssignmentsForClassAsync(classId);
+            return Ok(classAssignment);
         }
         [HttpGet]
         [Route("subject/{subjectId:guid}")]
         public async Task<IActionResult> GetAssignmentForSubject(Guid subjectId)
         {
-            try
-            {
-                var subjectAssignment = await _subjectTeacherServices.GetAssignmentsForSubjectAsync(subjectId);
+            var subjectAssignment = await _subjectTeacherServices.GetAssignmentsForSubjectAsync(subjectId);
                 return Ok(subjectAssignment);
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> Assign([FromBody] AddSubjectTeacherDto addSubjectTeacherDto)
         {
-            try
-            {
-                if (addSubjectTeacherDto == null)
+
+            if (addSubjectTeacherDto == null)
                 {
                     return BadRequest();
                 }
-
                 await _subjectTeacherServices.AssignAsync(addSubjectTeacherDto);
                 return Ok();
             }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
 
         [HttpDelete]
 
         public async Task<IActionResult> Unassign([FromBody] DeleteSubjectTeacherDto deleteSubjectTeacherDto)
         {
-            try
-            {
-                if (deleteSubjectTeacherDto == null)
+              if (deleteSubjectTeacherDto == null)
                 {
                     return BadRequest();
                 }
@@ -94,11 +61,6 @@ namespace SchoolManager.Controllers
                 var success = await _subjectTeacherServices.UnassignAsync(deleteSubjectTeacherDto);
                 if (!success) return NotFound();
                 return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
     }
 }

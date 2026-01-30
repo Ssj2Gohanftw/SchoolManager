@@ -1,10 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Dtos.Student;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManager.Controllers
 {
@@ -13,11 +11,15 @@ namespace SchoolManager.Controllers
     public class TeacherController : ControllerBase
     {
         private readonly ITeacherServices _teacherServices;
-        private readonly IValidator<AddTeacherDto> _validator;
-        public TeacherController(ITeacherServices teacherServices, IValidator<AddTeacherDto> validator)
+        private readonly IValidator<AddTeacherDto> _addTeacherValidator;
+        private readonly IValidator<UpdateTeacherDto> _updateTeacherValidator;
+        public TeacherController(ITeacherServices teacherServices,
+                                 IValidator<AddTeacherDto> addTeacherValidator,
+                                 IValidator<UpdateTeacherDto> updateTeacherValidator)
         {
             _teacherServices = teacherServices;
-            _validator = validator;
+            _addTeacherValidator = addTeacherValidator;
+            _updateTeacherValidator = updateTeacherValidator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllTeachers()
@@ -29,7 +31,7 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTeacher(AddTeacherDto addTeacherDto)
         {
-            var validationResult = await _validator.ValidateAsync(addTeacherDto);
+            var validationResult = await _addTeacherValidator.ValidateAsync(addTeacherDto);
 
             if (!validationResult.IsValid)
             {
@@ -44,6 +46,12 @@ namespace SchoolManager.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateTeacher(UpdateTeacherDto updateTeacherDto, Guid id)
         {
+            var validationResult = await _updateTeacherValidator.ValidateAsync(updateTeacherDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
             var success = await _teacherServices.UpdateTeacherAsync(id, updateTeacherDto);
             if (!success)
             {
@@ -57,7 +65,6 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> DeleteTeacher(Guid id)
         {
-
             var success = await _teacherServices.DeleteTeacherAsync(id);
             if (!success)
             {

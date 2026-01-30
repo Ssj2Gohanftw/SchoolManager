@@ -15,6 +15,7 @@ namespace SchoolManager.Controllers
         }
 
         [HttpPost]
+        [Route("assignments")]
         public async Task<ActionResult<List<SubjectClassDto>>> AssignSubject(AddSubjectClassDto addSubjectClassDto) 
         {
             return await _subjectClassServices.AssignSubjects(addSubjectClassDto);

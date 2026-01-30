@@ -7,31 +7,31 @@ namespace SchoolManager.Validators.Students
     {
         public UpdateStudentDtoValidator()
         {
-            When(x => x.FirstName != null, () =>
+            When(s => s.FirstName != null, () =>
             {
-                RuleFor(x => x.FirstName!)
+                RuleFor(s => s.FirstName!)
                 .NotEmpty()
                 .MaximumLength(100);
             });
 
-            When(x => x.LastName != null, () =>
+            When(s => s.LastName != null, () =>
             {
-                RuleFor(x => x.LastName!)
+                RuleFor(s => s.LastName!)
                 .NotEmpty()
                 .MaximumLength(100);
             });
 
-            When(x => x.Email != null, () =>
+            When(s => s.Email != null, () =>
             {
-                RuleFor(x => x.Email!)
+                RuleFor(s => s.Email!)
                 .NotEmpty()
                 .EmailAddress()
                 .MaximumLength(254);
             });
 
-            When(x => x.DateOfBirth != null, () =>
+            When(s => s.DateOfBirth != null, () =>
             {
-                RuleFor(x => x.DateOfBirth!.Value)
+                RuleFor(s => s.DateOfBirth!)
                     .LessThan(DateOnly.FromDateTime(DateTime.UtcNow))
                     .WithMessage("Date of Birth can't be in the future");
             });

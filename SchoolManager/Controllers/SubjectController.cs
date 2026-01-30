@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Subject;
 using SchoolManager.Extensions;
 using SchoolManager.Services.Interfaces;
@@ -12,11 +11,15 @@ namespace SchoolManager.Controllers
     public class SubjectController : ControllerBase
     {
         private readonly ISubjectServices _subjectServices;
-        private readonly IValidator<AddSubjectDto> _validator;
-        public SubjectController(ISubjectServices subjectServices, IValidator<AddSubjectDto> validator)
+        private readonly IValidator<AddSubjectDto> _addSubjectValidator;
+        private readonly IValidator<UpdateSubjectDto> _updateSubjectValidator;
+        public SubjectController(ISubjectServices subjectServices,
+                                 IValidator<AddSubjectDto> addSubjectValidator,
+                                 IValidator<UpdateSubjectDto> updateSubjectValidator)
         {
             _subjectServices = subjectServices;
-            _validator = validator;
+            _addSubjectValidator = addSubjectValidator;
+            _updateSubjectValidator = updateSubjectValidator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllSubjects()
@@ -40,7 +43,7 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSubject(AddSubjectDto addSubjectDto)
         {
-            var validationResult = await _validator.ValidateAsync(addSubjectDto);
+            var validationResult = await _addSubjectValidator.ValidateAsync(addSubjectDto);
             if (!validationResult.IsValid)
             {
                 validationResult.AddToModelState(ModelState);
@@ -53,6 +56,13 @@ namespace SchoolManager.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateSubject(Guid id, UpdateSubjectDto updateSubjectDto)
         {
+
+            var validationResult = await _updateSubjectValidator.ValidateAsync(updateSubjectDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
             var success = await _subjectServices.UpdateSubjectAsync(id, updateSubjectDto);
             if (!success)
             {

@@ -12,13 +12,17 @@ namespace SchoolManager.Controllers
     [Route("api/[controller]")]
     public class StudentController : ControllerBase
     {
-        private readonly IValidator<AddStudentDto> _validator;
+        private readonly IValidator<AddStudentDto> _addStudentValidator;
+        private readonly IValidator<UpdateStudentDto> _updateStudentValidator;
         private readonly IStudentServices _studentServices;
 
-        public StudentController(IStudentServices studentServices,IValidator<AddStudentDto> validator)
+        public StudentController(IStudentServices studentServices,
+                                 IValidator<AddStudentDto> addStudentValidator,
+                                 IValidator<UpdateStudentDto> updateStudentValidator)
         {
             _studentServices = studentServices;
-            _validator = validator;
+            _addStudentValidator = addStudentValidator;
+            _updateStudentValidator = updateStudentValidator;
         }
 
         [HttpGet]
@@ -47,7 +51,7 @@ namespace SchoolManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentDto addStudentDto)
         {
-            var validationResult = await _validator.ValidateAsync(addStudentDto);
+            var validationResult = await _addStudentValidator.ValidateAsync(addStudentDto);
 
             if (!validationResult.IsValid)
             {
@@ -68,6 +72,12 @@ namespace SchoolManager.Controllers
 
         public async Task<IActionResult> UpdateStudent(Guid id, UpdateStudentDto updateStudentDto)
         {
+            var validationResult = await _updateStudentValidator.ValidateAsync(updateStudentDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return ValidationProblem(ModelState);
+            }
             var success = await _studentServices.UpdateStudentAsync(id, updateStudentDto);
             if (!success)
             {

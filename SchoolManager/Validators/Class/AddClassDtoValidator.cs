@@ -8,7 +8,7 @@ namespace SchoolManager.Validators.Class
         public AddClassDtoValidator()
         {
             RuleFor(c => c.Name)
-                .NotEmpty().WithMessage("Classname is required!")
+                .NotEmpty()
                 .MaximumLength(100);
             RuleFor(c => c.Branch)
                 .NotEmpty().WithMessage("Branch must be specified!")

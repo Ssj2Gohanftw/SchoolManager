@@ -9,16 +9,16 @@ namespace SchoolManager.Validators.Students
         {
             RuleFor(s => s.FirstName)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("First Name is required!")
+                .NotEmpty()
                 .MaximumLength(100);
             RuleFor(s => s.LastName)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("Last Name is required!")
+                .NotEmpty()
                 .MaximumLength(100);
             RuleFor(s => s.Email)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
-                .EmailAddress().WithMessage("Enter a valid email address!")
+                .EmailAddress()
                 .MaximumLength(100);
             RuleFor(s => s.Gender)
                 .Cascade(CascadeMode.Stop)
