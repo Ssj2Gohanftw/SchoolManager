@@ -16,6 +16,8 @@
         public required FeeType FeeType { get; set; }
         public required double Amount { get; set; } = 0.0;
         public List<StudentFee> StudentFees { get; set; } = new List<StudentFee>();
-
+        public List<Class> Classes { get; set; } = new List<Class>();
+        public List<FeeClass> FeeClasses { get; set; }
+            = new List<FeeClass>();
     }
 }

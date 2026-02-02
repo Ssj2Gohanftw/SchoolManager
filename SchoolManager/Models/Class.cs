@@ -20,5 +20,9 @@
             = new List<SubjectTeacher>();
         public List<SubjectClass> SubjectClasses { get; set; }
             = new List<SubjectClass>();
+        public List<Fee> Fees { get; set; }
+            = new List<Fee>();
+        public List<FeeClass> FeeClasses { get; set; }
+            = new List<FeeClass>();
     }
 }

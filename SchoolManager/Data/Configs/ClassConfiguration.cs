@@ -12,6 +12,9 @@ namespace SchoolManager.Data.Configs
                 .HasIndex(c => c.Name)
                 .IsUnique();
 
+            builder.HasMany(c => c.Fees)
+                .WithMany(f => f.Classes)
+                .UsingEntity<FeeClass>();
         }
     }
 }

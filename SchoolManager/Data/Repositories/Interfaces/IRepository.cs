@@ -4,6 +4,7 @@
     {
         Task<List<T>> GetAllAsync();
         Task AddAsync(T entity);
+        Task AddRangeAsync(List<T> entities);
         Task<T?> GetByIdAsync(Guid id);
         Task<bool> Remove(T entity);
         Task<bool> Update(T entity);

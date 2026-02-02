@@ -10,6 +10,8 @@ namespace SchoolManager.Data.Repositories
         {
             
         }
+
+
         public async Task<List<Fee>> GetFeesByStudentId(Guid studentId)
         {
             return await _entity
@@ -28,6 +30,6 @@ namespace SchoolManager.Data.Repositories
                                          && sf.FeeId == feeId);
         }
 
-        
+
     }
 }

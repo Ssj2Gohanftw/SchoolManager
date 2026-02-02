@@ -26,7 +26,7 @@ namespace SchoolManager.Validators.Students
                 RuleFor(s => s.Email!)
                 .NotEmpty()
                 .EmailAddress()
-                .MaximumLength(254);
+                .MaximumLength(200);
             });
 
             When(s => s.DateOfBirth != null, () =>

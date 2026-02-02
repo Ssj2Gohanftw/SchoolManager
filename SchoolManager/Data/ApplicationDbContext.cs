@@ -18,6 +18,7 @@ namespace SchoolManager.Data
         public DbSet<SubjectClass> SubjectClasses{ get; set; }
         public DbSet<Fee> Fees { get; set; }
         public DbSet<StudentFee> StudentFee { get; set; }
+        public DbSet<FeeClass> FeeClass { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);         

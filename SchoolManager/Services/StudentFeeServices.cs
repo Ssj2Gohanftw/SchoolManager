@@ -14,6 +14,11 @@ namespace SchoolManager.Services
             _studentFeeRepository = studentFeeRepository;
         }
 
+        public Task<List<Fee>> AssignFeesToStudents(List<Guid> feeIds)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Fee>> GetFeesByStudentIdAsync(Guid guid)
         {
             var fees = _studentFeeRepository.GetFeesByStudentId(guid);

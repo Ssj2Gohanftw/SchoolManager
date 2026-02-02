@@ -19,6 +19,11 @@ namespace SchoolManager.Data.Repositories
             await _entity.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
         }
+        public virtual async Task AddRangeAsync(List<T> entities)
+        {
+            await _entity.AddRangeAsync(entities);
+            await _dbContext.SaveChangesAsync();
+        }
 
         public virtual async Task<List<T>> GetAllAsync()
         {
