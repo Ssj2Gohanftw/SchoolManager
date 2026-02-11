@@ -16,9 +16,20 @@ namespace SchoolManager.Controllers
 
         [HttpPost]
         [Route("assignments")]
-        public async Task<ActionResult<List<SubjectClassDto>>> AssignSubject(AddSubjectClassDto addSubjectClassDto) 
+        public async Task<IActionResult> AssignSubject(AddSubjectClassDto addSubjectClassDto) 
         {
-            return await _subjectClassServices.AssignSubjects(addSubjectClassDto);
+             var assignments= await _subjectClassServices.AssignSubjects(addSubjectClassDto);
+            return Ok(assignments);
+
         }
+        [HttpGet]
+        [Route("assignments/{id:guid}/list")]
+        public async Task<IActionResult> GetAssignments(Guid id)
+        {
+            var assignments = await _subjectClassServices.GetAssignmentDetailsForClassAsync(id);
+            return Ok(assignments);
+
+        }
+
     }
 }

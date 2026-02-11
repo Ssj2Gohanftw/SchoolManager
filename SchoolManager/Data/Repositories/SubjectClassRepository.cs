@@ -10,29 +10,50 @@ namespace SchoolManager.Data.Repositories
         {
 
         }
-        public async Task AssignSubjectsToClass(List<Guid> subjectIds, Guid classId)
+
+        public async Task<List<SubjectClass>> GetAllAssignmentDetailsForClass(Guid classId)
         {
-            List<Guid> existingSubs = await _entity
+            return await _entity
+                .AsNoTracking()
+                .Include(sc => sc.Subject)
+                .Include(sc => sc.Class)
+                .Where(sc=>sc.ClassId==classId)
+                .ToListAsync();
+        }
+
+        //public async Task AssignSubjectsToClass(List<Guid> subjectIds, Guid classId)
+        //{
+        //    List<Guid> existingSubs = await GetExistingSubAssignmentsForClass(classId);
+
+        //List<SubjectClass> newSubjectAssignments = subjectIds
+        //    .Except(existingSubs)
+        //    .Select(sc => sc.ToSubjectClass(classId)).ToList();
+
+        //    if (newSubjectAssignments.Any())
+        //    {
+        //        await _entity.AddRangeAsync(newSubjectAssignments);
+        //    }
+        //    await _dbContext.SaveChangesAsync();
+
+        //}
+        //public async Task<List<SubjectClass>> AssignSubjectsToClass(List<Guid> subjectIds, Guid classId)
+        //{
+        //    List<Guid> existingSubs = await GetExistingSubAssignmentsForClass(classId);
+
+        //    List<SubjectClass> newSubjectAssignments = subjectIds
+        //        .Except(existingSubs)
+        //        .Select(sc => sc.ToSubjectClass(classId)).ToList();
+        //    return newSubjectAssignments;
+        //}
+
+        public async Task<List<Guid>> GetExistingSubAssignmentsForClass(Guid classId)
+        {
+           return await _entity
+                .AsNoTracking()
                 .Where(sc => sc.ClassId == classId)
                 .Select(sc => sc.SubjectId)
                 .ToListAsync();
-
-            List<SubjectClass> newAssignments = subjectIds
-                .Except(existingSubs)
-                .Select(subjectId => new SubjectClass
-                {
-                    SubjectId = subjectId,
-                    ClassId = classId
-                }).ToList();
-
-            if (newAssignments.Any())
-            {
-                await _entity.AddRangeAsync(newAssignments);
-            }
-            await _dbContext.SaveChangesAsync();
-
         }
-
     }
 }
         

@@ -17,7 +17,6 @@ namespace SchoolManager.Data.Repositories
                 return;
             }
             await _entity.AddAsync(subjectTeacher);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> Exists(SubjectTeacher subjectTeacher)
