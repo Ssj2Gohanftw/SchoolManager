@@ -4,7 +4,6 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Class;
 using SchoolManager.Dtos.Common;
-using SchoolManager.Mappers.Classes;
 using SchoolManager.Mappers.Common;
 using SchoolManager.Models;
 using System.Linq.Expressions;
@@ -68,7 +67,6 @@ namespace SchoolManager.Data.Repositories
         }
         public async Task<PagedResults<Class>> GetPagedResultsAsync(ClassQueryDto classQueryDto)
         {
-            classQueryDto = classQueryDto.Normalize();
             Expression<Func<Class, bool>> searchFilter = SearchFilter(classQueryDto.Search);
             IQueryable<Class> query = _entity
                 .AsNoTracking()
@@ -87,7 +85,7 @@ namespace SchoolManager.Data.Repositories
                 .Take(classQueryDto.PageSize)
                 .ToListAsync();
 
-            return results.ToPagedResults(classQueryDto.PageNumber, classQueryDto.PageSize, totalCount);
+            return results.ToPagedResults(totalCount);
 
         }
         public static Expression<Func<Class, bool>> SearchFilter(string? search)

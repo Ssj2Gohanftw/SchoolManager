@@ -115,7 +115,6 @@ namespace SchoolManager.Data.Repositories
 
         public async Task<PagedResults<Student>> GetPagedAsync(StudentQueryDto studentQueryDto)
         {
-            studentQueryDto = studentQueryDto.Normalize();
             Expression<Func<Student, bool>> searchFilter = SearchFilter(studentQueryDto.Search);
 
             IQueryable<Student> query = _entity
@@ -138,11 +137,7 @@ namespace SchoolManager.Data.Repositories
                 .Take(studentQueryDto.PageSize)
                 .ToListAsync();
 
-            return results.ToPagedResults(
-                pageNumber: studentQueryDto.PageNumber,
-                pageSize: studentQueryDto.PageSize,
-                totalCount: totalCount
-                );
+            return results.ToPagedResults(totalCount: totalCount);
         }
         public static Expression<Func<Student, bool>> SearchFilter(string? search)
         {

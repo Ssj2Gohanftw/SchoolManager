@@ -80,7 +80,7 @@ namespace SchoolManager.Services
             {
                 PagedResults<Student> result = await _studentRepository.GetPagedAsync(studentQueryDto);
                 List<StudentDetailsDto> studentDetails = result.Results.Select(s => s.ToStudentDetailsDto()).ToList();
-                return studentDetails.ToPagedResults(result.PageNumber, result.PageSize, result.TotalCount);
+                return studentDetails.ToPagedResults( result.TotalCount);
             }
             catch (Exception)
             {

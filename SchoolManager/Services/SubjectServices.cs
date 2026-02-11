@@ -59,7 +59,7 @@ namespace SchoolManager.Services
         {
             PagedResults<Subject> results = await _subjectRepository.GetPagedResults(subjectQueryDto);
             List<SubjectDetailsDto> subjectDetails = results.Results.Select(sub => sub.ToSubjectDetailsDto()).ToList();
-            return subjectDetails.ToPagedResults(results.PageNumber, results.PageSize, results.TotalCount);
+            return subjectDetails.ToPagedResults(results.TotalCount);
         }
 
         public async Task<SubjectDetailsDto?> GetSubjectByIdAsync(Guid id)

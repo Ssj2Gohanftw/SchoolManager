@@ -5,7 +5,6 @@ using SchoolManager.Data.Repositories.Interfaces;
 using SchoolManager.Dtos.Common;
 using SchoolManager.Dtos.Teacher;
 using SchoolManager.Mappers.Common;
-using SchoolManager.Mappers.Teachers;
 using SchoolManager.Models;
 using System.Linq.Expressions;
 
@@ -78,7 +77,6 @@ namespace SchoolManager.Data.Repositories
         //}
         public async Task<PagedResults<Teacher>> GetPagedAsync(TeacherQueryDto teacherQueryDto)
         {
-            teacherQueryDto = teacherQueryDto.Normalize();
             Expression<Func<Teacher, bool>> searchFilter =SearchFilter(teacherQueryDto.Search);
 
             IQueryable<Teacher> query = _entity
@@ -99,7 +97,7 @@ namespace SchoolManager.Data.Repositories
                 .Take(teacherQueryDto.PageSize)
                 .ToListAsync();
 
-            return results.ToPagedResults(teacherQueryDto.PageNumber, teacherQueryDto.PageSize, totalCount);
+            return results.ToPagedResults(totalCount);
             
         }
         public static Expression<Func<Teacher,bool>> SearchFilter(string? search) 

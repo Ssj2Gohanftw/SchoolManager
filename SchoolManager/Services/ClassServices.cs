@@ -97,7 +97,7 @@ namespace SchoolManager.Services
         {
             PagedResults<Class> result = await _classRepository.GetPagedResultsAsync(classQueryDto);
             List<ClassDetailsDto> classDetails = result.Results.Select(c => c.ToClassDetailsDto()).ToList();
-            return classDetails.ToPagedResults(result.PageNumber, result.PageSize, result.TotalCount);
+            return classDetails.ToPagedResults( result.TotalCount);
         }
     }
 }
